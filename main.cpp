@@ -38,12 +38,15 @@ enum TokenKind
     TK_PRINT,
     TK_INT_KW,
     TK_COLON,
+    TK_COLON_COLON,
     TK_COLON_EQ,
     TK_EQ,
     TK_SEMI,
     TK_COMMA,
     TK_LPAREN,
-    TK_RPAREN
+    TK_RPAREN,
+    TK_LBRACE,
+    TK_RBRACE
 };
 
 struct Token
@@ -210,12 +213,23 @@ struct Lexer
             return t;
         }
 
-        if(c == ':' && pos + 1 < input.size() && input[pos + 1] == '=')
+        if(c == ':' && pos + 1 < input.size())
         {
-            get();
-            get();
-            t.kind = TK_COLON_EQ;
-            return t;
+            char next = input[pos + 1];
+            if(next == '=')
+            {
+                get();
+                get();
+                t.kind = TK_COLON_EQ;
+                return t;
+            }
+            if(next == ':')
+            {
+                get();
+                get();
+                t.kind = TK_COLON_COLON;
+                return t;
+            }
         }
 
         get();
@@ -238,6 +252,12 @@ struct Lexer
                 break;
             case ')':
                 t.kind = TK_RPAREN;
+                break;
+            case '{':
+                t.kind = TK_LBRACE;
+                break;
+            case '}':
+                t.kind = TK_RBRACE;
                 break;
             default:
                 t.kind = TK_EOF;
@@ -453,6 +473,16 @@ struct Parser
         {
             return nullptr;
         }
+        if(current.kind == TK_COMMA)
+        {
+            advance();
+            if(current.kind != TK_STRING_LIT)
+            {
+                error("expected string literal after ','");
+                return nullptr;
+            }
+            advance();
+        }
         if(!expect(TK_RPAREN, "expected ')'") )
         {
             return nullptr;
@@ -465,12 +495,83 @@ struct Parser
         return std::make_unique<PrintStmt>(std::move(expr), loc);
     }
 
+    std::vector<std::unique_ptr<Stmt>> parse_block()
+    {
+        std::vector<std::unique_ptr<Stmt>> stmts;
+
+        while(current.kind != TK_RBRACE && current.kind != TK_EOF && ok)
+        {
+            if(current.kind == TK_IDENT)
+            {
+                auto stmt = parse_var_decl();
+                if(stmt)
+                {
+                    stmts.push_back(std::move(stmt));
+                }
+                continue;
+            }
+            if(current.kind == TK_PRINT)
+            {
+                auto stmt = parse_print();
+                if(stmt)
+                {
+                    stmts.push_back(std::move(stmt));
+                }
+                continue;
+            }
+            error("unexpected token in block");
+            break;
+        }
+
+        if(!expect(TK_RBRACE, "expected '}'"))
+        {
+            return {};
+        }
+
+        return stmts;
+    }
+
+    std::vector<std::unique_ptr<Stmt>> parse_main_block()
+    {
+        advance();
+        if(!expect(TK_COLON_COLON, "expected '::'"))
+        {
+            return {};
+        }
+        if(!expect(TK_LPAREN, "expected '('") )
+        {
+            return {};
+        }
+        if(!expect(TK_RPAREN, "expected ')'"))
+        {
+            return {};
+        }
+        if(!expect(TK_LBRACE, "expected '{'"))
+        {
+            return {};
+        }
+        return parse_block();
+    }
+
     std::vector<std::unique_ptr<Stmt>> parse_program()
     {
         std::vector<std::unique_ptr<Stmt>> stmts;
 
+        bool saw_main = false;
+
         while(current.kind != TK_EOF && ok)
         {
+            if(!saw_main && current.kind == TK_IDENT && current.text == "main")
+            {
+                stmts = parse_main_block();
+                saw_main = true;
+                continue;
+            }
+            if(saw_main)
+            {
+                error("unexpected token after main block");
+                break;
+            }
             if(current.kind == TK_IDENT)
             {
                 auto stmt = parse_var_decl();
