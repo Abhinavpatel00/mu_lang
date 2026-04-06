@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/lk/myprojects/mu_lang/mycompiler/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

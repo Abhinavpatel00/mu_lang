@@ -1,0 +1,8 @@
+/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles/intrinsics_gen.dir
+/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles/vt_gen.dir
+/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles/omp_gen.dir
+/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles/acc_gen.dir
+/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles/target_parser_gen.dir
+/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles/mucc.dir
+/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles/edit_cache.dir
+/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles/rebuild_cache.dir
