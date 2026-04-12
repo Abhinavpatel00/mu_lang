@@ -101,10 +101,10 @@ struct Token {
     SourceLocation start;
     SourceLocation end;
 
-    bool isKeyword() const;
-    bool isLiteral() const;
-    bool isOperator() const;
-    std::string toString() const;
+    bool is_keyword() const;
+    bool is_literal() const;
+    bool is_operator() const;
+    std::string to_string() const;
 };
 
 class Lexer {
@@ -125,34 +125,34 @@ private:
     uint32_t m_column = 1;
 
     // Here-string state
-    std::optional<std::string_view> m_hereDelim;
-    uint32_t m_hereStartLine = 0;
+    std::optional<std::string_view> m_here_delim;
+    uint32_t m_here_start_line = 0;
 
     // Cached peek token
     std::optional<Token> m_peek;
 
     // Core helpers
-    bool isAtEnd() const;
+    bool is_at_end() const;
     char advance();
-    char peekChar() const;
-    char peekNext() const;
+    char peek_char() const;
+    char peek_next() const;
     bool match(char expected);
-    void skipWhitespace();
+    void skip_whitespace();
 
     // Token creation
-    Token makeToken(TokenKind kind);
-    Token makeError(std::string_view message);
-    SourceLocation currentLocation() const;
+    Token make_token(TokenKind kind);
+    Token make_error(std::string_view message);
+    SourceLocation current_location() const;
 
     // Complex lexing
-    Token lexNumber();
-    Token lexIdentifier();
-    Token lexString();
-    Token lexChar();
-    Token lexDot();
-    Token consumeHereString(std::string_view delim);
-    void consumeLineComment();
-    void consumeBlockComment();
+    Token lex_number();
+    Token lex_identifier();
+    Token lex_string();
+    Token lex_char();
+    Token lex_dot();
+    Token consume_here_string(std::string_view delim);
+    void consume_line_comment();
+    void consume_block_comment();
 
     // Keyword map
     static const std::unordered_map<std::string_view, TokenKind> s_keywords;

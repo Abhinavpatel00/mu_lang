@@ -11,7 +11,7 @@ This project follows a strict prototype coding style.
 - Everything is public by default.
 - Prefer simple structs for data.
 - Prefer free functions that operate on structs.
-- we use data oriented design 
+- Use data-oriented design.
 ## Code Style Direction
 
 - Keep logic explicit and easy to trace.
@@ -40,9 +40,13 @@ This project follows a strict prototype coding style.
 
 If a change requires classes, RAII, or OO patterns, stop and discuss the design first before implementation.
 
-- lexer is fine to be a class if it simplifies state management, but semantic analysis should avoid classes unless necessary.
-- enum  and constants should be UPPER_SNAKE_CASE, struct and function names should be lower_snake_case.
-- If a new abstraction layer is needed, prefer adding a new function or struct over introducing a new class hierarchy.
+- The lexer may be a class if it simplifies state management, but semantic analysis should avoid classes unless necessary.
+- Enums and constants should be UPPER_SNAKE_CASE.
+- If a new abstraction layer is needed, prefer adding a function or struct over introducing a class hierarchy.
 - For data structures, prefer simple structs with public fields over complex classes with private members and accessors.
-- For error handling, prefer returning error codes or using `std::optional` over exceptions.
--  type names should be PascalCase and function/variable names should be snake_case.
+- For error handling, prefer returning error codes or using std::optional over exceptions.
+
+## Naming Conventions
+
+- Type names should be PascalCase.
+- Function and variable names should be snake_case.

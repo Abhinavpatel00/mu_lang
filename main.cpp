@@ -7,14 +7,14 @@
 #include "lexer.hpp"
 #include "sema.hpp"
 
-static void printTokens(const std::string& source, std::ostream& out)
+static void print_tokens(const std::string& source, std::ostream& out)
 {
     mu::Lexer lexer(source);
     out << "tokens:\n";
     for(;;)
     {
         mu::Token token = lexer.next();
-        out << "  " << token.toString() << '\n';
+        out << "  " << token.to_string() << '\n';
         if(token.kind == mu::TokenKind::EOF_TOKEN)
         {
             break;
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         )";
     }
 
-    printTokens(source, std::cout);
+    print_tokens(source, std::cout);
 
     MiniSemanticChecker checker(std::move(source));
     const auto&         diagnostics = checker.run();

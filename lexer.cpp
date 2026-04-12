@@ -21,25 +21,25 @@ const std::unordered_map<std::string_view, TokenKind> Lexer::s_keywords = {
 // -----------------------------------------------------------------------------
 // Token utility methods
 // -----------------------------------------------------------------------------
-bool Token::isKeyword() const
+bool Token::is_keyword() const
 {
     return kind >= TokenKind::KW_STRUCT && kind <= TokenKind::KW_TYPE;
 }
 
-bool Token::isLiteral() const
+bool Token::is_literal() const
 {
     return kind == TokenKind::INTEGER_LITERAL || kind == TokenKind::FLOAT_LITERAL || kind == TokenKind::STRING_LITERAL
            || kind == TokenKind::CHAR_LITERAL || kind == TokenKind::HERE_STRING;
 }
 
-bool Token::isOperator() const
+bool Token::is_operator() const
 {
     return kind >= TokenKind::ASSIGN && kind <= TokenKind::HASH;
 }
 
-std::string Token::toString() const
+std::string Token::to_string() const
 {
-    auto kindName = [](TokenKind k) -> const char* {
+    auto kind_name = [](TokenKind k) -> const char* {
         switch(k)
         {
             case TokenKind::EOF_TOKEN:
@@ -183,7 +183,7 @@ std::string Token::toString() const
     };
 
     std::ostringstream out;
-    out << kindName(kind) << "('" << lexeme << "') @ " << start.line << ':' << start.column;
+    out << kind_name(kind) << "('" << lexeme << "') @ " << start.line << ':' << start.column;
     return out.str();
 }
 
@@ -208,17 +208,17 @@ Token Lexer::next()
     }
 
     // Handle here-string mode
-    if(m_hereDelim)
+    if(m_here_delim)
     {
-        return consumeHereString(*m_hereDelim);
+        return consume_here_string(*m_here_delim);
     }
 
-    skipWhitespace();
+    skip_whitespace();
     m_start = m_current;
 
-    if(isAtEnd())
+    if(is_at_end())
     {
-        return makeToken(TokenKind::EOF_TOKEN);
+        return make_token(TokenKind::EOF_TOKEN);
     }
 
     char c = advance();
@@ -227,90 +227,90 @@ Token Lexer::next()
     switch(c)
     {
         case '(':
-            return makeToken(TokenKind::L_PAREN);
+            return make_token(TokenKind::L_PAREN);
         case ')':
-            return makeToken(TokenKind::R_PAREN);
+            return make_token(TokenKind::R_PAREN);
         case '{':
-            return makeToken(TokenKind::L_BRACE);
+            return make_token(TokenKind::L_BRACE);
         case '}':
-            return makeToken(TokenKind::R_BRACE);
+            return make_token(TokenKind::R_BRACE);
         case '[':
-            return makeToken(TokenKind::L_BRACKET);
+            return make_token(TokenKind::L_BRACKET);
         case ']':
-            return makeToken(TokenKind::R_BRACKET);
+            return make_token(TokenKind::R_BRACKET);
         case ',':
-            return makeToken(TokenKind::COMMA);
+            return make_token(TokenKind::COMMA);
         case ';':
-            return makeToken(TokenKind::SEMICOLON);
+            return make_token(TokenKind::SEMICOLON);
         case '$':
-            return makeToken(TokenKind::DOLLAR);
+            return make_token(TokenKind::DOLLAR);
         case '?':
-            return makeToken(TokenKind::QUESTION);
+            return make_token(TokenKind::QUESTION);
         case '#':
-            return makeToken(TokenKind::HASH);
+            return make_token(TokenKind::HASH);
         case '+':
-            return makeToken(TokenKind::PLUS);
+            return make_token(TokenKind::PLUS);
         case '-':
-            return makeToken(match('>') ? TokenKind::ARROW : TokenKind::MINUS);
+            return make_token(match('>') ? TokenKind::ARROW : TokenKind::MINUS);
         case '*':
-            return makeToken(TokenKind::STAR);
+            return make_token(TokenKind::STAR);
         case '%':
-            return makeToken(TokenKind::PERCENT);
+            return make_token(TokenKind::PERCENT);
         case '&':
-            return makeToken(TokenKind::AMP);
+            return make_token(TokenKind::AMP);
         case '|':
-            return makeToken(TokenKind::PIPE);
+            return make_token(TokenKind::PIPE);
         case '^':
-            return makeToken(TokenKind::CARET);
+            return make_token(TokenKind::CARET);
         case '!':
-            return makeToken(match('=') ? TokenKind::NOT_EQUAL : TokenKind::BANG);
+            return make_token(match('=') ? TokenKind::NOT_EQUAL : TokenKind::BANG);
         case '=':
-            return makeToken(match('=') ? TokenKind::EQUAL : TokenKind::EQUALS_ASSIGN);
+            return make_token(match('=') ? TokenKind::EQUAL : TokenKind::EQUALS_ASSIGN);
         case '<':
-            return makeToken(match('<') ? TokenKind::SHIFT_LEFT : match('=') ? TokenKind::LESS_EQUAL : TokenKind::LESS);
+            return make_token(match('<') ? TokenKind::SHIFT_LEFT : match('=') ? TokenKind::LESS_EQUAL : TokenKind::LESS);
         case '>':
-            return makeToken(match('>') ? TokenKind::SHIFT_RIGHT :
+            return make_token(match('>') ? TokenKind::SHIFT_RIGHT :
                              match('=') ? TokenKind::GREATER_EQUAL :
                                           TokenKind::GREATER);
         case ':':
             if(match(':'))
             {
-                return makeToken(TokenKind::CONST_ASSIGN);
+                return make_token(TokenKind::CONST_ASSIGN);
             }
             if(match('='))
             {
-                return makeToken(TokenKind::ASSIGN);
+                return make_token(TokenKind::ASSIGN);
             }
-            return makeToken(TokenKind::COLON);
+            return make_token(TokenKind::COLON);
         case '.':
-            return lexDot();
+            return lex_dot();
         case '/': {
             if(match('/'))
             {
-                consumeLineComment();
+                consume_line_comment();
                 return next();
             }
             else if(match('*'))
             {
-                consumeBlockComment();
+                consume_block_comment();
                 return next();
             }
-            return makeToken(TokenKind::SLASH);
+            return make_token(TokenKind::SLASH);
         }
         case '\'':
-            return lexChar();
+            return lex_char();
         case '"':
-            return lexString();
+            return lex_string();
         default:
             if(std::isdigit(static_cast<unsigned char>(c)))
             {
-                return lexNumber();
+                return lex_number();
             }
             if(std::isalpha(static_cast<unsigned char>(c)) || c == '_')
             {
-                return lexIdentifier();
+                return lex_identifier();
             }
-            return makeError("Unexpected character");
+            return make_error("Unexpected character");
     }
 }
 
@@ -327,15 +327,15 @@ void Lexer::synchronize()
 {
     m_peek.reset();
 
-    while(!isAtEnd())
+    while(!is_at_end())
     {
-        if(peekChar() == ';')
+        if(peek_char() == ';')
         {
             advance();
             return;
         }
 
-        switch(peekChar())
+        switch(peek_char())
         {
             case '{':
             case '}':
@@ -355,7 +355,7 @@ void Lexer::synchronize()
 // -----------------------------------------------------------------------------
 // Core helpers
 // -----------------------------------------------------------------------------
-bool Lexer::isAtEnd() const
+bool Lexer::is_at_end() const
 {
     return m_current >= m_source.size();
 }
@@ -366,14 +366,14 @@ char Lexer::advance()
     return m_source[m_current++];
 }
 
-char Lexer::peekChar() const
+char Lexer::peek_char() const
 {
-    if(isAtEnd())
+    if(is_at_end())
         return '\0';
     return m_source[m_current];
 }
 
-char Lexer::peekNext() const
+char Lexer::peek_next() const
 {
     if(m_current + 1 >= m_source.size())
         return '\0';
@@ -382,7 +382,7 @@ char Lexer::peekNext() const
 
 bool Lexer::match(char expected)
 {
-    if(isAtEnd() || m_source[m_current] != expected)
+    if(is_at_end() || m_source[m_current] != expected)
     {
         return false;
     }
@@ -391,11 +391,11 @@ bool Lexer::match(char expected)
     return true;
 }
 
-void Lexer::skipWhitespace()
+void Lexer::skip_whitespace()
 {
-    while(!isAtEnd())
+    while(!is_at_end())
     {
-        char c = peekChar();
+        char c = peek_char();
         switch(c)
         {
             case ' ':
@@ -416,24 +416,24 @@ void Lexer::skipWhitespace()
 // -----------------------------------------------------------------------------
 // Token creation
 // -----------------------------------------------------------------------------
-Token Lexer::makeToken(TokenKind kind)
+Token Lexer::make_token(TokenKind kind)
 {
     Token token;
     token.kind   = kind;
     token.lexeme = m_source.substr(m_start, m_current - m_start);
     token.start = SourceLocation{m_line, m_column - static_cast<uint32_t>(token.lexeme.size()), static_cast<uint32_t>(m_start)};
-    token.end = currentLocation();
+    token.end = current_location();
     return token;
 }
 
-Token Lexer::makeError(std::string_view message)
+Token Lexer::make_error(std::string_view message)
 {
     (void)message;
-    Token token = makeToken(TokenKind::ILLEGAL);
+    Token token = make_token(TokenKind::ILLEGAL);
     return token;
 }
 
-SourceLocation Lexer::currentLocation() const
+SourceLocation Lexer::current_location() const
 {
     return SourceLocation{m_line, m_column, static_cast<uint32_t>(m_current)};
 }
@@ -441,80 +441,80 @@ SourceLocation Lexer::currentLocation() const
 // -----------------------------------------------------------------------------
 // Complex lexing
 // -----------------------------------------------------------------------------
-Token Lexer::lexDot()
+Token Lexer::lex_dot()
 {
     if(match('.'))
     {
         if(match('='))
         {
-            return makeToken(TokenKind::RANGE_INCLUSIVE);
+            return make_token(TokenKind::RANGE_INCLUSIVE);
         }
-        return makeToken(TokenKind::RANGE);
+        return make_token(TokenKind::RANGE);
     }
-    return makeToken(TokenKind::DOT);
+    return make_token(TokenKind::DOT);
 }
 
-Token Lexer::lexNumber()
+Token Lexer::lex_number()
 {
-    bool isFloat = false;
+    bool is_float = false;
 
-    while(std::isdigit(static_cast<unsigned char>(peekChar())))
+    while(std::isdigit(static_cast<unsigned char>(peek_char())))
     {
         advance();
     }
 
-    if(peekChar() == '.' && std::isdigit(static_cast<unsigned char>(peekNext())))
+    if(peek_char() == '.' && std::isdigit(static_cast<unsigned char>(peek_next())))
     {
-        isFloat = true;
+        is_float = true;
         advance();  // consume '.'
-        while(std::isdigit(static_cast<unsigned char>(peekChar())))
+        while(std::isdigit(static_cast<unsigned char>(peek_char())))
         {
             advance();
         }
     }
 
-    if(peekChar() == 'e' || peekChar() == 'E')
+    if(peek_char() == 'e' || peek_char() == 'E')
     {
-        isFloat = true;
+        is_float = true;
         advance();
-        if(peekChar() == '+' || peekChar() == '-')
+        if(peek_char() == '+' || peek_char() == '-')
         {
             advance();
         }
-        while(std::isdigit(static_cast<unsigned char>(peekChar())))
+        while(std::isdigit(static_cast<unsigned char>(peek_char())))
         {
             advance();
         }
     }
 
     // Hex literals (0x...)
-    if(m_current - m_start == 1 && m_source[m_start] == '0' && (peekChar() == 'x' || peekChar() == 'X'))
+    if(m_current - m_start == 1 && m_source[m_start] == '0' && (peek_char() == 'x' || peek_char() == 'X'))
     {
         advance();  // consume 'x'
-        while(std::isxdigit(static_cast<unsigned char>(peekChar())))
+        while(std::isxdigit(static_cast<unsigned char>(peek_char())))
         {
             advance();
         }
-        return makeToken(TokenKind::INTEGER_LITERAL);
+        return make_token(TokenKind::INTEGER_LITERAL);
     }
 
     // Binary literals (0b...)
-    if(m_current - m_start == 1 && m_source[m_start] == '0' && (peekChar() == 'b' || peekChar() == 'B'))
+    if(m_current - m_start == 1 && m_source[m_start] == '0' && (peek_char() == 'b' || peek_char() == 'B'))
     {
         advance();  // consume 'b'
-        while(peekChar() == '0' || peekChar() == '1')
+        while(peek_char() == '0' || peek_char() == '1')
         {
             advance();
         }
-        return makeToken(TokenKind::INTEGER_LITERAL);
+        return make_token(TokenKind::INTEGER_LITERAL);
     }
 
-    return makeToken(isFloat ? TokenKind::FLOAT_LITERAL : TokenKind::INTEGER_LITERAL);
+    return make_token(is_float ? TokenKind::FLOAT_LITERAL : TokenKind::INTEGER_LITERAL);
 }
 
-Token Lexer::lexIdentifier()
+Token Lexer::lex_identifier()
 {
-    while(std::isalnum(static_cast<unsigned char>(peekChar())) || peekChar() == '_')
+    while(std::isalnum(static_cast<unsigned char>(peek_char())) || peek_char() == '_')
     {
         advance();
     }
@@ -525,77 +525,77 @@ Token Lexer::lexIdentifier()
 
     // Handle contextual keywords like 'comp' - they can be used as identifiers
     // in some contexts; that's a parser-level distinction.
-    return makeToken(kind);
+    return make_token(kind);
 }
 
-Token Lexer::lexString()
+Token Lexer::lex_string()
 {
-    while(peekChar() != '"' && !isAtEnd())
+    while(peek_char() != '"' && !is_at_end())
     {
-        if(peekChar() == '\n')
+        if(peek_char() == '\n')
         {
             m_line++;
             m_column = 1;
         }
-        if(peekChar() == '\\')
+        if(peek_char() == '\\')
         {
             advance();  // skip escape
         }
         advance();
     }
 
-    if(isAtEnd())
+    if(is_at_end())
     {
-        return makeError("Unterminated string literal");
+        return make_error("Unterminated string literal");
     }
 
     advance();  // closing quote
-    return makeToken(TokenKind::STRING_LITERAL);
+    return make_token(TokenKind::STRING_LITERAL);
 }
 
-Token Lexer::lexChar()
+Token Lexer::lex_char()
 {
-    if(peekChar() == '\\')
+    if(peek_char() == '\\')
     {
         advance();  // escape
     }
     advance();  // character
 
-    if(peekChar() != '\'')
+    if(peek_char() != '\'')
     {
-        return makeError("Unterminated character literal");
+        return make_error("Unterminated character literal");
     }
 
     advance();  // closing quote
-    return makeToken(TokenKind::CHAR_LITERAL);
+    return make_token(TokenKind::CHAR_LITERAL);
 }
 
-void Lexer::consumeLineComment()
+void Lexer::consume_line_comment()
 {
-    while(peekChar() != '\n' && !isAtEnd())
+    while(peek_char() != '\n' && !is_at_end())
     {
         advance();
     }
 }
 
-void Lexer::consumeBlockComment()
+void Lexer::consume_block_comment()
 {
     int nesting = 1;
-    while(nesting > 0 && !isAtEnd())
+    while(nesting > 0 && !is_at_end())
     {
-        if(peekChar() == '/' && peekNext() == '*')
+        if(peek_char() == '/' && peek_next() == '*')
         {
             advance();
             advance();
             nesting++;
         }
-        else if(peekChar() == '*' && peekNext() == '/')
+        else if(peek_char() == '*' && peek_next() == '/')
         {
             advance();
             advance();
             nesting--;
         }
-        else if(peekChar() == '\n')
+        else if(peek_char() == '\n')
         {
             m_line++;
             m_column = 1;
@@ -608,34 +608,34 @@ void Lexer::consumeBlockComment()
     }
 }
 
-Token Lexer::consumeHereString(std::string_view delim)
+Token Lexer::consume_here_string(std::string_view delim)
 {
-    size_t contentStart  = m_current;
-    size_t contentLength = 0;
+    size_t content_start  = m_current;
+    size_t content_length = 0;
 
-    while(!isAtEnd())
+    while(!is_at_end())
     {
-        if(peekChar() == '\n')
+        if(peek_char() == '\n')
         {
-            size_t lineStart = m_current + 1;
+            size_t line_start = m_current + 1;
             advance();  // newline
             m_line++;
             m_column = 1;
 
             // Check if the next line starts with the delimiter
-            if(m_source.size() - lineStart >= delim.size() && m_source.substr(lineStart, delim.size()) == delim)
+            if(m_source.size() - line_start >= delim.size() && m_source.substr(line_start, delim.size()) == delim)
             {
                 // Found delimiter
                 Token token;
                 token.kind   = TokenKind::HERE_STRING;
-                token.lexeme = m_source.substr(contentStart, contentLength);
-                token.start  = SourceLocation{m_hereStartLine, 1, static_cast<uint32_t>(contentStart)};
-                token.end    = currentLocation();
+                token.lexeme = m_source.substr(content_start, content_length);
+                token.start  = SourceLocation{m_here_start_line, 1, static_cast<uint32_t>(content_start)};
+                token.end    = current_location();
 
                 // Consume delimiter line
-                m_current = lineStart + delim.size();
+                m_current = line_start + delim.size();
                 m_column += delim.size();
-                m_hereDelim.reset();
+                m_here_delim.reset();
                 return token;
             }
         }
@@ -643,9 +643,9 @@ Token Lexer::consumeHereString(std::string_view delim)
         {
             advance();
         }
-        contentLength = m_current - contentStart;
+        content_length = m_current - content_start;
     }
 
-    return makeError("Unterminated here-string");
+    return make_error("Unterminated here-string");
 }
 }  // namespace mu

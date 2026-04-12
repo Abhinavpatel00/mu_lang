@@ -8,8 +8,8 @@
 
 struct Binding
 {
-    std::string typeName;
-    bool        isMutable = true;
+    std::string type_name;
+    bool        is_mutable = true;
 };
 
 struct Diagnostic
@@ -26,21 +26,21 @@ public:
     const std::vector<Diagnostic>& run();
 
 private:
-    static bool isLiteralKind(mu::TokenKind kind);
+    static bool is_literal_kind(mu::TokenKind kind);
 
     bool at(mu::TokenKind kind, size_t lookahead = 0) const;
-    std::string tokenText(size_t lookahead = 0) const;
-    std::string tokenTextAt(size_t tokenIndex) const;
-    void emit(size_t tokenIndex, std::string message);
-    void consumeSemicolons();
-    bool isExpressionStarter(size_t tokenIndex) const;
-    size_t skipExpression(size_t tokenIndex) const;
-    bool parseTypeName(size_t cursor, std::string& typeName, size_t& nextCursor) const;
-    bool parseStatement();
-    bool parseInferredDeclaration(bool isMutable);
-    bool parseTypedDeclaration();
-    bool parseReassignment();
-    bool parseMemberReassignment();
+    std::string token_text(size_t lookahead = 0) const;
+    std::string token_text_at(size_t token_index) const;
+    void emit(size_t token_index, std::string message);
+    void consume_semicolons();
+    bool is_expression_starter(size_t token_index) const;
+    size_t skip_expression(size_t token_index) const;
+    bool parse_type_name(size_t cursor, std::string& type_name, size_t& next_cursor) const;
+    bool parse_statement();
+    bool parse_inferred_declaration(bool is_mutable);
+    bool parse_typed_declaration();
+    bool parse_reassignment();
+    bool parse_member_reassignment();
 
     std::string                           source_;
     mu::Lexer                             lexer_;
