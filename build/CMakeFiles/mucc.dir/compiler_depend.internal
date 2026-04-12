@@ -3,6 +3,7 @@
 
 CMakeFiles/mucc.dir/main.cpp.o
  /home/lk/myprojects/mu_lang/mycompiler/main.cpp
+ /home/lk/myprojects/mu_lang/mycompiler/lexer.hpp
  /usr/include/alloca.h
  /usr/include/asm-generic/bitsperlong.h
  /usr/include/asm-generic/errno-base.h

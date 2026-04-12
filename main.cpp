@@ -22,817 +22,1047 @@
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/TargetParser/Host.h"
 #include "llvm/TargetParser/Triple.h"
-
-struct SourceLocation
-{
-    int line;
-    int col;
+#include "lexer.hpp"
+namespace mu {
+// -----------------------------------------------------------------------------
+// Keyword table
+// -----------------------------------------------------------------------------
+const std::unordered_map<std::string_view, TokenKind> Lexer::s_keywords = {
+    {"struct", TokenKind::KwStruct}, {"enum", TokenKind::KwEnum},   {"union", TokenKind::KwUnion},
+    {"comp", TokenKind::KwComp},     {"using", TokenKind::KwUsing}, {"distinct", TokenKind::KwDistinct},
+    {"trait", TokenKind::KwTrait},   {"impl", TokenKind::KwImpl},   {"defer", TokenKind::KwDefer},
+    {"as", TokenKind::KwAs},         {"match", TokenKind::KwMatch}, {"if", TokenKind::KwIf},
+    {"else", TokenKind::KwElse},     {"for", TokenKind::KwFor},     {"in", TokenKind::KwIn},
+    {"return", TokenKind::KwReturn}, {"true", TokenKind::KwTrue},   {"false", TokenKind::KwFalse},
+    {"null", TokenKind::KwNull},     {"void", TokenKind::KwVoid},   {"never", TokenKind::KwNever},
+    {"maybe", TokenKind::KwMaybe},   {"type", TokenKind::KwType},
 };
 
-enum TokenKind
+// -----------------------------------------------------------------------------
+// Token utility methods
+// -----------------------------------------------------------------------------
+bool Token::isKeyword() const
 {
-    TK_EOF = 0,
-    TK_IDENT,
-    TK_INT_LIT,
-    TK_STRING_LIT,
-    TK_PRINT,
-    TK_INT_KW,
-    TK_COLON,
-    TK_COLON_COLON,
-    TK_COLON_EQ,
-    TK_EQ,
-    TK_SEMI,
-    TK_COMMA,
-    TK_LPAREN,
-    TK_RPAREN,
-    TK_LBRACE,
-    TK_RBRACE
-};
+    return kind >= TokenKind::KwStruct && kind <= TokenKind::KwType;
+}
 
-struct Token
+bool Token::isLiteral() const
 {
-    TokenKind      kind;
-    std::string    text;
-    int64_t        int_value;
-    SourceLocation loc;
-};
+    return kind == TokenKind::IntegerLiteral || kind == TokenKind::FloatLiteral || kind == TokenKind::StringLiteral
+           || kind == TokenKind::CharLiteral || kind == TokenKind::HereString;
+}
 
-struct Lexer
+bool Token::isOperator() const
 {
-    std::string input;
-    size_t      pos;
-    int         line;
-    int         col;
+    return kind >= TokenKind::Assign && kind <= TokenKind::Hash;
+}
 
-    Lexer(std::string src)
-        : input(std::move(src))
-        , pos(0)
-        , line(1)
-        , col(1)
+std::string Token::toString() const
+{
+    auto kindName = [](TokenKind k) -> const char* {
+        switch(k)
+        {
+            case TokenKind::Eof:
+                return "Eof";
+            case TokenKind::Identifier:
+                return "Identifier";
+            case TokenKind::IntegerLiteral:
+                return "IntegerLiteral";
+            case TokenKind::FloatLiteral:
+                return "FloatLiteral";
+            case TokenKind::StringLiteral:
+                return "StringLiteral";
+            case TokenKind::CharLiteral:
+                return "CharLiteral";
+            case TokenKind::HereString:
+                return "HereString";
+            case TokenKind::Assign:
+                return "Assign";
+            case TokenKind::ConstAssign:
+                return "ConstAssign";
+            case TokenKind::EqualsAssign:
+                return "EqualsAssign";
+            case TokenKind::Equal:
+                return "Equal";
+            case TokenKind::NotEqual:
+                return "NotEqual";
+            case TokenKind::Less:
+                return "Less";
+            case TokenKind::LessEqual:
+                return "LessEqual";
+            case TokenKind::Greater:
+                return "Greater";
+            case TokenKind::GreaterEqual:
+                return "GreaterEqual";
+            case TokenKind::Plus:
+                return "Plus";
+            case TokenKind::Minus:
+                return "Minus";
+            case TokenKind::Star:
+                return "Star";
+            case TokenKind::Slash:
+                return "Slash";
+            case TokenKind::Percent:
+                return "Percent";
+            case TokenKind::Bang:
+                return "Bang";
+            case TokenKind::Amp:
+                return "Amp";
+            case TokenKind::Pipe:
+                return "Pipe";
+            case TokenKind::Caret:
+                return "Caret";
+            case TokenKind::ShiftLeft:
+                return "ShiftLeft";
+            case TokenKind::ShiftRight:
+                return "ShiftRight";
+            case TokenKind::Dot:
+                return "Dot";
+            case TokenKind::Range:
+                return "Range";
+            case TokenKind::RangeInclusive:
+                return "RangeInclusive";
+            case TokenKind::Arrow:
+                return "Arrow";
+            case TokenKind::FatArrow:
+                return "FatArrow";
+            case TokenKind::Colon:
+                return "Colon";
+            case TokenKind::Semicolon:
+                return "Semicolon";
+            case TokenKind::Comma:
+                return "Comma";
+            case TokenKind::LParen:
+                return "LParen";
+            case TokenKind::RParen:
+                return "RParen";
+            case TokenKind::LBrace:
+                return "LBrace";
+            case TokenKind::RBrace:
+                return "RBrace";
+            case TokenKind::LBracket:
+                return "LBracket";
+            case TokenKind::RBracket:
+                return "RBracket";
+            case TokenKind::Dollar:
+                return "Dollar";
+            case TokenKind::Question:
+                return "Question";
+            case TokenKind::Hash:
+                return "Hash";
+            case TokenKind::KwStruct:
+                return "KwStruct";
+            case TokenKind::KwEnum:
+                return "KwEnum";
+            case TokenKind::KwUnion:
+                return "KwUnion";
+            case TokenKind::KwComp:
+                return "KwComp";
+            case TokenKind::KwUsing:
+                return "KwUsing";
+            case TokenKind::KwDistinct:
+                return "KwDistinct";
+            case TokenKind::KwTrait:
+                return "KwTrait";
+            case TokenKind::KwImpl:
+                return "KwImpl";
+            case TokenKind::KwDefer:
+                return "KwDefer";
+            case TokenKind::KwAs:
+                return "KwAs";
+            case TokenKind::KwMatch:
+                return "KwMatch";
+            case TokenKind::KwIf:
+                return "KwIf";
+            case TokenKind::KwElse:
+                return "KwElse";
+            case TokenKind::KwFor:
+                return "KwFor";
+            case TokenKind::KwIn:
+                return "KwIn";
+            case TokenKind::KwReturn:
+                return "KwReturn";
+            case TokenKind::KwTrue:
+                return "KwTrue";
+            case TokenKind::KwFalse:
+                return "KwFalse";
+            case TokenKind::KwNull:
+                return "KwNull";
+            case TokenKind::KwVoid:
+                return "KwVoid";
+            case TokenKind::KwNever:
+                return "KwNever";
+            case TokenKind::KwMaybe:
+                return "KwMaybe";
+            case TokenKind::KwType:
+                return "KwType";
+            case TokenKind::Illegal:
+                return "Illegal";
+        }
+        return "Unknown";
+    };
+
+    std::ostringstream out;
+    out << kindName(kind) << "('" << lexeme << "') @ " << start.line << ':' << start.column;
+    return out.str();
+}
+
+// -----------------------------------------------------------------------------
+// Lexer constructor
+// -----------------------------------------------------------------------------
+Lexer::Lexer(std::string_view source)
+    : m_source(source)
+{
+}
+
+// -----------------------------------------------------------------------------
+// Public interface
+// -----------------------------------------------------------------------------
+Token Lexer::next()
+{
+    if(m_peek)
     {
+        Token t = *m_peek;
+        m_peek.reset();
+        return t;
     }
 
-    char peek() const
+    // Handle here-string mode
+    if(m_hereDelim)
     {
-        if(pos >= input.size())
-        {
-            return '\0';
-        }
-        return input[pos];
+        return consumeHereString(*m_hereDelim);
     }
 
-    char get()
+    skipWhitespace();
+    m_start = m_current;
+
+    if(isAtEnd())
     {
-        char c = peek();
-        if(c == '\0')
-        {
-            return c;
+        return makeToken(TokenKind::Eof);
+    }
+
+    char c = advance();
+
+    // Single-character tokens
+    switch(c)
+    {
+        case '(':
+            return makeToken(TokenKind::LParen);
+        case ')':
+            return makeToken(TokenKind::RParen);
+        case '{':
+            return makeToken(TokenKind::LBrace);
+        case '}':
+            return makeToken(TokenKind::RBrace);
+        case '[':
+            return makeToken(TokenKind::LBracket);
+        case ']':
+            return makeToken(TokenKind::RBracket);
+        case ',':
+            return makeToken(TokenKind::Comma);
+        case ';':
+            return makeToken(TokenKind::Semicolon);
+        case '$':
+            return makeToken(TokenKind::Dollar);
+        case '?':
+            return makeToken(TokenKind::Question);
+        case '#':
+            return makeToken(TokenKind::Hash);
+        case '+':
+            return makeToken(TokenKind::Plus);
+        case '-':
+            return makeToken(match('>') ? TokenKind::Arrow : TokenKind::Minus);
+        case '*':
+            return makeToken(TokenKind::Star);
+        case '%':
+            return makeToken(TokenKind::Percent);
+        case '&':
+            return makeToken(TokenKind::Amp);
+        case '|':
+            return makeToken(TokenKind::Pipe);
+        case '^':
+            return makeToken(TokenKind::Caret);
+        case '!':
+            return makeToken(match('=') ? TokenKind::NotEqual : TokenKind::Bang);
+        case '=':
+            return makeToken(match('=') ? TokenKind::Equal : TokenKind::EqualsAssign);
+        case '<':
+            return makeToken(match('<') ? TokenKind::ShiftLeft : match('=') ? TokenKind::LessEqual : TokenKind::Less);
+        case '>':
+            return makeToken(match('>') ? TokenKind::ShiftRight :
+                             match('=') ? TokenKind::GreaterEqual :
+                                          TokenKind::Greater);
+        case ':':
+            if(match(':'))
+            {
+                return makeToken(TokenKind::ConstAssign);
+            }
+            if(match('='))
+            {
+                return makeToken(TokenKind::Assign);
+            }
+            return makeToken(TokenKind::Colon);
+        case '.':
+            return lexDot();
+        case '/': {
+            if(match('/'))
+            {
+                consumeLineComment();
+                return next();
+            }
+            else if(match('*'))
+            {
+                consumeBlockComment();
+                return next();
+            }
+            return makeToken(TokenKind::Slash);
         }
-        pos++;
-        if(c == '\n')
+        case '\'':
+            return lexChar();
+        case '"':
+            return lexString();
+        default:
+            if(std::isdigit(static_cast<unsigned char>(c)))
+            {
+                return lexNumber();
+            }
+            if(std::isalpha(static_cast<unsigned char>(c)) || c == '_')
+            {
+                return lexIdentifier();
+            }
+            return makeError("Unexpected character");
+    }
+}
+
+Token Lexer::peek()
+{
+    if(!m_peek)
+    {
+        m_peek = next();
+    }
+    return *m_peek;
+}
+
+void Lexer::synchronize()
+{
+    m_peek.reset();
+
+    while(!isAtEnd())
+    {
+        if(peekChar() == ';')
         {
-            line++;
-            col = 1;
+            advance();
+            return;
+        }
+
+        switch(peekChar())
+        {
+            case '{':
+            case '}':
+            case '(':
+            case ')':
+            case '[':
+            case ']':
+            case ':':
+            case ',':
+                return;
+            default:
+                advance();
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Core helpers
+// -----------------------------------------------------------------------------
+bool Lexer::isAtEnd() const
+{
+    return m_current >= m_source.size();
+}
+
+char Lexer::advance()
+{
+    m_column++;
+    return m_source[m_current++];
+}
+
+char Lexer::peekChar() const
+{
+    if(isAtEnd())
+        return '\0';
+    return m_source[m_current];
+}
+
+char Lexer::peekNext() const
+{
+    if(m_current + 1 >= m_source.size())
+        return '\0';
+    return m_source[m_current + 1];
+}
+
+bool Lexer::match(char expected)
+{
+    if(isAtEnd() || m_source[m_current] != expected)
+    {
+        return false;
+    }
+    m_current++;
+    m_column++;
+    return true;
+}
+
+void Lexer::skipWhitespace()
+{
+    while(!isAtEnd())
+    {
+        char c = peekChar();
+        switch(c)
+        {
+            case ' ':
+            case '\t':
+                advance();
+                break;
+            case '\n':
+                m_line++;
+                m_column = 1;
+                advance();
+                break;
+            default:
+                return;
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Token creation
+// -----------------------------------------------------------------------------
+Token Lexer::makeToken(TokenKind kind)
+{
+    Token token;
+    token.kind   = kind;
+    token.lexeme = m_source.substr(m_start, m_current - m_start);
+    token.start = SourceLocation{m_line, m_column - static_cast<uint32_t>(token.lexeme.size()), static_cast<uint32_t>(m_start)};
+    token.end = currentLocation();
+    return token;
+}
+
+Token Lexer::makeError(std::string_view message)
+{
+    Token token = makeToken(TokenKind::Illegal);
+    // In a real compiler, you'd attach the error message to the token
+    // or emit a diagnostic here.
+    return token;
+}
+
+SourceLocation Lexer::currentLocation() const
+{
+    return SourceLocation{m_line, m_column, static_cast<uint32_t>(m_current)};
+}
+
+// -----------------------------------------------------------------------------
+// Complex lexing
+// -----------------------------------------------------------------------------
+Token Lexer::lexDot()
+{
+    if(match('.'))
+    {
+        if(match('='))
+        {
+            return makeToken(TokenKind::RangeInclusive);
+        }
+        return makeToken(TokenKind::Range);
+    }
+    return makeToken(TokenKind::Dot);
+}
+
+Token Lexer::lexNumber()
+{
+    bool isFloat = false;
+
+    while(std::isdigit(static_cast<unsigned char>(peekChar())))
+    {
+        advance();
+    }
+
+    if(peekChar() == '.' && std::isdigit(static_cast<unsigned char>(peekNext())))
+    {
+        isFloat = true;
+        advance();  // consume '.'
+        while(std::isdigit(static_cast<unsigned char>(peekChar())))
+        {
+            advance();
+        }
+    }
+
+    if(peekChar() == 'e' || peekChar() == 'E')
+    {
+        isFloat = true;
+        advance();
+        if(peekChar() == '+' || peekChar() == '-')
+        {
+            advance();
+        }
+        while(std::isdigit(static_cast<unsigned char>(peekChar())))
+        {
+            advance();
+        }
+    }
+
+    // Hex literals (0x...)
+    if(m_current - m_start == 1 && m_source[m_start] == '0' && (peekChar() == 'x' || peekChar() == 'X'))
+    {
+        advance();  // consume 'x'
+        while(std::isxdigit(static_cast<unsigned char>(peekChar())))
+        {
+            advance();
+        }
+        return makeToken(TokenKind::IntegerLiteral);
+    }
+
+    // Binary literals (0b...)
+    if(m_current - m_start == 1 && m_source[m_start] == '0' && (peekChar() == 'b' || peekChar() == 'B'))
+    {
+        advance();  // consume 'b'
+        while(peekChar() == '0' || peekChar() == '1')
+        {
+            advance();
+        }
+        return makeToken(TokenKind::IntegerLiteral);
+    }
+
+    return makeToken(isFloat ? TokenKind::FloatLiteral : TokenKind::IntegerLiteral);
+}
+
+Token Lexer::lexIdentifier()
+{
+    while(std::isalnum(static_cast<unsigned char>(peekChar())) || peekChar() == '_')
+    {
+        advance();
+    }
+
+    std::string_view lexeme = m_source.substr(m_start, m_current - m_start);
+    auto             it     = s_keywords.find(lexeme);
+    TokenKind        kind   = (it != s_keywords.end()) ? it->second : TokenKind::Identifier;
+
+    // Handle contextual keywords like 'comp' - they can be used as identifiers
+    // in some contexts; that's a parser-level distinction.
+    return makeToken(kind);
+}
+
+Token Lexer::lexString()
+{
+    while(peekChar() != '"' && !isAtEnd())
+    {
+        if(peekChar() == '\n')
+        {
+            m_line++;
+            m_column = 1;
+        }
+        if(peekChar() == '\\')
+        {
+            advance();  // skip escape
+        }
+        advance();
+    }
+
+    if(isAtEnd())
+    {
+        return makeError("Unterminated string literal");
+    }
+
+    advance();  // closing quote
+    return makeToken(TokenKind::StringLiteral);
+}
+
+Token Lexer::lexChar()
+{
+    if(peekChar() == '\\')
+    {
+        advance();  // escape
+    }
+    advance();  // character
+
+    if(peekChar() != '\'')
+    {
+        return makeError("Unterminated character literal");
+    }
+
+    advance();  // closing quote
+    return makeToken(TokenKind::CharLiteral);
+}
+
+void Lexer::consumeLineComment()
+{
+    while(peekChar() != '\n' && !isAtEnd())
+    {
+        advance();
+    }
+}
+
+void Lexer::consumeBlockComment()
+{
+    int nesting = 1;
+    while(nesting > 0 && !isAtEnd())
+    {
+        if(peekChar() == '/' && peekNext() == '*')
+        {
+            advance();
+            advance();
+            nesting++;
+        }
+        else if(peekChar() == '*' && peekNext() == '/')
+        {
+            advance();
+            advance();
+            nesting--;
+        }
+        else if(peekChar() == '\n')
+        {
+            m_line++;
+            m_column = 1;
+            advance();
         }
         else
         {
-            col++;
+            advance();
         }
-        return c;
     }
+}
 
-    void skip_whitespace()
+Token Lexer::consumeHereString(std::string_view delim)
+{
+    size_t contentStart  = m_current;
+    size_t contentLength = 0;
+
+    while(!isAtEnd())
     {
-        while(true)
+        if(peekChar() == '\n')
         {
-            char c = peek();
-            if(c == '\0')
+            size_t lineStart = m_current + 1;
+            advance();  // newline
+            m_line++;
+            m_column = 1;
+
+            // Check if the next line starts with the delimiter
+            if(m_source.size() - lineStart >= delim.size() && m_source.substr(lineStart, delim.size()) == delim)
             {
-                return;
+                // Found delimiter
+                Token token;
+                token.kind   = TokenKind::HereString;
+                token.lexeme = m_source.substr(contentStart, contentLength);
+                token.start  = SourceLocation{m_hereStartLine, 1, static_cast<uint32_t>(contentStart)};
+                token.end    = currentLocation();
+
+                // Consume delimiter line
+                m_current = lineStart + delim.size();
+                m_column += delim.size();
+                m_hereDelim.reset();
+                return token;
             }
-            if(c == '/' && pos + 1 < input.size() && input[pos + 1] == '/')
-            {
-                while(c != '\n' && c != '\0')
-                {
-                    c = get();
-                }
-                continue;
-            }
-            if(std::isspace(static_cast<unsigned char>(c)))
-            {
-                get();
-                continue;
-            }
-            return;
         }
+        else
+        {
+            advance();
+        }
+        contentLength = m_current - contentStart;
     }
 
-    Token next_token()
-    {
-        skip_whitespace();
+    return makeError("Unterminated here-string");
+}
+}  // namespace mu
 
-        Token t;
-        t.text.clear();
-        t.int_value = 0;
-        t.loc       = {line, col};
-
-        char c = peek();
-        if(c == '\0')
-        {
-            t.kind = TK_EOF;
-            return t;
-        }
-
-        if(std::isalpha(static_cast<unsigned char>(c)) || c == '_')
-        {
-            std::string ident;
-            ident.push_back(get());
-            while(std::isalnum(static_cast<unsigned char>(peek())) || peek() == '_')
-            {
-                ident.push_back(get());
-            }
-            t.text = ident;
-            if(ident == "print")
-            {
-                t.kind = TK_PRINT;
-            }
-            else if(ident == "int")
-            {
-                t.kind = TK_INT_KW;
-            }
-            else
-            {
-                t.kind = TK_IDENT;
-            }
-            return t;
-        }
-
-        if(c == '"')
-        {
-            get();
-            std::string lit;
-            while(true)
-            {
-                char ch = get();
-                if(ch == '\0' || ch == '\n')
-                {
-                    break;
-                }
-                if(ch == '"')
-                {
-                    break;
-                }
-                if(ch == '\\')
-                {
-                    char esc = get();
-                    if(esc == '\0')
-                    {
-                        break;
-                    }
-                    lit.push_back('\\');
-                    lit.push_back(esc);
-                    continue;
-                }
-                lit.push_back(ch);
-            }
-            t.kind = TK_STRING_LIT;
-            t.text = lit;
-            return t;
-        }
-
-        if(std::isdigit(static_cast<unsigned char>(c)))
-        {
-            std::string num;
-            while(std::isdigit(static_cast<unsigned char>(peek())))
-            {
-                num.push_back(get());
-            }
-            t.kind      = TK_INT_LIT;
-            t.text      = num;
-            t.int_value = std::stoll(num);
-            return t;
-        }
-
-        if(c == ':' && pos + 1 < input.size())
-        {
-            char next = input[pos + 1];
-            if(next == '=')
-            {
-                get();
-                get();
-                t.kind = TK_COLON_EQ;
-                return t;
-            }
-            if(next == ':')
-            {
-                get();
-                get();
-                t.kind = TK_COLON_COLON;
-                return t;
-            }
-        }
-
-        get();
-        switch(c)
-        {
-            case ':':
-                t.kind = TK_COLON;
-                break;
-            case '=':
-                t.kind = TK_EQ;
-                break;
-            case ';':
-                t.kind = TK_SEMI;
-                break;
-            case ',':
-                t.kind = TK_COMMA;
-                break;
-            case '(':
-                t.kind = TK_LPAREN;
-                break;
-            case ')':
-                t.kind = TK_RPAREN;
-                break;
-            case '{':
-                t.kind = TK_LBRACE;
-                break;
-            case '}':
-                t.kind = TK_RBRACE;
-                break;
-            default:
-                t.kind = TK_EOF;
-                break;
-        }
-        return t;
-    }
+struct Binding
+{
+    std::string typeName;
+    bool        isMutable = true;
 };
 
-struct CodegenContext;
-
-struct Expr
+struct Diagnostic
 {
-    SourceLocation loc;
-    virtual llvm::Value* codegen(CodegenContext& ctx) = 0;
-    virtual ~Expr() = default;
+    mu::SourceLocation where;
+    std::string        message;
 };
 
-struct IntExpr : Expr
+class MiniSemanticChecker
 {
-    int64_t value;
-
-    IntExpr(int64_t v, SourceLocation l)
-        : value(v)
+public:
+    explicit MiniSemanticChecker(std::string source)
+        : source_(std::move(source))
+        , lexer_(source_)
     {
-        loc = l;
-    }
-
-    llvm::Value* codegen(CodegenContext& ctx) override;
-};
-
-struct NameExpr : Expr
-{
-    std::string name;
-
-    NameExpr(std::string n, SourceLocation l)
-        : name(std::move(n))
-    {
-        loc = l;
-    }
-
-    llvm::Value* codegen(CodegenContext& ctx) override;
-};
-
-struct Stmt
-{
-    SourceLocation loc;
-    virtual bool codegen(CodegenContext& ctx) = 0;
-    virtual ~Stmt() = default;
-};
-
-struct VarDecl : Stmt
-{
-    std::string              name;
-    std::unique_ptr<Expr>    init;
-
-    VarDecl(std::string n, std::unique_ptr<Expr> i, SourceLocation l)
-        : name(std::move(n))
-        , init(std::move(i))
-    {
-        loc = l;
-    }
-
-    bool codegen(CodegenContext& ctx) override;
-};
-
-struct PrintStmt : Stmt
-{
-    std::unique_ptr<Expr> expr;
-
-    PrintStmt(std::unique_ptr<Expr> e, SourceLocation l)
-        : expr(std::move(e))
-    {
-        loc = l;
-    }
-
-    bool codegen(CodegenContext& ctx) override;
-};
-
-struct Parser
-{
-    Lexer lex;
-    Token current;
-    bool  ok;
-
-    Parser(std::string src)
-        : lex(std::move(src))
-        , ok(true)
-    {
-        advance();
-    }
-
-    void advance()
-    {
-        current = lex.next_token();
-    }
-
-    void error(const std::string& msg)
-    {
-        if(!ok)
+        for(;;)
         {
-            return;
+            mu::Token token = lexer_.next();
+            tokens_.push_back(token);
+            if(token.kind == mu::TokenKind::Eof)
+            {
+                break;
+            }
         }
-        ok = false;
-        std::cerr << current.loc.line << ":" << current.loc.col << ": " << msg << "\n";
     }
 
-    bool expect(TokenKind kind, const std::string& msg)
+    const std::vector<Diagnostic>& run()
     {
-        if(current.kind != kind)
+        while(!at(mu::TokenKind::Eof))
         {
-            error(msg);
+            if(!parseStatement())
+            {
+                index_++;
+            }
+        }
+        return diagnostics_;
+    }
+
+private:
+    static bool isLiteralKind(mu::TokenKind kind)
+    {
+        return kind == mu::TokenKind::IntegerLiteral || kind == mu::TokenKind::FloatLiteral
+               || kind == mu::TokenKind::StringLiteral || kind == mu::TokenKind::CharLiteral
+               || kind == mu::TokenKind::HereString;
+    }
+
+    bool at(mu::TokenKind kind, size_t lookahead = 0) const
+    {
+        return index_ + lookahead < tokens_.size() && tokens_[index_ + lookahead].kind == kind;
+    }
+
+    std::string tokenText(size_t lookahead = 0) const
+    {
+        return std::string(tokens_[index_ + lookahead].lexeme);
+    }
+
+    std::string tokenTextAt(size_t tokenIndex) const
+    {
+        return std::string(tokens_[tokenIndex].lexeme);
+    }
+
+    void emit(size_t tokenIndex, std::string message)
+    {
+        diagnostics_.push_back(Diagnostic{tokens_[tokenIndex].start, std::move(message)});
+    }
+
+    void consumeSemicolons()
+    {
+        while(at(mu::TokenKind::Semicolon))
+        {
+            index_++;
+        }
+    }
+
+    bool isExpressionStarter(size_t tokenIndex) const
+    {
+        if(tokenIndex >= tokens_.size())
+        {
             return false;
         }
-        advance();
+
+        mu::TokenKind kind = tokens_[tokenIndex].kind;
+        return kind == mu::TokenKind::Identifier || kind == mu::TokenKind::LBrace || kind == mu::TokenKind::LParen
+               || kind == mu::TokenKind::Dot || kind == mu::TokenKind::Star || kind == mu::TokenKind::Minus
+               || kind == mu::TokenKind::Bang || isLiteralKind(kind);
+    }
+
+    size_t skipExpression(size_t tokenIndex) const
+    {
+        size_t cursor     = tokenIndex;
+        int    parenDepth = 0;
+        int    braceDepth = 0;
+
+        while(cursor < tokens_.size())
+        {
+            mu::TokenKind kind = tokens_[cursor].kind;
+
+            if(kind == mu::TokenKind::LParen)
+            {
+                parenDepth++;
+            }
+            else if(kind == mu::TokenKind::RParen)
+            {
+                if(parenDepth == 0 && braceDepth == 0)
+                {
+                    break;
+                }
+                if(parenDepth > 0)
+                {
+                    parenDepth--;
+                }
+            }
+            else if(kind == mu::TokenKind::LBrace)
+            {
+                braceDepth++;
+            }
+            else if(kind == mu::TokenKind::RBrace)
+            {
+                if(braceDepth == 0 && parenDepth == 0)
+                {
+                    break;
+                }
+                if(braceDepth > 0)
+                {
+                    braceDepth--;
+                }
+            }
+            else if(parenDepth == 0 && braceDepth == 0
+                    && (kind == mu::TokenKind::Semicolon || kind == mu::TokenKind::Comma))
+            {
+                break;
+            }
+            else if(kind == mu::TokenKind::Eof)
+            {
+                break;
+            }
+
+            cursor++;
+        }
+
+        return cursor;
+    }
+
+    bool parseTypeName(size_t cursor, std::string& typeName, size_t& nextCursor) const
+    {
+        if(cursor >= tokens_.size())
+        {
+            return false;
+        }
+
+        while(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::Star)
+        {
+            cursor++;
+        }
+
+        if(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::Identifier && tokenTextAt(cursor) == "mut")
+        {
+            cursor++;
+        }
+
+        if(cursor >= tokens_.size() || tokens_[cursor].kind != mu::TokenKind::Identifier)
+        {
+            return false;
+        }
+
+        typeName   = tokenTextAt(cursor);
+        nextCursor = cursor + 1;
         return true;
     }
 
-    std::unique_ptr<Expr> parse_expr()
+    bool parseStatement()
     {
-        if(current.kind == TK_INT_LIT)
+        if(!at(mu::TokenKind::Identifier))
         {
-            auto expr = std::make_unique<IntExpr>(current.int_value, current.loc);
-            advance();
-            return expr;
+            return false;
         }
-        if(current.kind == TK_IDENT)
+
+        if(at(mu::TokenKind::Assign, 1))
         {
-            auto expr = std::make_unique<NameExpr>(current.text, current.loc);
-            advance();
-            return expr;
+            return parseInferredDeclaration(true);
         }
-        error("expected expression");
-        return nullptr;
+
+        if(at(mu::TokenKind::ConstAssign, 1))
+        {
+            return parseInferredDeclaration(false);
+        }
+
+        if(at(mu::TokenKind::Dot, 1) && at(mu::TokenKind::Identifier, 2) && at(mu::TokenKind::EqualsAssign, 3))
+        {
+            return parseMemberReassignment();
+        }
+
+        if(at(mu::TokenKind::Colon, 1))
+        {
+            return parseTypedDeclaration();
+        }
+
+        if(at(mu::TokenKind::EqualsAssign, 1))
+        {
+            if(index_ > 0
+               && (tokens_[index_ - 1].kind == mu::TokenKind::LBrace || tokens_[index_ - 1].kind == mu::TokenKind::Comma))
+            {
+                return false;
+            }
+            return parseReassignment();
+        }
+
+        return false;
     }
 
-    std::unique_ptr<Stmt> parse_var_decl()
+    bool parseInferredDeclaration(bool isMutable)
     {
-        SourceLocation loc = current.loc;
-        std::string name = current.text;
-        advance();
-
-        if(current.kind == TK_COLON_EQ)
+        // Keep function-like and type-definition forms out of this tiny checker.
+        if(at(mu::TokenKind::LParen, 2) || at(mu::TokenKind::KwStruct, 2) || at(mu::TokenKind::KwEnum, 2)
+           || at(mu::TokenKind::KwUnion, 2))
         {
-            advance();
-            auto init = parse_expr();
-            if(!init)
-            {
-                return nullptr;
-            }
-            if(!expect(TK_SEMI, "expected ';'"))
-            {
-                return nullptr;
-            }
-            return std::make_unique<VarDecl>(name, std::move(init), loc);
+            return false;
         }
 
-        if(current.kind == TK_COLON)
+        if(!isExpressionStarter(index_ + 2))
         {
-            advance();
-            if(!expect(TK_INT_KW, "expected 'int'"))
-            {
-                return nullptr;
-            }
-            if(current.kind == TK_EQ)
-            {
-                advance();
-                auto init = parse_expr();
-                if(!init)
-                {
-                    return nullptr;
-                }
-                if(!expect(TK_SEMI, "expected ';'"))
-                {
-                    return nullptr;
-                }
-                return std::make_unique<VarDecl>(name, std::move(init), loc);
-            }
-            if(current.kind == TK_SEMI)
-            {
-                advance();
-                auto init = std::make_unique<IntExpr>(0, loc);
-                return std::make_unique<VarDecl>(name, std::move(init), loc);
-            }
-            error("expected '=' or ';'");
-            return nullptr;
+            return false;
         }
 
-        error("expected ':' or ':='");
-        return nullptr;
+        std::string name = tokenText();
+        if(bindings_.count(name) != 0)
+        {
+            emit(index_, "redeclaration of '" + name + "'");
+        }
+        else
+        {
+            bindings_.insert({name, Binding{"auto", isMutable}});
+        }
+
+        index_ = skipExpression(index_ + 2);
+        consumeSemicolons();
+        return true;
     }
 
-    std::unique_ptr<Stmt> parse_print()
+    bool parseTypedDeclaration()
     {
-        SourceLocation loc = current.loc;
-        advance();
+        std::string name = tokenText();
 
-        if(!expect(TK_LPAREN, "expected '('") )
+        std::string typeName;
+        size_t      cursor = index_ + 2;
+        if(!parseTypeName(cursor, typeName, cursor))
         {
-            return nullptr;
+            emit(index_ + 1, "expected explicit type name after ':'");
+            index_ += 2;
+            consumeSemicolons();
+            return true;
         }
 
-        if(current.kind == TK_STRING_LIT)
+        if(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::EqualsAssign)
         {
-            advance();
-            if(!expect(TK_COMMA, "expected ',' after format string"))
+            size_t valueStart = cursor + 1;
+            if(!isExpressionStarter(valueStart))
             {
-                return nullptr;
+                emit(cursor, "expected expression after '='");
+                cursor = valueStart;
+            }
+            else
+            {
+                cursor = skipExpression(valueStart);
             }
         }
-        auto expr = parse_expr();
-        if(!expr)
+
+        if(bindings_.count(name) != 0)
         {
-            return nullptr;
+            emit(index_, "redeclaration of '" + name + "'");
         }
-        if(current.kind == TK_COMMA)
+        else
         {
-            advance();
-            if(current.kind != TK_STRING_LIT)
-            {
-                error("expected string literal after ','");
-                return nullptr;
-            }
-            advance();
-        }
-        if(!expect(TK_RPAREN, "expected ')'") )
-        {
-            return nullptr;
-        }
-        if(!expect(TK_SEMI, "expected ';'"))
-        {
-            return nullptr;
+            bindings_.insert({name, Binding{typeName, true}});
         }
 
-        return std::make_unique<PrintStmt>(std::move(expr), loc);
+        index_ = cursor;
+        consumeSemicolons();
+        return true;
     }
 
-    std::vector<std::unique_ptr<Stmt>> parse_block()
+    bool parseReassignment()
     {
-        std::vector<std::unique_ptr<Stmt>> stmts;
+        std::string name = tokenText();
 
-        while(current.kind != TK_RBRACE && current.kind != TK_EOF && ok)
+        size_t valueStart = index_ + 2;
+        if(!isExpressionStarter(valueStart))
         {
-            if(current.kind == TK_IDENT)
-            {
-                auto stmt = parse_var_decl();
-                if(stmt)
-                {
-                    stmts.push_back(std::move(stmt));
-                }
-                continue;
-            }
-            if(current.kind == TK_PRINT)
-            {
-                auto stmt = parse_print();
-                if(stmt)
-                {
-                    stmts.push_back(std::move(stmt));
-                }
-                continue;
-            }
-            error("unexpected token in block");
+            emit(index_ + 1, "expected expression after '='");
+            index_ += 2;
+            consumeSemicolons();
+            return true;
+        }
+
+        auto it = bindings_.find(name);
+        if(it == bindings_.end())
+        {
+            emit(index_, "cannot assign to undeclared name '" + name + "'");
+        }
+        else if(!it->second.isMutable)
+        {
+            emit(index_, "cannot assign to immutable name '" + name + "'");
+        }
+
+        index_ = skipExpression(valueStart);
+        consumeSemicolons();
+        return true;
+    }
+
+    bool parseMemberReassignment()
+    {
+        size_t valueStart = index_ + 4;
+        if(!isExpressionStarter(valueStart))
+        {
+            emit(index_ + 3, "expected expression after '='");
+            index_ += 4;
+            consumeSemicolons();
+            return true;
+        }
+
+        index_ = skipExpression(valueStart);
+        consumeSemicolons();
+        return true;
+    }
+
+    std::string                source_;
+    mu::Lexer                  lexer_;
+    std::vector<mu::Token>     tokens_;
+    std::vector<Diagnostic>    diagnostics_;
+    std::map<std::string, Binding> bindings_;
+    size_t                     index_ = 0;
+};
+
+static void printTokens(const std::string& source, std::ostream& out)
+{
+    mu::Lexer lexer(source);
+    out << "tokens:\n";
+    for(;;)
+    {
+        mu::Token token = lexer.next();
+        out << "  " << token.toString() << '\n';
+        if(token.kind == mu::TokenKind::Eof)
+        {
             break;
         }
-
-        if(!expect(TK_RBRACE, "expected '}'"))
-        {
-            return {};
-        }
-
-        return stmts;
     }
-
-    std::vector<std::unique_ptr<Stmt>> parse_main_block()
-    {
-        advance();
-        if(!expect(TK_COLON_COLON, "expected '::'"))
-        {
-            return {};
-        }
-        if(!expect(TK_LPAREN, "expected '('") )
-        {
-            return {};
-        }
-        if(!expect(TK_RPAREN, "expected ')'"))
-        {
-            return {};
-        }
-        if(!expect(TK_LBRACE, "expected '{'"))
-        {
-            return {};
-        }
-        return parse_block();
-    }
-
-    std::vector<std::unique_ptr<Stmt>> parse_program()
-    {
-        std::vector<std::unique_ptr<Stmt>> stmts;
-
-        bool saw_main = false;
-
-        while(current.kind != TK_EOF && ok)
-        {
-            if(!saw_main && current.kind == TK_IDENT && current.text == "main")
-            {
-                stmts = parse_main_block();
-                saw_main = true;
-                continue;
-            }
-            if(saw_main)
-            {
-                error("unexpected token after main block");
-                break;
-            }
-            if(current.kind == TK_IDENT)
-            {
-                auto stmt = parse_var_decl();
-                if(stmt)
-                {
-                    stmts.push_back(std::move(stmt));
-                }
-                continue;
-            }
-            if(current.kind == TK_PRINT)
-            {
-                auto stmt = parse_print();
-                if(stmt)
-                {
-                    stmts.push_back(std::move(stmt));
-                }
-                continue;
-            }
-            error("unexpected token");
-        }
-
-        return stmts;
-    }
-};
-
-struct CodegenContext
-{
-    llvm::LLVMContext               ctx;
-    llvm::IRBuilder<>               builder;
-    std::unique_ptr<llvm::Module>   module;
-    llvm::Function*                 main_fn;
-    llvm::Function*                 printf_fn;
-    llvm::Value*                    fmt_string;
-    std::map<std::string, llvm::AllocaInst*> locals;
-    bool                            ok;
-
-    CodegenContext()
-        : builder(ctx)
-        , main_fn(nullptr)
-        , printf_fn(nullptr)
-        , fmt_string(nullptr)
-        , ok(true)
-    {
-    }
-
-    void error_at(const SourceLocation& loc, const std::string& msg)
-    {
-        if(!ok)
-        {
-            return;
-        }
-        ok = false;
-        std::cerr << loc.line << ":" << loc.col << ": " << msg << "\n";
-    }
-};
-
-llvm::Value* IntExpr::codegen(CodegenContext& ctx)
-{
-    return llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx.ctx), value, true);
-}
-
-llvm::Value* NameExpr::codegen(CodegenContext& ctx)
-{
-    auto it = ctx.locals.find(name);
-    if(it == ctx.locals.end())
-    {
-        ctx.error_at(loc, "unknown variable '" + name + "'");
-        return nullptr;
-    }
-    return ctx.builder.CreateLoad(llvm::Type::getInt64Ty(ctx.ctx), it->second, name + "_load");
-}
-
-static llvm::AllocaInst* create_entry_alloca(llvm::Function* fn, llvm::LLVMContext& ctx, const std::string& name)
-{
-    llvm::IRBuilder<> tmp(&fn->getEntryBlock(), fn->getEntryBlock().begin());
-    return tmp.CreateAlloca(llvm::Type::getInt64Ty(ctx), nullptr, name);
-}
-
-bool VarDecl::codegen(CodegenContext& ctx)
-{
-    if(ctx.locals.find(name) != ctx.locals.end())
-    {
-        ctx.error_at(loc, "redefinition of '" + name + "'");
-        return false;
-    }
-    llvm::Value* init_val = init->codegen(ctx);
-    if(!init_val)
-    {
-        return false;
-    }
-    llvm::AllocaInst* slot = create_entry_alloca(ctx.main_fn, ctx.ctx, name);
-    ctx.builder.CreateStore(init_val, slot);
-    ctx.locals[name] = slot;
-    return true;
-}
-
-bool PrintStmt::codegen(CodegenContext& ctx)
-{
-    llvm::Value* value = expr->codegen(ctx);
-    if(!value)
-    {
-        return false;
-    }
-    ctx.builder.CreateCall(ctx.printf_fn, {ctx.fmt_string, value});
-    return true;
-}
-
-struct FileOutput
-{
-    std::string object_path;
-    std::string exe_path;
-};
-
-static bool write_object_file(llvm::Module* module, const std::string& path)
-{
-    std::string  target_triple = llvm::sys::getDefaultTargetTriple();
-    llvm::Triple triple(target_triple);
-    module->setTargetTriple(triple);
-
-    std::string         err;
-    const llvm::Target* target = llvm::TargetRegistry::lookupTarget(target_triple, err);
-    if(!target)
-    {
-        llvm::errs() << err << "\n";
-        return false;
-    }
-
-    llvm::TargetOptions  opt;
-    llvm::TargetMachine* target_machine = target->createTargetMachine(triple, "generic", "", opt, llvm::Reloc::PIC_);
-    module->setDataLayout(target_machine->createDataLayout());
-
-    std::error_code      ec;
-    llvm::raw_fd_ostream dest(path, ec, llvm::sys::fs::OF_None);
-    if(ec)
-    {
-        llvm::errs() << "Could not open file: " << ec.message() << "\n";
-        return false;
-    }
-
-    llvm::legacy::PassManager pass;
-    if(target_machine->addPassesToEmitFile(pass, dest, nullptr, llvm::CodeGenFileType::ObjectFile))
-    {
-        llvm::errs() << "Target machine cannot emit object file\n";
-        return false;
-    }
-
-    pass.run(*module);
-    dest.flush();
-    delete target_machine;
-    return true;
-}
-
-static bool link_executable(const std::string& object_path, const std::string& exe_path)
-{
-    std::ostringstream cmd;
-    cmd << "cc " << object_path << " -o " << exe_path;
-    int rc = std::system(cmd.str().c_str());
-    return rc == 0;
-}
-
-static std::string read_file_text(const std::string& path)
-{
-    std::ifstream      in(path);
-    std::ostringstream ss;
-    ss << in.rdbuf();
-    return ss.str();
 }
 
 int main(int argc, char** argv)
 {
-    if(argc < 2)
+    std::string source;
+    if(argc > 1)
     {
-        std::cerr << "usage: mucc <file.mu> [-o output]\n";
-        return 1;
-    }
-
-    std::string input_path;
-    std::string output_path = "a.out";
-
-    for(int i = 1; i < argc; ++i)
-    {
-        std::string arg = argv[i];
-        if(arg == "-o" && i + 1 < argc)
+        std::ifstream input(argv[1]);
+        if(!input)
         {
-            output_path = argv[++i];
-            continue;
-        }
-        input_path = arg;
-    }
-
-    if(input_path.empty())
-    {
-        std::cerr << "error: no input file provided\n";
-        return 1;
-    }
-
-    std::string src = read_file_text(input_path);
-    Parser parser(src);
-    auto stmts = parser.parse_program();
-    if(!parser.ok)
-    {
-        return 1;
-    }
-
-    llvm::InitializeNativeTarget();
-    llvm::InitializeNativeTargetAsmPrinter();
-    llvm::InitializeNativeTargetAsmParser();
-
-    CodegenContext cg;
-    cg.module = std::make_unique<llvm::Module>("mu_min", cg.ctx);
-
-    llvm::Type* i8_ptr = llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(cg.ctx));
-    std::vector<llvm::Type*> printf_params = {i8_ptr};
-    llvm::FunctionType* printf_type = llvm::FunctionType::get(
-        llvm::Type::getInt32Ty(cg.ctx),
-        printf_params,
-        true
-    );
-    cg.printf_fn = llvm::Function::Create(
-        printf_type,
-        llvm::Function::ExternalLinkage,
-        "printf",
-        cg.module.get()
-    );
-
-    llvm::FunctionType* main_type = llvm::FunctionType::get(llvm::Type::getInt32Ty(cg.ctx), false);
-    cg.main_fn = llvm::Function::Create(
-        main_type,
-        llvm::Function::ExternalLinkage,
-        "main",
-        cg.module.get()
-    );
-
-    llvm::BasicBlock* entry = llvm::BasicBlock::Create(cg.ctx, "entry", cg.main_fn);
-    cg.builder.SetInsertPoint(entry);
-    cg.fmt_string = cg.builder.CreateGlobalStringPtr("%ld\n", "fmt");
-
-    for(auto& stmt : stmts)
-    {
-        if(!stmt->codegen(cg))
-        {
+            std::cerr << "failed to open source file: " << argv[1] << "\n";
             return 1;
         }
+        std::ostringstream buffer;
+        buffer << input.rdbuf();
+        source = buffer.str();
+    }
+    else
+    {
+        source = R"(
+            age := 21;
+            years := 21;
+            years = 22;
+            count: i32 = 21;
+        )";
     }
 
-    cg.builder.CreateRet(llvm::ConstantInt::get(llvm::Type::getInt32Ty(cg.ctx), 0));
-    if(llvm::verifyFunction(*cg.main_fn, &llvm::errs()))
+    printTokens(source, std::cout);
+
+    MiniSemanticChecker checker(std::move(source));
+    const auto&         diagnostics = checker.run();
+
+    if(diagnostics.empty())
     {
-        return 1;
+        std::cout << "semantic check passed\n";
+        return 0;
     }
 
-    std::string object_path = output_path + ".o";
-    if(!write_object_file(cg.module.get(), object_path))
+    for(const auto& diagnostic : diagnostics)
     {
-        return 1;
-    }
-    if(!link_executable(object_path, output_path))
-    {
-        std::cerr << "error: failed to link executable\n";
-        return 1;
+        std::cerr << diagnostic.where.line << ':' << diagnostic.where.column << ": error: " << diagnostic.message << "\n";
     }
 
-    return 0;
+    return 1;
 }

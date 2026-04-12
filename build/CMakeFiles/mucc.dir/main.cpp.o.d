@@ -376,4 +376,5 @@ CMakeFiles/mucc.dir/main.cpp.o: \
  /usr/lib/llvm21/include/llvm/Target/TargetOptions.h \
  /usr/lib/llvm21/include/llvm/MC/MCTargetOptions.h \
  /usr/lib/llvm21/include/llvm/Support/Compression.h \
- /usr/lib/llvm21/include/llvm/TargetParser/Host.h
+ /usr/lib/llvm21/include/llvm/TargetParser/Host.h \
+ /home/lk/myprojects/mu_lang/mycompiler/lexer.hpp

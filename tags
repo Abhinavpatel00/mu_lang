@@ -135,6 +135,11 @@ ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  defin
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#   define ARCHITECTURE_ID /;"	d	file:
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define ARCHITECTURE_ID /;"	d	file:
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define ARCHITECTURE_ID$/;"	d	file:
+Amp	lexer.hpp	/^    Amp,            \/\/ &$/;"	e	enum:mu::TokenKind
+Arrow	lexer.hpp	/^    Arrow,          \/\/ ->$/;"	e	enum:mu::TokenKind
+Assign	lexer.hpp	/^    Assign,         \/\/ :=$/;"	e	enum:mu::TokenKind
+Bang	lexer.hpp	/^    Bang,           \/\/ !$/;"	e	enum:mu::TokenKind
+Binding	main.cpp	/^struct Binding$/;"	s	file:
 CMAKE_AR	build/CMakeFiles/4.3.0/CMakeCCompiler.cmake	/^set(CMAKE_AR "\/usr\/bin\/ar")$/;"	v
 CMAKE_AR	build/CMakeFiles/4.3.0/CMakeCXXCompiler.cmake	/^set(CMAKE_AR "\/usr\/bin\/ar")$/;"	v
 CMAKE_BINARY_DIR	build/Makefile	/^CMAKE_BINARY_DIR = \/home\/lk\/myprojects\/mu_lang\/mycompiler\/build$/;"	m
@@ -393,26 +398,70 @@ C_STD_99	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define C_STD_9
 C_VERSION	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define C_VERSION /;"	d	file:
 C_VERSION	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define C_VERSION$/;"	d	file:
 C_VERSION	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define C_VERSION /;"	d	file:
-CodegenContext	main.cpp	/^    CodegenContext()$/;"	f	struct:CodegenContext	file:
-CodegenContext	main.cpp	/^struct CodegenContext$/;"	s	file:
+Caret	lexer.hpp	/^    Caret,          \/\/ ^$/;"	e	enum:mu::TokenKind
+CharLiteral	lexer.hpp	/^    CharLiteral,$/;"	e	enum:mu::TokenKind
+Colon	lexer.hpp	/^    Colon,          \/\/ :$/;"	e	enum:mu::TokenKind
+Comma	lexer.hpp	/^    Comma,          \/\/ ,$/;"	e	enum:mu::TokenKind
+ConstAssign	lexer.hpp	/^    ConstAssign,    \/\/ ::$/;"	e	enum:mu::TokenKind
 DEC	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define DEC(/;"	d	file:
 DEC	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define DEC(/;"	d	file:
+Diagnostic	main.cpp	/^struct Diagnostic$/;"	s	file:
+Dollar	lexer.hpp	/^    Dollar,         \/\/ \$$/;"	e	enum:mu::TokenKind
+Dot	lexer.hpp	/^    Dot,            \/\/ .$/;"	e	enum:mu::TokenKind
 EQUALS	build/Makefile	/^EQUALS = =$/;"	m
-Expr	main.cpp	/^struct Expr$/;"	s	file:
-FileOutput	main.cpp	/^struct FileOutput$/;"	s	file:
+Eof	lexer.hpp	/^    Eof,$/;"	e	enum:mu::TokenKind
+Equal	lexer.hpp	/^    Equal,          \/\/ ==$/;"	e	enum:mu::TokenKind
+EqualsAssign	lexer.hpp	/^    EqualsAssign,   \/\/ =$/;"	e	enum:mu::TokenKind
+FatArrow	lexer.hpp	/^    FatArrow,       \/\/ =>$/;"	e	enum:mu::TokenKind
+FloatLiteral	lexer.hpp	/^    FloatLiteral,$/;"	e	enum:mu::TokenKind
+Greater	lexer.hpp	/^    Greater,        \/\/ >$/;"	e	enum:mu::TokenKind
+GreaterEqual	lexer.hpp	/^    GreaterEqual,   \/\/ >=$/;"	e	enum:mu::TokenKind
 HEX	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define HEX(/;"	d	file:
 HEX	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define HEX(/;"	d	file:
+Hash	lexer.hpp	/^    Hash,           \/\/ #$/;"	e	enum:mu::TokenKind
+HereString	lexer.hpp	/^    HereString,$/;"	e	enum:mu::TokenKind
 ID_VOID_MAIN	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define ID_VOID_MAIN$/;"	d	file:
+Identifier	lexer.hpp	/^    Identifier,$/;"	e	enum:mu::TokenKind
+Illegal	lexer.hpp	/^    Illegal,$/;"	e	enum:mu::TokenKind
 InstallScripts	build/CMakeFiles/InstallScripts.json	/^	"InstallScripts" : $/;"	a
-IntExpr	main.cpp	/^    IntExpr(int64_t v, SourceLocation l)$/;"	f	struct:IntExpr	file:
-IntExpr	main.cpp	/^struct IntExpr : Expr$/;"	s	file:
+IntegerLiteral	lexer.hpp	/^    IntegerLiteral,$/;"	e	enum:mu::TokenKind
+KwAs	lexer.hpp	/^    KwAs,$/;"	e	enum:mu::TokenKind
+KwComp	lexer.hpp	/^    KwComp,$/;"	e	enum:mu::TokenKind
+KwDefer	lexer.hpp	/^    KwDefer,$/;"	e	enum:mu::TokenKind
+KwDistinct	lexer.hpp	/^    KwDistinct,$/;"	e	enum:mu::TokenKind
+KwElse	lexer.hpp	/^    KwElse,$/;"	e	enum:mu::TokenKind
+KwEnum	lexer.hpp	/^    KwEnum,$/;"	e	enum:mu::TokenKind
+KwFalse	lexer.hpp	/^    KwFalse,$/;"	e	enum:mu::TokenKind
+KwFor	lexer.hpp	/^    KwFor,$/;"	e	enum:mu::TokenKind
+KwIf	lexer.hpp	/^    KwIf,$/;"	e	enum:mu::TokenKind
+KwImpl	lexer.hpp	/^    KwImpl,$/;"	e	enum:mu::TokenKind
+KwIn	lexer.hpp	/^    KwIn,$/;"	e	enum:mu::TokenKind
+KwMatch	lexer.hpp	/^    KwMatch,$/;"	e	enum:mu::TokenKind
+KwMaybe	lexer.hpp	/^    KwMaybe,$/;"	e	enum:mu::TokenKind
+KwNever	lexer.hpp	/^    KwNever,$/;"	e	enum:mu::TokenKind
+KwNull	lexer.hpp	/^    KwNull,$/;"	e	enum:mu::TokenKind
+KwReturn	lexer.hpp	/^    KwReturn,$/;"	e	enum:mu::TokenKind
+KwStruct	lexer.hpp	/^    KwStruct,$/;"	e	enum:mu::TokenKind
+KwTrait	lexer.hpp	/^    KwTrait,$/;"	e	enum:mu::TokenKind
+KwTrue	lexer.hpp	/^    KwTrue,$/;"	e	enum:mu::TokenKind
+KwType	lexer.hpp	/^    KwType,$/;"	e	enum:mu::TokenKind
+KwUnion	lexer.hpp	/^    KwUnion,$/;"	e	enum:mu::TokenKind
+KwUsing	lexer.hpp	/^    KwUsing,$/;"	e	enum:mu::TokenKind
+KwVoid	lexer.hpp	/^    KwVoid,$/;"	e	enum:mu::TokenKind
+LBrace	lexer.hpp	/^    LBrace,         \/\/ {$/;"	e	enum:mu::TokenKind
+LBracket	lexer.hpp	/^    LBracket,       \/\/ [$/;"	e	enum:mu::TokenKind
 LLVM_DIR	CMakeLists.txt	/^    set(LLVM_DIR "\/usr\/lib\/llvm21\/lib\/cmake\/llvm" CACHE PATH "LLVM 21 CMake config path")$/;"	v
 LLVM_INCLUDE_DIRS	CMakeLists.txt	/^    set(LLVM_INCLUDE_DIRS "\/usr\/lib\/llvm21\/include")$/;"	v
 LLVM_LIBRARY_DIRS	CMakeLists.txt	/^    set(LLVM_LIBRARY_DIRS "\/usr\/lib\/llvm21\/lib")$/;"	v
-Lexer	main.cpp	/^    Lexer(std::string src)$/;"	f	struct:Lexer	file:
-Lexer	main.cpp	/^struct Lexer$/;"	s	file:
-NameExpr	main.cpp	/^    NameExpr(std::string n, SourceLocation l)$/;"	f	struct:NameExpr	file:
-NameExpr	main.cpp	/^struct NameExpr : Expr$/;"	s	file:
+LParen	lexer.hpp	/^    LParen,         \/\/ ($/;"	e	enum:mu::TokenKind
+Less	lexer.hpp	/^    Less,           \/\/ <$/;"	e	enum:mu::TokenKind
+LessEqual	lexer.hpp	/^    LessEqual,      \/\/ <=$/;"	e	enum:mu::TokenKind
+Lexer	lexer.hpp	/^class Lexer {$/;"	c	namespace:mu
+Lexer	main.cpp	/^Lexer::Lexer(std::string_view source)$/;"	f	class:mu::Lexer
+MiniSemanticChecker	main.cpp	/^    explicit MiniSemanticChecker(std::string source)$/;"	f	class:MiniSemanticChecker	file:
+MiniSemanticChecker	main.cpp	/^class MiniSemanticChecker$/;"	c	file:
+Minus	lexer.hpp	/^    Minus,          \/\/ -$/;"	e	enum:mu::TokenKind
+NotEqual	lexer.hpp	/^    NotEqual,       \/\/ !=$/;"	e	enum:mu::TokenKind
 PLATFORM_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define PLATFORM_ID /;"	d	file:
 PLATFORM_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define PLATFORM_ID$/;"	d	file:
 PLATFORM_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define PLATFORM_ID /;"	d	file:
@@ -422,11 +471,16 @@ PLATFORM_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  def
 PLATFORM_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define PLATFORM_ID /;"	d	file:
 PLATFORM_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define PLATFORM_ID$/;"	d	file:
 Parallel	build/CMakeFiles/InstallScripts.json	/^	"Parallel" : false$/;"	b
-Parser	main.cpp	/^    Parser(std::string src)$/;"	f	struct:Parser	file:
-Parser	main.cpp	/^struct Parser$/;"	s	file:
-PrintStmt	main.cpp	/^    PrintStmt(std::unique_ptr<Expr> e, SourceLocation l)$/;"	f	struct:PrintStmt	file:
-PrintStmt	main.cpp	/^struct PrintStmt : Stmt$/;"	s	file:
+Percent	lexer.hpp	/^    Percent,        \/\/ %$/;"	e	enum:mu::TokenKind
+Pipe	lexer.hpp	/^    Pipe,           \/\/ |$/;"	e	enum:mu::TokenKind
+Plus	lexer.hpp	/^    Plus,           \/\/ +$/;"	e	enum:mu::TokenKind
+Question	lexer.hpp	/^    Question,       \/\/ ?$/;"	e	enum:mu::TokenKind
+RBrace	lexer.hpp	/^    RBrace,         \/\/ }$/;"	e	enum:mu::TokenKind
+RBracket	lexer.hpp	/^    RBracket,       \/\/ ]$/;"	e	enum:mu::TokenKind
 RM	build/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RParen	lexer.hpp	/^    RParen,         \/\/ )$/;"	e	enum:mu::TokenKind
+Range	lexer.hpp	/^    Range,          \/\/ ..$/;"	e	enum:mu::TokenKind
+RangeInclusive	lexer.hpp	/^    RangeInclusive, \/\/ ..=$/;"	e	enum:mu::TokenKind
 SHELL	build/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMULATE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define SIMULATE_ID /;"	d	file:
 SIMULATE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define SIMULATE_ID /;"	d	file:
@@ -450,61 +504,44 @@ STRINGIFY	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define STRING
 STRINGIFY	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define STRINGIFY(X) STRINGIFY_/;"	d	file:
 STRINGIFY_HELPER	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define STRINGIFY_HELPER(/;"	d	file:
 STRINGIFY_HELPER	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define STRINGIFY_HELPER(/;"	d	file:
-SourceLocation	main.cpp	/^struct SourceLocation$/;"	s	file:
-Stmt	main.cpp	/^struct Stmt$/;"	s	file:
-TK_COLON	main.cpp	/^    TK_COLON,$/;"	e	enum:TokenKind	file:
-TK_COLON_COLON	main.cpp	/^    TK_COLON_COLON,$/;"	e	enum:TokenKind	file:
-TK_COLON_EQ	main.cpp	/^    TK_COLON_EQ,$/;"	e	enum:TokenKind	file:
-TK_COMMA	main.cpp	/^    TK_COMMA,$/;"	e	enum:TokenKind	file:
-TK_EOF	main.cpp	/^    TK_EOF = 0,$/;"	e	enum:TokenKind	file:
-TK_EQ	main.cpp	/^    TK_EQ,$/;"	e	enum:TokenKind	file:
-TK_IDENT	main.cpp	/^    TK_IDENT,$/;"	e	enum:TokenKind	file:
-TK_INT_KW	main.cpp	/^    TK_INT_KW,$/;"	e	enum:TokenKind	file:
-TK_INT_LIT	main.cpp	/^    TK_INT_LIT,$/;"	e	enum:TokenKind	file:
-TK_LBRACE	main.cpp	/^    TK_LBRACE,$/;"	e	enum:TokenKind	file:
-TK_LPAREN	main.cpp	/^    TK_LPAREN,$/;"	e	enum:TokenKind	file:
-TK_PRINT	main.cpp	/^    TK_PRINT,$/;"	e	enum:TokenKind	file:
-TK_RBRACE	main.cpp	/^    TK_RBRACE$/;"	e	enum:TokenKind	file:
-TK_RPAREN	main.cpp	/^    TK_RPAREN,$/;"	e	enum:TokenKind	file:
-TK_SEMI	main.cpp	/^    TK_SEMI,$/;"	e	enum:TokenKind	file:
-TK_STRING_LIT	main.cpp	/^    TK_STRING_LIT,$/;"	e	enum:TokenKind	file:
-Token	main.cpp	/^struct Token$/;"	s	file:
-TokenKind	main.cpp	/^enum TokenKind$/;"	g	file:
-VarDecl	main.cpp	/^    VarDecl(std::string n, std::unique_ptr<Expr> i, SourceLocation l)$/;"	f	struct:VarDecl	file:
-VarDecl	main.cpp	/^struct VarDecl : Stmt$/;"	s	file:
+Semicolon	lexer.hpp	/^    Semicolon,      \/\/ ;$/;"	e	enum:mu::TokenKind
+ShiftLeft	lexer.hpp	/^    ShiftLeft,      \/\/ <<$/;"	e	enum:mu::TokenKind
+ShiftRight	lexer.hpp	/^    ShiftRight,     \/\/ >>$/;"	e	enum:mu::TokenKind
+Slash	lexer.hpp	/^    Slash,          \/\/ \/$/;"	e	enum:mu::TokenKind
+SourceLocation	lexer.hpp	/^struct SourceLocation {$/;"	s	namespace:mu
+Star	lexer.hpp	/^    Star,           \/\/ *$/;"	e	enum:mu::TokenKind
+StringLiteral	lexer.hpp	/^    StringLiteral,$/;"	e	enum:mu::TokenKind
+Token	lexer.hpp	/^struct Token {$/;"	s	namespace:mu
+TokenKind	lexer.hpp	/^enum class TokenKind : uint8_t {$/;"	g	namespace:mu	typeref:typename:uint8_t
+__anon3b5b11db0102	main.cpp	/^    auto kindName = [](TokenKind k) -> const char* {$/;"	f	function:mu::Token::toString	typeref:typename:const char *	file:
 __has_include	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define __has_include(/;"	d	file:
 __has_include	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define __has_include(/;"	d	file:
 acc_gen	build/Makefile	/^acc_gen: cmake_check_build_system$/;"	t
 acc_gen/fast	build/Makefile	/^acc_gen\/fast:$/;"	t
-advance	main.cpp	/^    void advance()$/;"	f	struct:Parser	typeref:typename:void	file:
+advance	main.cpp	/^char Lexer::advance()$/;"	f	class:mu::Lexer	typeref:typename:char
 all	build/Makefile	/^all: cmake_check_build_system$/;"	t
-builder	main.cpp	/^    llvm::IRBuilder<>               builder;$/;"	m	struct:CodegenContext	typeref:typename:llvm::IRBuilder<>	file:
+at	main.cpp	/^    bool at(mu::TokenKind kind, size_t lookahead = 0) const$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
+bindings_	main.cpp	/^    std::map<std::string, Binding> bindings_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::map<std::string,Binding>	file:
 clean	build/Makefile	/^clean:$/;"	t
 clean/fast	build/Makefile	/^clean\/fast: clean$/;"	t
 cmake_check_build_system	build/Makefile	/^cmake_check_build_system:$/;"	t
 cmake_force	build/Makefile	/^cmake_force:$/;"	t
-codegen	main.cpp	/^bool PrintStmt::codegen(CodegenContext& ctx)$/;"	f	class:PrintStmt	typeref:typename:bool
-codegen	main.cpp	/^bool VarDecl::codegen(CodegenContext& ctx)$/;"	f	class:VarDecl	typeref:typename:bool
-codegen	main.cpp	/^llvm::Value* IntExpr::codegen(CodegenContext& ctx)$/;"	f	class:IntExpr	typeref:typename:llvm::Value *
-codegen	main.cpp	/^llvm::Value* NameExpr::codegen(CodegenContext& ctx)$/;"	f	class:NameExpr	typeref:typename:llvm::Value *
-col	main.cpp	/^    int         col;$/;"	m	struct:Lexer	typeref:typename:int	file:
-col	main.cpp	/^    int col;$/;"	m	struct:SourceLocation	typeref:typename:int	file:
+column	lexer.hpp	/^    uint32_t column = 1;$/;"	m	struct:mu::SourceLocation	typeref:typename:uint32_t
 const	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define const$/;"	d	file:
-create_entry_alloca	main.cpp	/^static llvm::AllocaInst* create_entry_alloca(llvm::Function* fn, llvm::LLVMContext& ctx, const s/;"	f	typeref:typename:llvm::AllocaInst *	file:
-ctx	main.cpp	/^    llvm::LLVMContext               ctx;$/;"	m	struct:CodegenContext	typeref:typename:llvm::LLVMContext	file:
-current	main.cpp	/^    Token current;$/;"	m	struct:Parser	typeref:typename:Token	file:
+consumeBlockComment	main.cpp	/^void Lexer::consumeBlockComment()$/;"	f	class:mu::Lexer	typeref:typename:void
+consumeHereString	main.cpp	/^Token Lexer::consumeHereString(std::string_view delim)$/;"	f	class:mu::Lexer	typeref:typename:Token
+consumeLineComment	main.cpp	/^void Lexer::consumeLineComment()$/;"	f	class:mu::Lexer	typeref:typename:void
+consumeSemicolons	main.cpp	/^    void consumeSemicolons()$/;"	f	class:MiniSemanticChecker	typeref:typename:void	file:
+currentLocation	main.cpp	/^SourceLocation Lexer::currentLocation() const$/;"	f	class:mu::Lexer	typeref:typename:SourceLocation
 default_target	build/Makefile	/^default_target: all$/;"	t
 depend	build/Makefile	/^depend:$/;"	t
+diagnostics_	main.cpp	/^    std::vector<Diagnostic>    diagnostics_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::vector<Diagnostic>	file:
 edit_cache	build/Makefile	/^edit_cache:$/;"	t
 edit_cache/fast	build/Makefile	/^edit_cache\/fast: edit_cache$/;"	t
-error	main.cpp	/^    void error(const std::string& msg)$/;"	f	struct:Parser	typeref:typename:void	file:
-error_at	main.cpp	/^    void error_at(const SourceLocation& loc, const std::string& msg)$/;"	f	struct:CodegenContext	typeref:typename:void	file:
-exe_path	main.cpp	/^    std::string exe_path;$/;"	m	struct:FileOutput	typeref:typename:std::string	file:
-expect	main.cpp	/^    bool expect(TokenKind kind, const std::string& msg)$/;"	f	struct:Parser	typeref:typename:bool	file:
-expr	main.cpp	/^    std::unique_ptr<Expr> expr;$/;"	m	struct:PrintStmt	typeref:typename:std::unique_ptr<Expr>	file:
-fmt_string	main.cpp	/^    llvm::Value*                    fmt_string;$/;"	m	struct:CodegenContext	typeref:typename:llvm::Value *	file:
-get	main.cpp	/^    char get()$/;"	f	struct:Lexer	typeref:typename:char	file:
+emit	main.cpp	/^    void emit(size_t tokenIndex, std::string message)$/;"	f	class:MiniSemanticChecker	typeref:typename:void	file:
+end	lexer.hpp	/^    SourceLocation end;$/;"	m	struct:mu::Token	typeref:typename:SourceLocation
 help	build/Makefile	/^help:$/;"	t
+index_	main.cpp	/^    size_t                     index_ = 0;$/;"	m	class:MiniSemanticChecker	typeref:typename:size_t	file:
 info_arch	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
 info_arch	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
 info_compiler	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";$/;"	v	typeref:typename:char const *
@@ -529,20 +566,30 @@ info_version_internal	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^ch
 info_version_internal	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INT/;"	v	typeref:typename:char const *
 info_version_internal	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const info_version_internal[] = {$/;"	v	typeref:typename:char const[]
 info_version_internal	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INT/;"	v	typeref:typename:char const *
-init	main.cpp	/^    std::unique_ptr<Expr>    init;$/;"	m	struct:VarDecl	typeref:typename:std::unique_ptr<Expr>	file:
-input	main.cpp	/^    std::string input;$/;"	m	struct:Lexer	typeref:typename:std::string	file:
-int_value	main.cpp	/^    int64_t        int_value;$/;"	m	struct:Token	typeref:typename:int64_t	file:
 intrinsics_gen	build/Makefile	/^intrinsics_gen: cmake_check_build_system$/;"	t
 intrinsics_gen/fast	build/Makefile	/^intrinsics_gen\/fast:$/;"	t
-kind	main.cpp	/^    TokenKind      kind;$/;"	m	struct:Token	typeref:typename:TokenKind	file:
-lex	main.cpp	/^    Lexer lex;$/;"	m	struct:Parser	typeref:typename:Lexer	file:
-line	main.cpp	/^    int         line;$/;"	m	struct:Lexer	typeref:typename:int	file:
-line	main.cpp	/^    int line;$/;"	m	struct:SourceLocation	typeref:typename:int	file:
-link_executable	main.cpp	/^static bool link_executable(const std::string& object_path, const std::string& exe_path)$/;"	f	typeref:typename:bool	file:
-loc	main.cpp	/^    SourceLocation loc;$/;"	m	struct:Expr	typeref:typename:SourceLocation	file:
-loc	main.cpp	/^    SourceLocation loc;$/;"	m	struct:Stmt	typeref:typename:SourceLocation	file:
-loc	main.cpp	/^    SourceLocation loc;$/;"	m	struct:Token	typeref:typename:SourceLocation	file:
-locals	main.cpp	/^    std::map<std::string, llvm::AllocaInst*> locals;$/;"	m	struct:CodegenContext	typeref:typename:std::map<std::string,llvm::AllocaInst * >	file:
+isAtEnd	main.cpp	/^bool Lexer::isAtEnd() const$/;"	f	class:mu::Lexer	typeref:typename:bool
+isKeyword	main.cpp	/^bool Token::isKeyword() const$/;"	f	class:mu::Token	typeref:typename:bool
+isLiteral	main.cpp	/^bool Token::isLiteral() const$/;"	f	class:mu::Token	typeref:typename:bool
+isMutable	main.cpp	/^    bool        isMutable = true;$/;"	m	struct:Binding	typeref:typename:bool	file:
+isOperator	main.cpp	/^bool Token::isOperator() const$/;"	f	class:mu::Token	typeref:typename:bool
+kind	lexer.hpp	/^    TokenKind kind;$/;"	m	struct:mu::Token	typeref:typename:TokenKind
+lexChar	main.cpp	/^Token Lexer::lexChar()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexDot	main.cpp	/^Token Lexer::lexDot()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexIdentifier	main.cpp	/^Token Lexer::lexIdentifier()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexNumber	main.cpp	/^Token Lexer::lexNumber()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexString	main.cpp	/^Token Lexer::lexString()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexeme	lexer.hpp	/^    std::string_view lexeme;$/;"	m	struct:mu::Token	typeref:typename:std::string_view
+lexer_	main.cpp	/^    mu::Lexer                  lexer_;$/;"	m	class:MiniSemanticChecker	typeref:typename:mu::Lexer	file:
+line	lexer.hpp	/^    uint32_t line = 1;$/;"	m	struct:mu::SourceLocation	typeref:typename:uint32_t
+m_column	lexer.hpp	/^    uint32_t m_column = 1;$/;"	m	class:mu::Lexer	typeref:typename:uint32_t
+m_current	lexer.hpp	/^    size_t m_current = 0;$/;"	m	class:mu::Lexer	typeref:typename:size_t
+m_hereDelim	lexer.hpp	/^    std::optional<std::string_view> m_hereDelim;$/;"	m	class:mu::Lexer	typeref:typename:std::optional<std::string_view>
+m_hereStartLine	lexer.hpp	/^    uint32_t m_hereStartLine = 0;$/;"	m	class:mu::Lexer	typeref:typename:uint32_t
+m_line	lexer.hpp	/^    uint32_t m_line = 1;$/;"	m	class:mu::Lexer	typeref:typename:uint32_t
+m_peek	lexer.hpp	/^    std::optional<Token> m_peek;$/;"	m	class:mu::Lexer	typeref:typename:std::optional<Token>
+m_source	lexer.hpp	/^    std::string_view m_source;$/;"	m	class:mu::Lexer	typeref:typename:std::string_view
+m_start	lexer.hpp	/^    size_t m_start = 0;$/;"	m	class:mu::Lexer	typeref:typename:size_t
 main	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
 main	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f	typeref:typename:void
 main	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f	typeref:typename:int
@@ -553,44 +600,50 @@ main.cpp.s	build/Makefile	/^main.cpp.s:$/;"	t
 main.i	build/Makefile	/^main.i: main.cpp.i$/;"	t
 main.o	build/Makefile	/^main.o: main.cpp.o$/;"	t
 main.s	build/Makefile	/^main.s: main.cpp.s$/;"	t
-main_fn	main.cpp	/^    llvm::Function*                 main_fn;$/;"	m	struct:CodegenContext	typeref:typename:llvm::Function *	file:
-module	main.cpp	/^    std::unique_ptr<llvm::Module>   module;$/;"	m	struct:CodegenContext	typeref:typename:std::unique_ptr<llvm::Module>	file:
+makeError	main.cpp	/^Token Lexer::makeError(std::string_view message)$/;"	f	class:mu::Lexer	typeref:typename:Token
+makeToken	main.cpp	/^Token Lexer::makeToken(TokenKind kind)$/;"	f	class:mu::Lexer	typeref:typename:Token
+match	main.cpp	/^bool Lexer::match(char expected)$/;"	f	class:mu::Lexer	typeref:typename:bool
+message	main.cpp	/^    std::string        message;$/;"	m	struct:Diagnostic	typeref:typename:std::string	file:
+mu	lexer.hpp	/^namespace mu {$/;"	n
+mu	main.cpp	/^namespace mu {$/;"	n	file:
 mu_lang	README.md	/^# mu_lang$/;"	c
 mucc	CMakeLists.txt	/^add_executable(mucc$/;"	t
 mucc	CMakeLists.txt	/^project(mucc C CXX)$/;"	p
 mucc	build/Makefile	/^mucc: cmake_check_build_system$/;"	t
 mucc/fast	build/Makefile	/^mucc\/fast:$/;"	t
 mycompiler	README.md	/^# mycompiler$/;"	c
-name	main.cpp	/^    std::string              name;$/;"	m	struct:VarDecl	typeref:typename:std::string	file:
-name	main.cpp	/^    std::string name;$/;"	m	struct:NameExpr	typeref:typename:std::string	file:
-next_token	main.cpp	/^    Token next_token()$/;"	f	struct:Lexer	typeref:typename:Token	file:
-object_path	main.cpp	/^    std::string object_path;$/;"	m	struct:FileOutput	typeref:typename:std::string	file:
-ok	main.cpp	/^    bool                            ok;$/;"	m	struct:CodegenContext	typeref:typename:bool	file:
-ok	main.cpp	/^    bool  ok;$/;"	m	struct:Parser	typeref:typename:bool	file:
+next	main.cpp	/^Token Lexer::next()$/;"	f	class:mu::Lexer	typeref:typename:Token
+offset	lexer.hpp	/^    uint32_t offset = 0;$/;"	m	struct:mu::SourceLocation	typeref:typename:uint32_t
 omp_gen	build/Makefile	/^omp_gen: cmake_check_build_system$/;"	t
 omp_gen/fast	build/Makefile	/^omp_gen\/fast:$/;"	t
-parse_block	main.cpp	/^    std::vector<std::unique_ptr<Stmt>> parse_block()$/;"	f	struct:Parser	typeref:typename:std::vector<std::unique_ptr<Stmt>>	file:
-parse_expr	main.cpp	/^    std::unique_ptr<Expr> parse_expr()$/;"	f	struct:Parser	typeref:typename:std::unique_ptr<Expr>	file:
-parse_main_block	main.cpp	/^    std::vector<std::unique_ptr<Stmt>> parse_main_block()$/;"	f	struct:Parser	typeref:typename:std::vector<std::unique_ptr<Stmt>>	file:
-parse_print	main.cpp	/^    std::unique_ptr<Stmt> parse_print()$/;"	f	struct:Parser	typeref:typename:std::unique_ptr<Stmt>	file:
-parse_program	main.cpp	/^    std::vector<std::unique_ptr<Stmt>> parse_program()$/;"	f	struct:Parser	typeref:typename:std::vector<std::unique_ptr<Stmt>>	file:
-parse_var_decl	main.cpp	/^    std::unique_ptr<Stmt> parse_var_decl()$/;"	f	struct:Parser	typeref:typename:std::unique_ptr<Stmt>	file:
-peek	main.cpp	/^    char peek() const$/;"	f	struct:Lexer	typeref:typename:char	file:
-pos	main.cpp	/^    size_t      pos;$/;"	m	struct:Lexer	typeref:typename:size_t	file:
+parseInferredDeclaration	main.cpp	/^    bool parseInferredDeclaration(bool isMutable)$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
+parseReassignment	main.cpp	/^    bool parseReassignment()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
+parseStatement	main.cpp	/^    bool parseStatement()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
+parseTypedDeclaration	main.cpp	/^    bool parseTypedDeclaration()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
+peek	main.cpp	/^Token Lexer::peek()$/;"	f	class:mu::Lexer	typeref:typename:Token
+peekChar	main.cpp	/^char Lexer::peekChar() const$/;"	f	class:mu::Lexer	typeref:typename:char
+peekNext	main.cpp	/^char Lexer::peekNext() const$/;"	f	class:mu::Lexer	typeref:typename:char
 preinstall	build/Makefile	/^preinstall: all$/;"	t
 preinstall/fast	build/Makefile	/^preinstall\/fast:$/;"	t
-printf_fn	main.cpp	/^    llvm::Function*                 printf_fn;$/;"	m	struct:CodegenContext	typeref:typename:llvm::Function *	file:
+printTokens	main.cpp	/^static void printTokens(const std::string& source, std::ostream& out)$/;"	f	typeref:typename:void	file:
 qnxnto	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v	typeref:typename:char const *
 qnxnto	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v	typeref:typename:char const *
-read_file_text	main.cpp	/^static std::string read_file_text(const std::string& path)$/;"	f	typeref:typename:std::string	file:
 rebuild_cache	build/Makefile	/^rebuild_cache:$/;"	t
 rebuild_cache/fast	build/Makefile	/^rebuild_cache\/fast: rebuild_cache$/;"	t
-skip_whitespace	main.cpp	/^    void skip_whitespace()$/;"	f	struct:Lexer	typeref:typename:void	file:
+run	main.cpp	/^    const std::vector<Diagnostic>& run()$/;"	f	class:MiniSemanticChecker	typeref:typename:const std::vector<Diagnostic> &	file:
+s_keywords	lexer.hpp	/^    static const std::unordered_map<std::string_view, TokenKind> s_keywords;$/;"	m	class:mu::Lexer	typeref:typename:const std::unordered_map<std::string_view,TokenKind>
+s_keywords	main.cpp	/^const std::unordered_map<std::string_view, TokenKind> Lexer::s_keywords = {$/;"	m	class:mu::Lexer	typeref:typename:const std::unordered_map<std::string_view,TokenKind>
+skipWhitespace	main.cpp	/^void Lexer::skipWhitespace()$/;"	f	class:mu::Lexer	typeref:typename:void
+source_	main.cpp	/^    std::string                source_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::string	file:
+start	lexer.hpp	/^    SourceLocation start;$/;"	m	struct:mu::Token	typeref:typename:SourceLocation
+synchronize	main.cpp	/^void Lexer::synchronize()$/;"	f	class:mu::Lexer	typeref:typename:void
 target_parser_gen	build/Makefile	/^target_parser_gen: cmake_check_build_system$/;"	t
 target_parser_gen/fast	build/Makefile	/^target_parser_gen\/fast:$/;"	t
-text	main.cpp	/^    std::string    text;$/;"	m	struct:Token	typeref:typename:std::string	file:
-value	main.cpp	/^    int64_t value;$/;"	m	struct:IntExpr	typeref:typename:int64_t	file:
+toString	main.cpp	/^std::string Token::toString() const$/;"	f	class:mu::Token	typeref:typename:std::string
+tokenText	main.cpp	/^    std::string tokenText(size_t lookahead = 0) const$/;"	f	class:MiniSemanticChecker	typeref:typename:std::string	file:
+tokens_	main.cpp	/^    std::vector<mu::Token>     tokens_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::vector<mu::Token>	file:
+typeName	main.cpp	/^    std::string typeName;$/;"	m	struct:Binding	typeref:typename:std::string	file:
 volatile	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define volatile$/;"	d	file:
 vt_gen	build/Makefile	/^vt_gen: cmake_check_build_system$/;"	t
 vt_gen/fast	build/Makefile	/^vt_gen\/fast:$/;"	t
-write_object_file	main.cpp	/^static bool write_object_file(llvm::Module* module, const std::string& path)$/;"	f	typeref:typename:bool	file:
+where	main.cpp	/^    mu::SourceLocation where;$/;"	m	struct:Diagnostic	typeref:typename:mu::SourceLocation	file:
