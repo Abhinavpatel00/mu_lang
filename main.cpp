@@ -15,7 +15,7 @@ static void printTokens(const std::string& source, std::ostream& out)
     {
         mu::Token token = lexer.next();
         out << "  " << token.toString() << '\n';
-        if(token.kind == mu::TokenKind::Eof)
+        if(token.kind == mu::TokenKind::EOF_TOKEN)
         {
             break;
         }

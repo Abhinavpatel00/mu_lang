@@ -129,6 +129,13 @@ $(VERBOSE)MAKESILENT	build/Makefile	/^$(VERBOSE)MAKESILENT = -s$/;"	m
 %	build/Makefile	/^% : SCCS\/s.%$/;"	t
 %	build/Makefile	/^% : s.%$/;"	t
 0	build/CMakeFiles/InstallScripts.json	/^		"\/home\/lk\/myprojects\/mu_lang\/mycompiler\/build\/cmake_install.cmake"$/;"	s	array:InstallScripts
+1. Keep Current Token-Driven Checker, But Formalize It	APPROACH_IMPROVEMENTS.md	/^## 1. Keep Current Token-Driven Checker, But Formalize It$/;"	s	chapter:Prototype-Phase Simplification Plan
+2-Week Action Plan	APPROACH_IMPROVEMENTS.md	/^## 2-Week Action Plan$/;"	s	chapter:Prototype-Phase Simplification Plan
+2. Replace Expensive Defaults With Faster Ones	APPROACH_IMPROVEMENTS.md	/^## 2. Replace Expensive Defaults With Faster Ones$/;"	s	chapter:Prototype-Phase Simplification Plan
+3. Split Only Into 3 Files (Not Full Module Tree Yet)	APPROACH_IMPROVEMENTS.md	/^## 3. Split Only Into 3 Files (Not Full Module Tree Yet)$/;"	s	chapter:Prototype-Phase Simplification Plan
+4. Use a Lightweight Diagnostic Model	APPROACH_IMPROVEMENTS.md	/^## 4. Use a Lightweight Diagnostic Model$/;"	s	chapter:Prototype-Phase Simplification Plan
+5. Add One Benchmark Command	APPROACH_IMPROVEMENTS.md	/^## 5. Add One Benchmark Command$/;"	s	chapter:Prototype-Phase Simplification Plan
+6. Test Only What Prevents Regressions	APPROACH_IMPROVEMENTS.md	/^## 6. Test Only What Prevents Regressions$/;"	s	chapter:Prototype-Phase Simplification Plan
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#   define ARCHITECTURE_ID /;"	d	file:
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define ARCHITECTURE_ID /;"	d	file:
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define ARCHITECTURE_ID$/;"	d	file:
@@ -138,8 +145,9 @@ ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# 
 Amp	lexer.hpp	/^    Amp,            \/\/ &$/;"	e	enum:mu::TokenKind
 Arrow	lexer.hpp	/^    Arrow,          \/\/ ->$/;"	e	enum:mu::TokenKind
 Assign	lexer.hpp	/^    Assign,         \/\/ :=$/;"	e	enum:mu::TokenKind
+Avoid By Default	.github/copilot-instructions.md	/^## Avoid By Default$/;"	s	chapter:Copilot Instructions
 Bang	lexer.hpp	/^    Bang,           \/\/ !$/;"	e	enum:mu::TokenKind
-Binding	main.cpp	/^struct Binding$/;"	s	file:
+Binding	sema.hpp	/^struct Binding$/;"	s
 CMAKE_AR	build/CMakeFiles/4.3.0/CMakeCCompiler.cmake	/^set(CMAKE_AR "\/usr\/bin\/ar")$/;"	v
 CMAKE_AR	build/CMakeFiles/4.3.0/CMakeCXXCompiler.cmake	/^set(CMAKE_AR "\/usr\/bin\/ar")$/;"	v
 CMAKE_BINARY_DIR	build/Makefile	/^CMAKE_BINARY_DIR = \/home\/lk\/myprojects\/mu_lang\/mycompiler\/build$/;"	m
@@ -400,19 +408,25 @@ C_VERSION	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define C_VE
 C_VERSION	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define C_VERSION /;"	d	file:
 Caret	lexer.hpp	/^    Caret,          \/\/ ^$/;"	e	enum:mu::TokenKind
 CharLiteral	lexer.hpp	/^    CharLiteral,$/;"	e	enum:mu::TokenKind
+Code Style Direction	.github/copilot-instructions.md	/^## Code Style Direction$/;"	s	chapter:Copilot Instructions
 Colon	lexer.hpp	/^    Colon,          \/\/ :$/;"	e	enum:mu::TokenKind
 Comma	lexer.hpp	/^    Comma,          \/\/ ,$/;"	e	enum:mu::TokenKind
 ConstAssign	lexer.hpp	/^    ConstAssign,    \/\/ ::$/;"	e	enum:mu::TokenKind
+Copilot Instructions	.github/copilot-instructions.md	/^# Copilot Instructions$/;"	c
+Core Rules	.github/copilot-instructions.md	/^## Core Rules$/;"	s	chapter:Copilot Instructions
 DEC	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define DEC(/;"	d	file:
 DEC	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define DEC(/;"	d	file:
-Diagnostic	main.cpp	/^struct Diagnostic$/;"	s	file:
+Design Change Policy	.github/copilot-instructions.md	/^## Design Change Policy$/;"	s	chapter:Copilot Instructions
+Diagnostic	sema.hpp	/^struct Diagnostic$/;"	s
 Dollar	lexer.hpp	/^    Dollar,         \/\/ \$$/;"	e	enum:mu::TokenKind
 Dot	lexer.hpp	/^    Dot,            \/\/ .$/;"	e	enum:mu::TokenKind
 EQUALS	build/Makefile	/^EQUALS = =$/;"	m
 Eof	lexer.hpp	/^    Eof,$/;"	e	enum:mu::TokenKind
 Equal	lexer.hpp	/^    Equal,          \/\/ ==$/;"	e	enum:mu::TokenKind
 EqualsAssign	lexer.hpp	/^    EqualsAssign,   \/\/ =$/;"	e	enum:mu::TokenKind
+Exit Criteria For Moving Beyond Prototype	APPROACH_IMPROVEMENTS.md	/^## Exit Criteria For Moving Beyond Prototype$/;"	s	chapter:Prototype-Phase Simplification Plan
 FatArrow	lexer.hpp	/^    FatArrow,       \/\/ =>$/;"	e	enum:mu::TokenKind
+Final Recommendation	APPROACH_IMPROVEMENTS.md	/^## Final Recommendation$/;"	s	chapter:Prototype-Phase Simplification Plan
 FloatLiteral	lexer.hpp	/^    FloatLiteral,$/;"	e	enum:mu::TokenKind
 Greater	lexer.hpp	/^    Greater,        \/\/ >$/;"	e	enum:mu::TokenKind
 GreaterEqual	lexer.hpp	/^    GreaterEqual,   \/\/ >=$/;"	e	enum:mu::TokenKind
@@ -456,10 +470,10 @@ LLVM_LIBRARY_DIRS	CMakeLists.txt	/^    set(LLVM_LIBRARY_DIRS "\/usr\/lib\/llvm21
 LParen	lexer.hpp	/^    LParen,         \/\/ ($/;"	e	enum:mu::TokenKind
 Less	lexer.hpp	/^    Less,           \/\/ <$/;"	e	enum:mu::TokenKind
 LessEqual	lexer.hpp	/^    LessEqual,      \/\/ <=$/;"	e	enum:mu::TokenKind
+Lexer	lexer.cpp	/^Lexer::Lexer(std::string_view source)$/;"	f	class:mu::Lexer
 Lexer	lexer.hpp	/^class Lexer {$/;"	c	namespace:mu
-Lexer	main.cpp	/^Lexer::Lexer(std::string_view source)$/;"	f	class:mu::Lexer
-MiniSemanticChecker	main.cpp	/^    explicit MiniSemanticChecker(std::string source)$/;"	f	class:MiniSemanticChecker	file:
-MiniSemanticChecker	main.cpp	/^class MiniSemanticChecker$/;"	c	file:
+MiniSemanticChecker	sema.cpp	/^MiniSemanticChecker::MiniSemanticChecker(std::string source)$/;"	f	class:MiniSemanticChecker
+MiniSemanticChecker	sema.hpp	/^class MiniSemanticChecker$/;"	c
 Minus	lexer.hpp	/^    Minus,          \/\/ -$/;"	e	enum:mu::TokenKind
 NotEqual	lexer.hpp	/^    NotEqual,       \/\/ !=$/;"	e	enum:mu::TokenKind
 PLATFORM_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define PLATFORM_ID /;"	d	file:
@@ -474,6 +488,9 @@ Parallel	build/CMakeFiles/InstallScripts.json	/^	"Parallel" : false$/;"	b
 Percent	lexer.hpp	/^    Percent,        \/\/ %$/;"	e	enum:mu::TokenKind
 Pipe	lexer.hpp	/^    Pipe,           \/\/ |$/;"	e	enum:mu::TokenKind
 Plus	lexer.hpp	/^    Plus,           \/\/ +$/;"	e	enum:mu::TokenKind
+Practical Simplifications (High Impact, Low Complexity)	APPROACH_IMPROVEMENTS.md	/^## Practical Simplifications (High Impact, Low Complexity)$/;"	s	chapter:Prototype-Phase Simplification Plan
+Preferred C++ Features	.github/copilot-instructions.md	/^## Preferred C++ Features$/;"	s	chapter:Copilot Instructions
+Prototype-Phase Simplification Plan	APPROACH_IMPROVEMENTS.md	/^# Prototype-Phase Simplification Plan$/;"	c
 Question	lexer.hpp	/^    Question,       \/\/ ?$/;"	e	enum:mu::TokenKind
 RBrace	lexer.hpp	/^    RBrace,         \/\/ }$/;"	e	enum:mu::TokenKind
 RBracket	lexer.hpp	/^    RBracket,       \/\/ ]$/;"	e	enum:mu::TokenKind
@@ -481,6 +498,7 @@ RM	build/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RParen	lexer.hpp	/^    RParen,         \/\/ )$/;"	e	enum:mu::TokenKind
 Range	lexer.hpp	/^    Range,          \/\/ ..$/;"	e	enum:mu::TokenKind
 RangeInclusive	lexer.hpp	/^    RangeInclusive, \/\/ ..=$/;"	e	enum:mu::TokenKind
+Recommended Coding Style For Prototype Flexibility	APPROACH_IMPROVEMENTS.md	/^## Recommended Coding Style For Prototype Flexibility$/;"	s	chapter:Prototype-Phase Simplification Plan
 SHELL	build/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMULATE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define SIMULATE_ID /;"	d	file:
 SIMULATE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define SIMULATE_ID /;"	d	file:
@@ -507,41 +525,44 @@ STRINGIFY_HELPER	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#
 Semicolon	lexer.hpp	/^    Semicolon,      \/\/ ;$/;"	e	enum:mu::TokenKind
 ShiftLeft	lexer.hpp	/^    ShiftLeft,      \/\/ <<$/;"	e	enum:mu::TokenKind
 ShiftRight	lexer.hpp	/^    ShiftRight,     \/\/ >>$/;"	e	enum:mu::TokenKind
+Simple Rules To Follow	APPROACH_IMPROVEMENTS.md	/^## Simple Rules To Follow$/;"	s	chapter:Prototype-Phase Simplification Plan
 Slash	lexer.hpp	/^    Slash,          \/\/ \/$/;"	e	enum:mu::TokenKind
 SourceLocation	lexer.hpp	/^struct SourceLocation {$/;"	s	namespace:mu
 Star	lexer.hpp	/^    Star,           \/\/ *$/;"	e	enum:mu::TokenKind
 StringLiteral	lexer.hpp	/^    StringLiteral,$/;"	e	enum:mu::TokenKind
 Token	lexer.hpp	/^struct Token {$/;"	s	namespace:mu
 TokenKind	lexer.hpp	/^enum class TokenKind : uint8_t {$/;"	g	namespace:mu	typeref:typename:uint8_t
-__anon3b5b11db0102	main.cpp	/^    auto kindName = [](TokenKind k) -> const char* {$/;"	f	function:mu::Token::toString	typeref:typename:const char *	file:
+What Not To Do Yet	APPROACH_IMPROVEMENTS.md	/^## What Not To Do Yet$/;"	s	chapter:Prototype-Phase Simplification Plan
+What We Optimize For In Prototype	APPROACH_IMPROVEMENTS.md	/^## What We Optimize For In Prototype$/;"	s	chapter:Prototype-Phase Simplification Plan
+__anon55a48cb60102	lexer.cpp	/^    auto kindName = [](TokenKind k) -> const char* {$/;"	f	function:mu::Token::toString	typeref:typename:const char *	file:
 __has_include	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define __has_include(/;"	d	file:
 __has_include	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define __has_include(/;"	d	file:
 acc_gen	build/Makefile	/^acc_gen: cmake_check_build_system$/;"	t
 acc_gen/fast	build/Makefile	/^acc_gen\/fast:$/;"	t
-advance	main.cpp	/^char Lexer::advance()$/;"	f	class:mu::Lexer	typeref:typename:char
+advance	lexer.cpp	/^char Lexer::advance()$/;"	f	class:mu::Lexer	typeref:typename:char
 all	build/Makefile	/^all: cmake_check_build_system$/;"	t
-at	main.cpp	/^    bool at(mu::TokenKind kind, size_t lookahead = 0) const$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
-bindings_	main.cpp	/^    std::map<std::string, Binding> bindings_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::map<std::string,Binding>	file:
+at	sema.cpp	/^bool MiniSemanticChecker::at(mu::TokenKind kind, size_t lookahead) const$/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+bindings_	sema.hpp	/^    std::unordered_map<std::string, Binding> bindings_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::unordered_map<std::string,Binding>
 clean	build/Makefile	/^clean:$/;"	t
 clean/fast	build/Makefile	/^clean\/fast: clean$/;"	t
 cmake_check_build_system	build/Makefile	/^cmake_check_build_system:$/;"	t
 cmake_force	build/Makefile	/^cmake_force:$/;"	t
 column	lexer.hpp	/^    uint32_t column = 1;$/;"	m	struct:mu::SourceLocation	typeref:typename:uint32_t
 const	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define const$/;"	d	file:
-consumeBlockComment	main.cpp	/^void Lexer::consumeBlockComment()$/;"	f	class:mu::Lexer	typeref:typename:void
-consumeHereString	main.cpp	/^Token Lexer::consumeHereString(std::string_view delim)$/;"	f	class:mu::Lexer	typeref:typename:Token
-consumeLineComment	main.cpp	/^void Lexer::consumeLineComment()$/;"	f	class:mu::Lexer	typeref:typename:void
-consumeSemicolons	main.cpp	/^    void consumeSemicolons()$/;"	f	class:MiniSemanticChecker	typeref:typename:void	file:
-currentLocation	main.cpp	/^SourceLocation Lexer::currentLocation() const$/;"	f	class:mu::Lexer	typeref:typename:SourceLocation
+consumeBlockComment	lexer.cpp	/^void Lexer::consumeBlockComment()$/;"	f	class:mu::Lexer	typeref:typename:void
+consumeHereString	lexer.cpp	/^Token Lexer::consumeHereString(std::string_view delim)$/;"	f	class:mu::Lexer	typeref:typename:Token
+consumeLineComment	lexer.cpp	/^void Lexer::consumeLineComment()$/;"	f	class:mu::Lexer	typeref:typename:void
+consumeSemicolons	sema.cpp	/^void MiniSemanticChecker::consumeSemicolons()$/;"	f	class:MiniSemanticChecker	typeref:typename:void
+currentLocation	lexer.cpp	/^SourceLocation Lexer::currentLocation() const$/;"	f	class:mu::Lexer	typeref:typename:SourceLocation
 default_target	build/Makefile	/^default_target: all$/;"	t
 depend	build/Makefile	/^depend:$/;"	t
-diagnostics_	main.cpp	/^    std::vector<Diagnostic>    diagnostics_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::vector<Diagnostic>	file:
+diagnostics_	sema.hpp	/^    std::vector<Diagnostic>               diagnostics_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::vector<Diagnostic>
 edit_cache	build/Makefile	/^edit_cache:$/;"	t
 edit_cache/fast	build/Makefile	/^edit_cache\/fast: edit_cache$/;"	t
-emit	main.cpp	/^    void emit(size_t tokenIndex, std::string message)$/;"	f	class:MiniSemanticChecker	typeref:typename:void	file:
+emit	sema.cpp	/^void MiniSemanticChecker::emit(size_t tokenIndex, std::string message)$/;"	f	class:MiniSemanticChecker	typeref:typename:void
 end	lexer.hpp	/^    SourceLocation end;$/;"	m	struct:mu::Token	typeref:typename:SourceLocation
 help	build/Makefile	/^help:$/;"	t
-index_	main.cpp	/^    size_t                     index_ = 0;$/;"	m	class:MiniSemanticChecker	typeref:typename:size_t	file:
+index_	sema.hpp	/^    size_t                                index_ = 0;$/;"	m	class:MiniSemanticChecker	typeref:typename:size_t
 info_arch	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
 info_arch	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
 info_compiler	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";$/;"	v	typeref:typename:char const *
@@ -568,19 +589,27 @@ info_version_internal	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cp
 info_version_internal	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INT/;"	v	typeref:typename:char const *
 intrinsics_gen	build/Makefile	/^intrinsics_gen: cmake_check_build_system$/;"	t
 intrinsics_gen/fast	build/Makefile	/^intrinsics_gen\/fast:$/;"	t
-isAtEnd	main.cpp	/^bool Lexer::isAtEnd() const$/;"	f	class:mu::Lexer	typeref:typename:bool
-isKeyword	main.cpp	/^bool Token::isKeyword() const$/;"	f	class:mu::Token	typeref:typename:bool
-isLiteral	main.cpp	/^bool Token::isLiteral() const$/;"	f	class:mu::Token	typeref:typename:bool
-isMutable	main.cpp	/^    bool        isMutable = true;$/;"	m	struct:Binding	typeref:typename:bool	file:
-isOperator	main.cpp	/^bool Token::isOperator() const$/;"	f	class:mu::Token	typeref:typename:bool
+isAtEnd	lexer.cpp	/^bool Lexer::isAtEnd() const$/;"	f	class:mu::Lexer	typeref:typename:bool
+isExpressionStarter	sema.cpp	/^bool MiniSemanticChecker::isExpressionStarter(size_t tokenIndex) const$/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+isKeyword	lexer.cpp	/^bool Token::isKeyword() const$/;"	f	class:mu::Token	typeref:typename:bool
+isLiteral	lexer.cpp	/^bool Token::isLiteral() const$/;"	f	class:mu::Token	typeref:typename:bool
+isLiteralKind	sema.cpp	/^bool MiniSemanticChecker::isLiteralKind(mu::TokenKind kind)$/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+isMutable	sema.hpp	/^    bool        isMutable = true;$/;"	m	struct:Binding	typeref:typename:bool
+isOperator	lexer.cpp	/^bool Token::isOperator() const$/;"	f	class:mu::Token	typeref:typename:bool
 kind	lexer.hpp	/^    TokenKind kind;$/;"	m	struct:mu::Token	typeref:typename:TokenKind
-lexChar	main.cpp	/^Token Lexer::lexChar()$/;"	f	class:mu::Lexer	typeref:typename:Token
-lexDot	main.cpp	/^Token Lexer::lexDot()$/;"	f	class:mu::Lexer	typeref:typename:Token
-lexIdentifier	main.cpp	/^Token Lexer::lexIdentifier()$/;"	f	class:mu::Lexer	typeref:typename:Token
-lexNumber	main.cpp	/^Token Lexer::lexNumber()$/;"	f	class:mu::Lexer	typeref:typename:Token
-lexString	main.cpp	/^Token Lexer::lexString()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexChar	lexer.cpp	/^Token Lexer::lexChar()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexDot	lexer.cpp	/^Token Lexer::lexDot()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexIdentifier	lexer.cpp	/^Token Lexer::lexIdentifier()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexNumber	lexer.cpp	/^Token Lexer::lexNumber()$/;"	f	class:mu::Lexer	typeref:typename:Token
+lexString	lexer.cpp	/^Token Lexer::lexString()$/;"	f	class:mu::Lexer	typeref:typename:Token
 lexeme	lexer.hpp	/^    std::string_view lexeme;$/;"	m	struct:mu::Token	typeref:typename:std::string_view
-lexer_	main.cpp	/^    mu::Lexer                  lexer_;$/;"	m	class:MiniSemanticChecker	typeref:typename:mu::Lexer	file:
+lexer.cpp.i	build/Makefile	/^lexer.cpp.i:$/;"	t
+lexer.cpp.o	build/Makefile	/^lexer.cpp.o:$/;"	t
+lexer.cpp.s	build/Makefile	/^lexer.cpp.s:$/;"	t
+lexer.i	build/Makefile	/^lexer.i: lexer.cpp.i$/;"	t
+lexer.o	build/Makefile	/^lexer.o: lexer.cpp.o$/;"	t
+lexer.s	build/Makefile	/^lexer.s: lexer.cpp.s$/;"	t
+lexer_	sema.hpp	/^    mu::Lexer                             lexer_;$/;"	m	class:MiniSemanticChecker	typeref:typename:mu::Lexer
 line	lexer.hpp	/^    uint32_t line = 1;$/;"	m	struct:mu::SourceLocation	typeref:typename:uint32_t
 m_column	lexer.hpp	/^    uint32_t m_column = 1;$/;"	m	class:mu::Lexer	typeref:typename:uint32_t
 m_current	lexer.hpp	/^    size_t m_current = 0;$/;"	m	class:mu::Lexer	typeref:typename:size_t
@@ -600,29 +629,31 @@ main.cpp.s	build/Makefile	/^main.cpp.s:$/;"	t
 main.i	build/Makefile	/^main.i: main.cpp.i$/;"	t
 main.o	build/Makefile	/^main.o: main.cpp.o$/;"	t
 main.s	build/Makefile	/^main.s: main.cpp.s$/;"	t
-makeError	main.cpp	/^Token Lexer::makeError(std::string_view message)$/;"	f	class:mu::Lexer	typeref:typename:Token
-makeToken	main.cpp	/^Token Lexer::makeToken(TokenKind kind)$/;"	f	class:mu::Lexer	typeref:typename:Token
-match	main.cpp	/^bool Lexer::match(char expected)$/;"	f	class:mu::Lexer	typeref:typename:bool
-message	main.cpp	/^    std::string        message;$/;"	m	struct:Diagnostic	typeref:typename:std::string	file:
+makeError	lexer.cpp	/^Token Lexer::makeError(std::string_view message)$/;"	f	class:mu::Lexer	typeref:typename:Token
+makeToken	lexer.cpp	/^Token Lexer::makeToken(TokenKind kind)$/;"	f	class:mu::Lexer	typeref:typename:Token
+match	lexer.cpp	/^bool Lexer::match(char expected)$/;"	f	class:mu::Lexer	typeref:typename:bool
+message	sema.hpp	/^    std::string        message;$/;"	m	struct:Diagnostic	typeref:typename:std::string
+mu	lexer.cpp	/^namespace mu {$/;"	n	file:
 mu	lexer.hpp	/^namespace mu {$/;"	n
-mu	main.cpp	/^namespace mu {$/;"	n	file:
 mu_lang	README.md	/^# mu_lang$/;"	c
 mucc	CMakeLists.txt	/^add_executable(mucc$/;"	t
 mucc	CMakeLists.txt	/^project(mucc C CXX)$/;"	p
 mucc	build/Makefile	/^mucc: cmake_check_build_system$/;"	t
 mucc/fast	build/Makefile	/^mucc\/fast:$/;"	t
 mycompiler	README.md	/^# mycompiler$/;"	c
-next	main.cpp	/^Token Lexer::next()$/;"	f	class:mu::Lexer	typeref:typename:Token
+next	lexer.cpp	/^Token Lexer::next()$/;"	f	class:mu::Lexer	typeref:typename:Token
 offset	lexer.hpp	/^    uint32_t offset = 0;$/;"	m	struct:mu::SourceLocation	typeref:typename:uint32_t
 omp_gen	build/Makefile	/^omp_gen: cmake_check_build_system$/;"	t
 omp_gen/fast	build/Makefile	/^omp_gen\/fast:$/;"	t
-parseInferredDeclaration	main.cpp	/^    bool parseInferredDeclaration(bool isMutable)$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
-parseReassignment	main.cpp	/^    bool parseReassignment()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
-parseStatement	main.cpp	/^    bool parseStatement()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
-parseTypedDeclaration	main.cpp	/^    bool parseTypedDeclaration()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool	file:
-peek	main.cpp	/^Token Lexer::peek()$/;"	f	class:mu::Lexer	typeref:typename:Token
-peekChar	main.cpp	/^char Lexer::peekChar() const$/;"	f	class:mu::Lexer	typeref:typename:char
-peekNext	main.cpp	/^char Lexer::peekNext() const$/;"	f	class:mu::Lexer	typeref:typename:char
+parseInferredDeclaration	sema.cpp	/^bool MiniSemanticChecker::parseInferredDeclaration(bool isMutable)$/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+parseMemberReassignment	sema.cpp	/^bool MiniSemanticChecker::parseMemberReassignment()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+parseReassignment	sema.cpp	/^bool MiniSemanticChecker::parseReassignment()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+parseStatement	sema.cpp	/^bool MiniSemanticChecker::parseStatement()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+parseTypeName	sema.cpp	/^bool MiniSemanticChecker::parseTypeName(size_t cursor, std::string& typeName, size_t& nextCursor/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+parseTypedDeclaration	sema.cpp	/^bool MiniSemanticChecker::parseTypedDeclaration()$/;"	f	class:MiniSemanticChecker	typeref:typename:bool
+peek	lexer.cpp	/^Token Lexer::peek()$/;"	f	class:mu::Lexer	typeref:typename:Token
+peekChar	lexer.cpp	/^char Lexer::peekChar() const$/;"	f	class:mu::Lexer	typeref:typename:char
+peekNext	lexer.cpp	/^char Lexer::peekNext() const$/;"	f	class:mu::Lexer	typeref:typename:char
 preinstall	build/Makefile	/^preinstall: all$/;"	t
 preinstall/fast	build/Makefile	/^preinstall\/fast:$/;"	t
 printTokens	main.cpp	/^static void printTokens(const std::string& source, std::ostream& out)$/;"	f	typeref:typename:void	file:
@@ -630,20 +661,28 @@ qnxnto	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* qnxnt
 qnxnto	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v	typeref:typename:char const *
 rebuild_cache	build/Makefile	/^rebuild_cache:$/;"	t
 rebuild_cache/fast	build/Makefile	/^rebuild_cache\/fast: rebuild_cache$/;"	t
-run	main.cpp	/^    const std::vector<Diagnostic>& run()$/;"	f	class:MiniSemanticChecker	typeref:typename:const std::vector<Diagnostic> &	file:
+run	sema.cpp	/^const std::vector<Diagnostic>& MiniSemanticChecker::run()$/;"	f	class:MiniSemanticChecker	typeref:typename:const std::vector<Diagnostic> &
+s_keywords	lexer.cpp	/^const std::unordered_map<std::string_view, TokenKind> Lexer::s_keywords = {$/;"	m	class:mu::Lexer	typeref:typename:const std::unordered_map<std::string_view,TokenKind>
 s_keywords	lexer.hpp	/^    static const std::unordered_map<std::string_view, TokenKind> s_keywords;$/;"	m	class:mu::Lexer	typeref:typename:const std::unordered_map<std::string_view,TokenKind>
-s_keywords	main.cpp	/^const std::unordered_map<std::string_view, TokenKind> Lexer::s_keywords = {$/;"	m	class:mu::Lexer	typeref:typename:const std::unordered_map<std::string_view,TokenKind>
-skipWhitespace	main.cpp	/^void Lexer::skipWhitespace()$/;"	f	class:mu::Lexer	typeref:typename:void
-source_	main.cpp	/^    std::string                source_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::string	file:
+sema.cpp.i	build/Makefile	/^sema.cpp.i:$/;"	t
+sema.cpp.o	build/Makefile	/^sema.cpp.o:$/;"	t
+sema.cpp.s	build/Makefile	/^sema.cpp.s:$/;"	t
+sema.i	build/Makefile	/^sema.i: sema.cpp.i$/;"	t
+sema.o	build/Makefile	/^sema.o: sema.cpp.o$/;"	t
+sema.s	build/Makefile	/^sema.s: sema.cpp.s$/;"	t
+skipExpression	sema.cpp	/^size_t MiniSemanticChecker::skipExpression(size_t tokenIndex) const$/;"	f	class:MiniSemanticChecker	typeref:typename:size_t
+skipWhitespace	lexer.cpp	/^void Lexer::skipWhitespace()$/;"	f	class:mu::Lexer	typeref:typename:void
+source_	sema.hpp	/^    std::string                           source_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::string
 start	lexer.hpp	/^    SourceLocation start;$/;"	m	struct:mu::Token	typeref:typename:SourceLocation
-synchronize	main.cpp	/^void Lexer::synchronize()$/;"	f	class:mu::Lexer	typeref:typename:void
+synchronize	lexer.cpp	/^void Lexer::synchronize()$/;"	f	class:mu::Lexer	typeref:typename:void
 target_parser_gen	build/Makefile	/^target_parser_gen: cmake_check_build_system$/;"	t
 target_parser_gen/fast	build/Makefile	/^target_parser_gen\/fast:$/;"	t
-toString	main.cpp	/^std::string Token::toString() const$/;"	f	class:mu::Token	typeref:typename:std::string
-tokenText	main.cpp	/^    std::string tokenText(size_t lookahead = 0) const$/;"	f	class:MiniSemanticChecker	typeref:typename:std::string	file:
-tokens_	main.cpp	/^    std::vector<mu::Token>     tokens_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::vector<mu::Token>	file:
-typeName	main.cpp	/^    std::string typeName;$/;"	m	struct:Binding	typeref:typename:std::string	file:
+toString	lexer.cpp	/^std::string Token::toString() const$/;"	f	class:mu::Token	typeref:typename:std::string
+tokenText	sema.cpp	/^std::string MiniSemanticChecker::tokenText(size_t lookahead) const$/;"	f	class:MiniSemanticChecker	typeref:typename:std::string
+tokenTextAt	sema.cpp	/^std::string MiniSemanticChecker::tokenTextAt(size_t tokenIndex) const$/;"	f	class:MiniSemanticChecker	typeref:typename:std::string
+tokens_	sema.hpp	/^    std::vector<mu::Token>                tokens_;$/;"	m	class:MiniSemanticChecker	typeref:typename:std::vector<mu::Token>
+typeName	sema.hpp	/^    std::string typeName;$/;"	m	struct:Binding	typeref:typename:std::string
 volatile	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define volatile$/;"	d	file:
 vt_gen	build/Makefile	/^vt_gen: cmake_check_build_system$/;"	t
 vt_gen/fast	build/Makefile	/^vt_gen\/fast:$/;"	t
-where	main.cpp	/^    mu::SourceLocation where;$/;"	m	struct:Diagnostic	typeref:typename:mu::SourceLocation	file:
+where	sema.hpp	/^    mu::SourceLocation where;$/;"	m	struct:Diagnostic	typeref:typename:mu::SourceLocation

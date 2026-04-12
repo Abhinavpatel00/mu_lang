@@ -8,7 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/lk/myprojects/mu_lang/mycompiler/lexer.cpp" "CMakeFiles/mucc.dir/lexer.cpp.o" "gcc" "CMakeFiles/mucc.dir/lexer.cpp.o.d"
   "/home/lk/myprojects/mu_lang/mycompiler/main.cpp" "CMakeFiles/mucc.dir/main.cpp.o" "gcc" "CMakeFiles/mucc.dir/main.cpp.o.d"
+  "/home/lk/myprojects/mu_lang/mycompiler/sema.cpp" "CMakeFiles/mucc.dir/sema.cpp.o" "gcc" "CMakeFiles/mucc.dir/sema.cpp.o.d"
   "" "mucc" "gcc" "CMakeFiles/mucc.dir/link.d"
   )
 

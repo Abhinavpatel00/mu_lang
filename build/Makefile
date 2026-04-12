@@ -194,6 +194,30 @@ mucc/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/build
 .PHONY : mucc/fast
 
+lexer.o: lexer.cpp.o
+.PHONY : lexer.o
+
+# target to build an object file
+lexer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/lexer.cpp.o
+.PHONY : lexer.cpp.o
+
+lexer.i: lexer.cpp.i
+.PHONY : lexer.i
+
+# target to preprocess a source file
+lexer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/lexer.cpp.i
+.PHONY : lexer.cpp.i
+
+lexer.s: lexer.cpp.s
+.PHONY : lexer.s
+
+# target to generate assembly for a file
+lexer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/lexer.cpp.s
+.PHONY : lexer.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -218,6 +242,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+sema.o: sema.cpp.o
+.PHONY : sema.o
+
+# target to build an object file
+sema.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/sema.cpp.o
+.PHONY : sema.cpp.o
+
+sema.i: sema.cpp.i
+.PHONY : sema.i
+
+# target to preprocess a source file
+sema.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/sema.cpp.i
+.PHONY : sema.cpp.i
+
+sema.s: sema.cpp.s
+.PHONY : sema.s
+
+# target to generate assembly for a file
+sema.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/sema.cpp.s
+.PHONY : sema.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -232,9 +280,15 @@ help:
 	@echo "... target_parser_gen"
 	@echo "... vt_gen"
 	@echo "... mucc"
+	@echo "... lexer.o"
+	@echo "... lexer.i"
+	@echo "... lexer.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... sema.o"
+	@echo "... sema.i"
+	@echo "... sema.s"
 .PHONY : help
 
 

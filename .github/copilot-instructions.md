@@ -39,3 +39,10 @@ This project follows a strict prototype coding style.
 ## Design Change Policy
 
 If a change requires classes, RAII, or OO patterns, stop and discuss the design first before implementation.
+
+- lexer is fine to be a class if it simplifies state management, but semantic analysis should avoid classes unless necessary.
+- enum  and constants should be UPPER_SNAKE_CASE, struct and function names should be lower_snake_case.
+- If a new abstraction layer is needed, prefer adding a new function or struct over introducing a new class hierarchy.
+- For data structures, prefer simple structs with public fields over complex classes with private members and accessors.
+- For error handling, prefer returning error codes or using `std::optional` over exceptions.
+-  type names should be PascalCase and function/variable names should be snake_case.

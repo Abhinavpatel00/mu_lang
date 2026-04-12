@@ -11,82 +11,82 @@ namespace mu {
 
 enum class TokenKind : uint8_t {
     // End of file
-    Eof,
+    EOF_TOKEN,
 
     // Identifiers & literals
-    Identifier,
-    IntegerLiteral,
-    FloatLiteral,
-    StringLiteral,
-    CharLiteral,
-    HereString,
+    IDENTIFIER,
+    INTEGER_LITERAL,
+    FLOAT_LITERAL,
+    STRING_LITERAL,
+    CHAR_LITERAL,
+    HERE_STRING,
 
     // Operators & punctuation
-    Assign,         // :=
-    ConstAssign,    // ::
-    EqualsAssign,   // =
-    Equal,          // ==
-    NotEqual,       // !=
-    Less,           // <
-    LessEqual,      // <=
-    Greater,        // >
-    GreaterEqual,   // >=
-    Plus,           // +
-    Minus,          // -
-    Star,           // *
-    Slash,          // /
-    Percent,        // %
-    Bang,           // !
-    Amp,            // &
-    Pipe,           // |
-    Caret,          // ^
-    ShiftLeft,      // <<
-    ShiftRight,     // >>
-    Dot,            // .
-    Range,          // ..
-    RangeInclusive, // ..=
-    Arrow,          // ->
-    FatArrow,       // =>
-    Colon,          // :
-    Semicolon,      // ;
-    Comma,          // ,
-    LParen,         // (
-    RParen,         // )
-    LBrace,         // {
-    RBrace,         // }
-    LBracket,       // [
-    RBracket,       // ]
-    Dollar,         // $
-    Question,       // ?
-    Hash,           // #
+    ASSIGN,          // :=
+    CONST_ASSIGN,    // ::
+    EQUALS_ASSIGN,   // =
+    EQUAL,           // ==
+    NOT_EQUAL,       // !=
+    LESS,            // <
+    LESS_EQUAL,      // <=
+    GREATER,         // >
+    GREATER_EQUAL,   // >=
+    PLUS,            // +
+    MINUS,           // -
+    STAR,            // *
+    SLASH,           // /
+    PERCENT,         // %
+    BANG,            // !
+    AMP,             // &
+    PIPE,            // |
+    CARET,           // ^
+    SHIFT_LEFT,      // <<
+    SHIFT_RIGHT,     // >>
+    DOT,             // .
+    RANGE,           // ..
+    RANGE_INCLUSIVE, // ..=
+    ARROW,           // ->
+    FAT_ARROW,       // =>
+    COLON,           // :
+    SEMICOLON,       // ;
+    COMMA,           // ,
+    L_PAREN,         // (
+    R_PAREN,         // )
+    L_BRACE,         // {
+    R_BRACE,         // }
+    L_BRACKET,       // [
+    R_BRACKET,       // ]
+    DOLLAR,          // $
+    QUESTION,        // ?
+    HASH,            // #
 
     // Keywords
-    KwStruct,
-    KwEnum,
-    KwUnion,
-    KwComp,
-    KwUsing,
-    KwDistinct,
-    KwTrait,
-    KwImpl,
-    KwDefer,
-    KwAs,
-    KwMatch,
-    KwIf,
-    KwElse,
-    KwFor,
-    KwIn,
-    KwReturn,
-    KwTrue,
-    KwFalse,
-    KwNull,
-    KwVoid,
-    KwNever,
-    KwMaybe,
-    KwType,
+    KW_STRUCT,
+    KW_ENUM,
+    KW_UNION,
+    KW_COMP,
+    KW_USING,
+    KW_DISTINCT,
+    KW_TRAIT,
+    KW_IMPL,
+    KW_DEFER,
+    KW_AS,
+    KW_MATCH,
+    KW_IF,
+    KW_ELSE,
+    KW_FOR,
+    KW_IN,
+    KW_RETURN,
+    KW_TRUE,
+    KW_FALSE,
+    KW_NULL,
+    KW_VOID,
+    KW_NEVER,
+    KW_MAYBE,
+    KW_TYPE,
 
     // Special
-    Illegal,
+    ILLEGAL,
 };
 
 struct SourceLocation {

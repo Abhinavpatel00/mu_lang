@@ -8,14 +8,14 @@ namespace mu {
 // Keyword table
 // -----------------------------------------------------------------------------
 const std::unordered_map<std::string_view, TokenKind> Lexer::s_keywords = {
-    {"struct", TokenKind::KwStruct}, {"enum", TokenKind::KwEnum},   {"union", TokenKind::KwUnion},
-    {"comp", TokenKind::KwComp},     {"using", TokenKind::KwUsing}, {"distinct", TokenKind::KwDistinct},
-    {"trait", TokenKind::KwTrait},   {"impl", TokenKind::KwImpl},   {"defer", TokenKind::KwDefer},
-    {"as", TokenKind::KwAs},         {"match", TokenKind::KwMatch}, {"if", TokenKind::KwIf},
-    {"else", TokenKind::KwElse},     {"for", TokenKind::KwFor},     {"in", TokenKind::KwIn},
-    {"return", TokenKind::KwReturn}, {"true", TokenKind::KwTrue},   {"false", TokenKind::KwFalse},
-    {"null", TokenKind::KwNull},     {"void", TokenKind::KwVoid},   {"never", TokenKind::KwNever},
-    {"maybe", TokenKind::KwMaybe},   {"type", TokenKind::KwType},
+    {"struct", TokenKind::KW_STRUCT}, {"enum", TokenKind::KW_ENUM},   {"union", TokenKind::KW_UNION},
+    {"comp", TokenKind::KW_COMP},     {"using", TokenKind::KW_USING}, {"distinct", TokenKind::KW_DISTINCT},
+    {"trait", TokenKind::KW_TRAIT},   {"impl", TokenKind::KW_IMPL},   {"defer", TokenKind::KW_DEFER},
+    {"as", TokenKind::KW_AS},         {"match", TokenKind::KW_MATCH}, {"if", TokenKind::KW_IF},
+    {"else", TokenKind::KW_ELSE},     {"for", TokenKind::KW_FOR},     {"in", TokenKind::KW_IN},
+    {"return", TokenKind::KW_RETURN}, {"true", TokenKind::KW_TRUE},   {"false", TokenKind::KW_FALSE},
+    {"null", TokenKind::KW_NULL},     {"void", TokenKind::KW_VOID},   {"never", TokenKind::KW_NEVER},
+    {"maybe", TokenKind::KW_MAYBE},   {"type", TokenKind::KW_TYPE},
 };
 
 // -----------------------------------------------------------------------------
@@ -23,18 +23,18 @@ const std::unordered_map<std::string_view, TokenKind> Lexer::s_keywords = {
 // -----------------------------------------------------------------------------
 bool Token::isKeyword() const
 {
-    return kind >= TokenKind::KwStruct && kind <= TokenKind::KwType;
+    return kind >= TokenKind::KW_STRUCT && kind <= TokenKind::KW_TYPE;
 }
 
 bool Token::isLiteral() const
 {
-    return kind == TokenKind::IntegerLiteral || kind == TokenKind::FloatLiteral || kind == TokenKind::StringLiteral
-           || kind == TokenKind::CharLiteral || kind == TokenKind::HereString;
+    return kind == TokenKind::INTEGER_LITERAL || kind == TokenKind::FLOAT_LITERAL || kind == TokenKind::STRING_LITERAL
+           || kind == TokenKind::CHAR_LITERAL || kind == TokenKind::HERE_STRING;
 }
 
 bool Token::isOperator() const
 {
-    return kind >= TokenKind::Assign && kind <= TokenKind::Hash;
+    return kind >= TokenKind::ASSIGN && kind <= TokenKind::HASH;
 }
 
 std::string Token::toString() const
@@ -42,141 +42,141 @@ std::string Token::toString() const
     auto kindName = [](TokenKind k) -> const char* {
         switch(k)
         {
-            case TokenKind::Eof:
+            case TokenKind::EOF_TOKEN:
                 return "Eof";
-            case TokenKind::Identifier:
+            case TokenKind::IDENTIFIER:
                 return "Identifier";
-            case TokenKind::IntegerLiteral:
+            case TokenKind::INTEGER_LITERAL:
                 return "IntegerLiteral";
-            case TokenKind::FloatLiteral:
+            case TokenKind::FLOAT_LITERAL:
                 return "FloatLiteral";
-            case TokenKind::StringLiteral:
+            case TokenKind::STRING_LITERAL:
                 return "StringLiteral";
-            case TokenKind::CharLiteral:
+            case TokenKind::CHAR_LITERAL:
                 return "CharLiteral";
-            case TokenKind::HereString:
+            case TokenKind::HERE_STRING:
                 return "HereString";
-            case TokenKind::Assign:
+            case TokenKind::ASSIGN:
                 return "Assign";
-            case TokenKind::ConstAssign:
+            case TokenKind::CONST_ASSIGN:
                 return "ConstAssign";
-            case TokenKind::EqualsAssign:
+            case TokenKind::EQUALS_ASSIGN:
                 return "EqualsAssign";
-            case TokenKind::Equal:
+            case TokenKind::EQUAL:
                 return "Equal";
-            case TokenKind::NotEqual:
+            case TokenKind::NOT_EQUAL:
                 return "NotEqual";
-            case TokenKind::Less:
+            case TokenKind::LESS:
                 return "Less";
-            case TokenKind::LessEqual:
+            case TokenKind::LESS_EQUAL:
                 return "LessEqual";
-            case TokenKind::Greater:
+            case TokenKind::GREATER:
                 return "Greater";
-            case TokenKind::GreaterEqual:
+            case TokenKind::GREATER_EQUAL:
                 return "GreaterEqual";
-            case TokenKind::Plus:
+            case TokenKind::PLUS:
                 return "Plus";
-            case TokenKind::Minus:
+            case TokenKind::MINUS:
                 return "Minus";
-            case TokenKind::Star:
+            case TokenKind::STAR:
                 return "Star";
-            case TokenKind::Slash:
+            case TokenKind::SLASH:
                 return "Slash";
-            case TokenKind::Percent:
+            case TokenKind::PERCENT:
                 return "Percent";
-            case TokenKind::Bang:
+            case TokenKind::BANG:
                 return "Bang";
-            case TokenKind::Amp:
+            case TokenKind::AMP:
                 return "Amp";
-            case TokenKind::Pipe:
+            case TokenKind::PIPE:
                 return "Pipe";
-            case TokenKind::Caret:
+            case TokenKind::CARET:
                 return "Caret";
-            case TokenKind::ShiftLeft:
+            case TokenKind::SHIFT_LEFT:
                 return "ShiftLeft";
-            case TokenKind::ShiftRight:
+            case TokenKind::SHIFT_RIGHT:
                 return "ShiftRight";
-            case TokenKind::Dot:
+            case TokenKind::DOT:
                 return "Dot";
-            case TokenKind::Range:
+            case TokenKind::RANGE:
                 return "Range";
-            case TokenKind::RangeInclusive:
+            case TokenKind::RANGE_INCLUSIVE:
                 return "RangeInclusive";
-            case TokenKind::Arrow:
+            case TokenKind::ARROW:
                 return "Arrow";
-            case TokenKind::FatArrow:
+            case TokenKind::FAT_ARROW:
                 return "FatArrow";
-            case TokenKind::Colon:
+            case TokenKind::COLON:
                 return "Colon";
-            case TokenKind::Semicolon:
+            case TokenKind::SEMICOLON:
                 return "Semicolon";
-            case TokenKind::Comma:
+            case TokenKind::COMMA:
                 return "Comma";
-            case TokenKind::LParen:
+            case TokenKind::L_PAREN:
                 return "LParen";
-            case TokenKind::RParen:
+            case TokenKind::R_PAREN:
                 return "RParen";
-            case TokenKind::LBrace:
+            case TokenKind::L_BRACE:
                 return "LBrace";
-            case TokenKind::RBrace:
+            case TokenKind::R_BRACE:
                 return "RBrace";
-            case TokenKind::LBracket:
+            case TokenKind::L_BRACKET:
                 return "LBracket";
-            case TokenKind::RBracket:
+            case TokenKind::R_BRACKET:
                 return "RBracket";
-            case TokenKind::Dollar:
+            case TokenKind::DOLLAR:
                 return "Dollar";
-            case TokenKind::Question:
+            case TokenKind::QUESTION:
                 return "Question";
-            case TokenKind::Hash:
+            case TokenKind::HASH:
                 return "Hash";
-            case TokenKind::KwStruct:
+            case TokenKind::KW_STRUCT:
                 return "KwStruct";
-            case TokenKind::KwEnum:
+            case TokenKind::KW_ENUM:
                 return "KwEnum";
-            case TokenKind::KwUnion:
+            case TokenKind::KW_UNION:
                 return "KwUnion";
-            case TokenKind::KwComp:
+            case TokenKind::KW_COMP:
                 return "KwComp";
-            case TokenKind::KwUsing:
+            case TokenKind::KW_USING:
                 return "KwUsing";
-            case TokenKind::KwDistinct:
+            case TokenKind::KW_DISTINCT:
                 return "KwDistinct";
-            case TokenKind::KwTrait:
+            case TokenKind::KW_TRAIT:
                 return "KwTrait";
-            case TokenKind::KwImpl:
+            case TokenKind::KW_IMPL:
                 return "KwImpl";
-            case TokenKind::KwDefer:
+            case TokenKind::KW_DEFER:
                 return "KwDefer";
-            case TokenKind::KwAs:
+            case TokenKind::KW_AS:
                 return "KwAs";
-            case TokenKind::KwMatch:
+            case TokenKind::KW_MATCH:
                 return "KwMatch";
-            case TokenKind::KwIf:
+            case TokenKind::KW_IF:
                 return "KwIf";
-            case TokenKind::KwElse:
+            case TokenKind::KW_ELSE:
                 return "KwElse";
-            case TokenKind::KwFor:
+            case TokenKind::KW_FOR:
                 return "KwFor";
-            case TokenKind::KwIn:
+            case TokenKind::KW_IN:
                 return "KwIn";
-            case TokenKind::KwReturn:
+            case TokenKind::KW_RETURN:
                 return "KwReturn";
-            case TokenKind::KwTrue:
+            case TokenKind::KW_TRUE:
                 return "KwTrue";
-            case TokenKind::KwFalse:
+            case TokenKind::KW_FALSE:
                 return "KwFalse";
-            case TokenKind::KwNull:
+            case TokenKind::KW_NULL:
                 return "KwNull";
-            case TokenKind::KwVoid:
+            case TokenKind::KW_VOID:
                 return "KwVoid";
-            case TokenKind::KwNever:
+            case TokenKind::KW_NEVER:
                 return "KwNever";
-            case TokenKind::KwMaybe:
+            case TokenKind::KW_MAYBE:
                 return "KwMaybe";
-            case TokenKind::KwType:
+            case TokenKind::KW_TYPE:
                 return "KwType";
-            case TokenKind::Illegal:
+            case TokenKind::ILLEGAL:
                 return "Illegal";
         }
         return "Unknown";
@@ -218,7 +218,7 @@ Token Lexer::next()
 
     if(isAtEnd())
     {
-        return makeToken(TokenKind::Eof);
+        return makeToken(TokenKind::EOF_TOKEN);
     }
 
     char c = advance();
@@ -227,61 +227,61 @@ Token Lexer::next()
     switch(c)
     {
         case '(':
-            return makeToken(TokenKind::LParen);
+            return makeToken(TokenKind::L_PAREN);
         case ')':
-            return makeToken(TokenKind::RParen);
+            return makeToken(TokenKind::R_PAREN);
         case '{':
-            return makeToken(TokenKind::LBrace);
+            return makeToken(TokenKind::L_BRACE);
         case '}':
-            return makeToken(TokenKind::RBrace);
+            return makeToken(TokenKind::R_BRACE);
         case '[':
-            return makeToken(TokenKind::LBracket);
+            return makeToken(TokenKind::L_BRACKET);
         case ']':
-            return makeToken(TokenKind::RBracket);
+            return makeToken(TokenKind::R_BRACKET);
         case ',':
-            return makeToken(TokenKind::Comma);
+            return makeToken(TokenKind::COMMA);
         case ';':
-            return makeToken(TokenKind::Semicolon);
+            return makeToken(TokenKind::SEMICOLON);
         case '$':
-            return makeToken(TokenKind::Dollar);
+            return makeToken(TokenKind::DOLLAR);
         case '?':
-            return makeToken(TokenKind::Question);
+            return makeToken(TokenKind::QUESTION);
         case '#':
-            return makeToken(TokenKind::Hash);
+            return makeToken(TokenKind::HASH);
         case '+':
-            return makeToken(TokenKind::Plus);
+            return makeToken(TokenKind::PLUS);
         case '-':
-            return makeToken(match('>') ? TokenKind::Arrow : TokenKind::Minus);
+            return makeToken(match('>') ? TokenKind::ARROW : TokenKind::MINUS);
         case '*':
-            return makeToken(TokenKind::Star);
+            return makeToken(TokenKind::STAR);
         case '%':
-            return makeToken(TokenKind::Percent);
+            return makeToken(TokenKind::PERCENT);
         case '&':
-            return makeToken(TokenKind::Amp);
+            return makeToken(TokenKind::AMP);
         case '|':
-            return makeToken(TokenKind::Pipe);
+            return makeToken(TokenKind::PIPE);
         case '^':
-            return makeToken(TokenKind::Caret);
+            return makeToken(TokenKind::CARET);
         case '!':
-            return makeToken(match('=') ? TokenKind::NotEqual : TokenKind::Bang);
+            return makeToken(match('=') ? TokenKind::NOT_EQUAL : TokenKind::BANG);
         case '=':
-            return makeToken(match('=') ? TokenKind::Equal : TokenKind::EqualsAssign);
+            return makeToken(match('=') ? TokenKind::EQUAL : TokenKind::EQUALS_ASSIGN);
         case '<':
-            return makeToken(match('<') ? TokenKind::ShiftLeft : match('=') ? TokenKind::LessEqual : TokenKind::Less);
+            return makeToken(match('<') ? TokenKind::SHIFT_LEFT : match('=') ? TokenKind::LESS_EQUAL : TokenKind::LESS);
         case '>':
-            return makeToken(match('>') ? TokenKind::ShiftRight :
-                             match('=') ? TokenKind::GreaterEqual :
-                                          TokenKind::Greater);
+            return makeToken(match('>') ? TokenKind::SHIFT_RIGHT :
+                             match('=') ? TokenKind::GREATER_EQUAL :
+                                          TokenKind::GREATER);
         case ':':
             if(match(':'))
             {
-                return makeToken(TokenKind::ConstAssign);
+                return makeToken(TokenKind::CONST_ASSIGN);
             }
             if(match('='))
             {
-                return makeToken(TokenKind::Assign);
+                return makeToken(TokenKind::ASSIGN);
             }
-            return makeToken(TokenKind::Colon);
+            return makeToken(TokenKind::COLON);
         case '.':
             return lexDot();
         case '/': {
@@ -295,7 +295,7 @@ Token Lexer::next()
                 consumeBlockComment();
                 return next();
             }
-            return makeToken(TokenKind::Slash);
+            return makeToken(TokenKind::SLASH);
         }
         case '\'':
             return lexChar();
@@ -429,7 +429,7 @@ Token Lexer::makeToken(TokenKind kind)
 Token Lexer::makeError(std::string_view message)
 {
     (void)message;
-    Token token = makeToken(TokenKind::Illegal);
+    Token token = makeToken(TokenKind::ILLEGAL);
     return token;
 }
 
@@ -447,11 +447,11 @@ Token Lexer::lexDot()
     {
         if(match('='))
         {
-            return makeToken(TokenKind::RangeInclusive);
+            return makeToken(TokenKind::RANGE_INCLUSIVE);
         }
-        return makeToken(TokenKind::Range);
+        return makeToken(TokenKind::RANGE);
     }
-    return makeToken(TokenKind::Dot);
+    return makeToken(TokenKind::DOT);
 }
 
 Token Lexer::lexNumber()
@@ -495,7 +495,7 @@ Token Lexer::lexNumber()
         {
             advance();
         }
-        return makeToken(TokenKind::IntegerLiteral);
+        return makeToken(TokenKind::INTEGER_LITERAL);
     }
 
     // Binary literals (0b...)
@@ -506,10 +506,10 @@ Token Lexer::lexNumber()
         {
             advance();
         }
-        return makeToken(TokenKind::IntegerLiteral);
+        return makeToken(TokenKind::INTEGER_LITERAL);
     }
 
-    return makeToken(isFloat ? TokenKind::FloatLiteral : TokenKind::IntegerLiteral);
+    return makeToken(isFloat ? TokenKind::FLOAT_LITERAL : TokenKind::INTEGER_LITERAL);
 }
 
 Token Lexer::lexIdentifier()
@@ -521,7 +521,7 @@ Token Lexer::lexIdentifier()
 
     std::string_view lexeme = m_source.substr(m_start, m_current - m_start);
     auto             it     = s_keywords.find(lexeme);
-    TokenKind        kind   = (it != s_keywords.end()) ? it->second : TokenKind::Identifier;
+    TokenKind        kind   = (it != s_keywords.end()) ? it->second : TokenKind::IDENTIFIER;
 
     // Handle contextual keywords like 'comp' - they can be used as identifiers
     // in some contexts; that's a parser-level distinction.
@@ -550,7 +550,7 @@ Token Lexer::lexString()
     }
 
     advance();  // closing quote
-    return makeToken(TokenKind::StringLiteral);
+    return makeToken(TokenKind::STRING_LITERAL);
 }
 
 Token Lexer::lexChar()
@@ -567,7 +567,7 @@ Token Lexer::lexChar()
     }
 
     advance();  // closing quote
-    return makeToken(TokenKind::CharLiteral);
+    return makeToken(TokenKind::CHAR_LITERAL);
 }
 
 void Lexer::consumeLineComment()
@@ -627,7 +627,7 @@ Token Lexer::consumeHereString(std::string_view delim)
             {
                 // Found delimiter
                 Token token;
-                token.kind   = TokenKind::HereString;
+                token.kind   = TokenKind::HERE_STRING;
                 token.lexeme = m_source.substr(contentStart, contentLength);
                 token.start  = SourceLocation{m_hereStartLine, 1, static_cast<uint32_t>(contentStart)};
                 token.end    = currentLocation();

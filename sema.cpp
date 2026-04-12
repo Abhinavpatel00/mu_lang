@@ -10,7 +10,7 @@ MiniSemanticChecker::MiniSemanticChecker(std::string source)
     {
         mu::Token token = lexer_.next();
         tokens_.push_back(token);
-        if(token.kind == mu::TokenKind::Eof)
+        if(token.kind == mu::TokenKind::EOF_TOKEN)
         {
             break;
         }
@@ -19,7 +19,7 @@ MiniSemanticChecker::MiniSemanticChecker(std::string source)
 
 const std::vector<Diagnostic>& MiniSemanticChecker::run()
 {
-    while(!at(mu::TokenKind::Eof))
+    while(!at(mu::TokenKind::EOF_TOKEN))
     {
         if(!parseStatement())
         {
@@ -31,9 +31,9 @@ const std::vector<Diagnostic>& MiniSemanticChecker::run()
 
 bool MiniSemanticChecker::isLiteralKind(mu::TokenKind kind)
 {
-    return kind == mu::TokenKind::IntegerLiteral || kind == mu::TokenKind::FloatLiteral
-           || kind == mu::TokenKind::StringLiteral || kind == mu::TokenKind::CharLiteral
-           || kind == mu::TokenKind::HereString;
+    return kind == mu::TokenKind::INTEGER_LITERAL || kind == mu::TokenKind::FLOAT_LITERAL
+           || kind == mu::TokenKind::STRING_LITERAL || kind == mu::TokenKind::CHAR_LITERAL
+           || kind == mu::TokenKind::HERE_STRING;
 }
 
 bool MiniSemanticChecker::at(mu::TokenKind kind, size_t lookahead) const
@@ -58,7 +58,7 @@ void MiniSemanticChecker::emit(size_t tokenIndex, std::string message)
 
 void MiniSemanticChecker::consumeSemicolons()
 {
-    while(at(mu::TokenKind::Semicolon))
+    while(at(mu::TokenKind::SEMICOLON))
     {
         index_++;
     }
@@ -72,9 +72,9 @@ bool MiniSemanticChecker::isExpressionStarter(size_t tokenIndex) const
     }
 
     mu::TokenKind kind = tokens_[tokenIndex].kind;
-    return kind == mu::TokenKind::Identifier || kind == mu::TokenKind::LBrace || kind == mu::TokenKind::LParen
-           || kind == mu::TokenKind::Dot || kind == mu::TokenKind::Star || kind == mu::TokenKind::Minus
-           || kind == mu::TokenKind::Bang || isLiteralKind(kind);
+    return kind == mu::TokenKind::IDENTIFIER || kind == mu::TokenKind::L_BRACE || kind == mu::TokenKind::L_PAREN
+           || kind == mu::TokenKind::DOT || kind == mu::TokenKind::STAR || kind == mu::TokenKind::MINUS
+           || kind == mu::TokenKind::BANG || isLiteralKind(kind);
 }
 
 size_t MiniSemanticChecker::skipExpression(size_t tokenIndex) const
@@ -87,11 +87,11 @@ size_t MiniSemanticChecker::skipExpression(size_t tokenIndex) const
     {
         mu::TokenKind kind = tokens_[cursor].kind;
 
-        if(kind == mu::TokenKind::LParen)
+        if(kind == mu::TokenKind::L_PAREN)
         {
             parenDepth++;
         }
-        else if(kind == mu::TokenKind::RParen)
+        else if(kind == mu::TokenKind::R_PAREN)
         {
             if(parenDepth == 0 && braceDepth == 0)
             {
@@ -102,11 +102,11 @@ size_t MiniSemanticChecker::skipExpression(size_t tokenIndex) const
                 parenDepth--;
             }
         }
-        else if(kind == mu::TokenKind::LBrace)
+        else if(kind == mu::TokenKind::L_BRACE)
         {
             braceDepth++;
         }
-        else if(kind == mu::TokenKind::RBrace)
+        else if(kind == mu::TokenKind::R_BRACE)
         {
             if(braceDepth == 0 && parenDepth == 0)
             {
@@ -118,11 +118,11 @@ size_t MiniSemanticChecker::skipExpression(size_t tokenIndex) const
             }
         }
         else if(parenDepth == 0 && braceDepth == 0
-                && (kind == mu::TokenKind::Semicolon || kind == mu::TokenKind::Comma))
+                && (kind == mu::TokenKind::SEMICOLON || kind == mu::TokenKind::COMMA))
         {
             break;
         }
-        else if(kind == mu::TokenKind::Eof)
+        else if(kind == mu::TokenKind::EOF_TOKEN)
         {
             break;
         }
@@ -140,17 +140,17 @@ bool MiniSemanticChecker::parseTypeName(size_t cursor, std::string& typeName, si
         return false;
     }
 
-    while(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::Star)
+    while(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::STAR)
     {
         cursor++;
     }
 
-    if(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::Identifier && tokenTextAt(cursor) == "mut")
+    if(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::IDENTIFIER && tokenTextAt(cursor) == "mut")
     {
         cursor++;
     }
 
-    if(cursor >= tokens_.size() || tokens_[cursor].kind != mu::TokenKind::Identifier)
+    if(cursor >= tokens_.size() || tokens_[cursor].kind != mu::TokenKind::IDENTIFIER)
     {
         return false;
     }
@@ -162,35 +162,35 @@ bool MiniSemanticChecker::parseTypeName(size_t cursor, std::string& typeName, si
 
 bool MiniSemanticChecker::parseStatement()
 {
-    if(!at(mu::TokenKind::Identifier))
+    if(!at(mu::TokenKind::IDENTIFIER))
     {
         return false;
     }
 
-    if(at(mu::TokenKind::Assign, 1))
+    if(at(mu::TokenKind::ASSIGN, 1))
     {
         return parseInferredDeclaration(true);
     }
 
-    if(at(mu::TokenKind::ConstAssign, 1))
+    if(at(mu::TokenKind::CONST_ASSIGN, 1))
     {
         return parseInferredDeclaration(false);
     }
 
-    if(at(mu::TokenKind::Dot, 1) && at(mu::TokenKind::Identifier, 2) && at(mu::TokenKind::EqualsAssign, 3))
+    if(at(mu::TokenKind::DOT, 1) && at(mu::TokenKind::IDENTIFIER, 2) && at(mu::TokenKind::EQUALS_ASSIGN, 3))
     {
         return parseMemberReassignment();
     }
 
-    if(at(mu::TokenKind::Colon, 1))
+    if(at(mu::TokenKind::COLON, 1))
     {
         return parseTypedDeclaration();
     }
 
-    if(at(mu::TokenKind::EqualsAssign, 1))
+    if(at(mu::TokenKind::EQUALS_ASSIGN, 1))
     {
         if(index_ > 0
-           && (tokens_[index_ - 1].kind == mu::TokenKind::LBrace || tokens_[index_ - 1].kind == mu::TokenKind::Comma))
+           && (tokens_[index_ - 1].kind == mu::TokenKind::L_BRACE || tokens_[index_ - 1].kind == mu::TokenKind::COMMA))
         {
             return false;
         }
@@ -203,8 +203,8 @@ bool MiniSemanticChecker::parseStatement()
 bool MiniSemanticChecker::parseInferredDeclaration(bool isMutable)
 {
     // Keep function-like and type-definition forms out of this tiny checker.
-    if(at(mu::TokenKind::LParen, 2) || at(mu::TokenKind::KwStruct, 2) || at(mu::TokenKind::KwEnum, 2)
-       || at(mu::TokenKind::KwUnion, 2))
+    if(at(mu::TokenKind::L_PAREN, 2) || at(mu::TokenKind::KW_STRUCT, 2) || at(mu::TokenKind::KW_ENUM, 2)
+       || at(mu::TokenKind::KW_UNION, 2))
     {
         return false;
     }
@@ -243,7 +243,7 @@ bool MiniSemanticChecker::parseTypedDeclaration()
         return true;
     }
 
-    if(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::EqualsAssign)
+    if(cursor < tokens_.size() && tokens_[cursor].kind == mu::TokenKind::EQUALS_ASSIGN)
     {
         size_t valueStart = cursor + 1;
         if(!isExpressionStarter(valueStart))
