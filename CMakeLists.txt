@@ -26,8 +26,6 @@ endif()
 
 add_executable(mucc
     main.cpp
-    lexer.cpp
-    sema.cpp
 )
 
 if(LLVM_LIBRARY_DIRS)

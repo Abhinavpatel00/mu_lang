@@ -40,7 +40,7 @@ This project follows a strict prototype coding style.
 
 If a change requires classes, RAII, or OO patterns, stop and discuss the design first before implementation.
 
-- The lexer may be a class if it simplifies state management, but semantic analysis should avoid classes unless necessary.
+- we should avoid classes unless very necessary.
 - Enums and constants should be UPPER_SNAKE_CASE.
 - If a new abstraction layer is needed, prefer adding a function or struct over introducing a class hierarchy.
 - For data structures, prefer simple structs with public fields over complex classes with private members and accessors.
