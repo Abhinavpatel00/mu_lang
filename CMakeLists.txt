@@ -5,7 +5,7 @@ if(NOT LLVM_DIR)
     set(LLVM_DIR "/usr/lib/llvm21/lib/cmake/llvm" CACHE PATH "LLVM 21 CMake config path")
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(LLVM REQUIRED CONFIG)

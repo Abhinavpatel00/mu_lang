@@ -1,1 +1,1 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/mucc.dir/link.d CMakeFiles/mucc.dir/main.cpp.o CMakeFiles/mucc.dir/lexer.cpp.o CMakeFiles/mucc.dir/sema.cpp.o -o mucc   -L/usr/lib/llvm21/lib  -Wl,-rpath,/usr/lib/llvm21/lib /usr/lib/llvm21/lib/libLLVM.so.21.1
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/mucc.dir/link.d CMakeFiles/mucc.dir/main.cpp.o -o mucc   -L/usr/lib/llvm21/lib  -Wl,-rpath,/usr/lib/llvm21/lib /usr/lib/llvm21/lib/libLLVM.so.21.1

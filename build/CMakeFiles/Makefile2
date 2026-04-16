@@ -250,12 +250,12 @@ CMakeFiles/target_parser_gen.dir/clean:
 CMakeFiles/mucc.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles --progress-num=1,2,3,4 "Built target mucc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles --progress-num=1,2 "Built target mucc"
 .PHONY : CMakeFiles/mucc.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/mucc.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles 2
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/mucc.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles 0
 .PHONY : CMakeFiles/mucc.dir/rule
@@ -267,7 +267,7 @@ mucc: CMakeFiles/mucc.dir/rule
 # codegen rule for target.
 CMakeFiles/mucc.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mucc.dir/build.make CMakeFiles/mucc.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles --progress-num=1,2,3,4 "Finished codegen for target mucc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lk/myprojects/mu_lang/mycompiler/build/CMakeFiles --progress-num=1,2 "Finished codegen for target mucc"
 .PHONY : CMakeFiles/mucc.dir/codegen
 
 # clean rule for target.

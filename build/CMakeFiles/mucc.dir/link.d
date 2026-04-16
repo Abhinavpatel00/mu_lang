@@ -3,8 +3,6 @@ mucc: \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o \
   CMakeFiles/mucc.dir/main.cpp.o \
-  CMakeFiles/mucc.dir/lexer.cpp.o \
-  CMakeFiles/mucc.dir/sema.cpp.o \
   /usr/lib/llvm21/lib/libLLVM.so.21.1 \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libstdc++.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
@@ -56,10 +54,6 @@ mucc: \
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o:
 
 CMakeFiles/mucc.dir/main.cpp.o:
-
-CMakeFiles/mucc.dir/lexer.cpp.o:
-
-CMakeFiles/mucc.dir/sema.cpp.o:
 
 /usr/lib/llvm21/lib/libLLVM.so.21.1:
 
