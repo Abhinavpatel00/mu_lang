@@ -1,10 +1,10 @@
 
 #include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <cstdint>
 #include <iostream>
-#include <string>
-#include <string_view>
-#include <unordered_map>
 #include <vector>
 
 
@@ -81,12 +81,19 @@ enum TokenKind : int16_t
     KW_TYPE,
 };
 
-static const std::unordered_map<std::string_view, int> keywords = {
+struct KeywordEntry
+{
+    const char* text;
+    TokenKind   kind;
+};
+
+static const KeywordEntry KEYWORDS[] = {
     {"struct", KW_STRUCT},     {"enum", KW_ENUM},   {"union", KW_UNION}, {"comp", KW_COMP},   {"using", KW_USING},
     {"distinct", KW_DISTINCT}, {"trait", KW_TRAIT}, {"impl", KW_IMPL},   {"defer", KW_DEFER}, {"as", KW_AS},
     {"match", KW_MATCH},       {"if", KW_IF},       {"else", KW_ELSE},   {"for", KW_FOR},     {"in", KW_IN},
     {"return", KW_RETURN},     {"true", KW_TRUE},   {"false", KW_FALSE}, {"null", KW_NULL},   {"void", KW_VOID},
-    {"never", KW_NEVER},       {"maybe", KW_MAYBE}, {"type", KW_TYPE}};
+    {"never", KW_NEVER},       {"maybe", KW_MAYBE}, {"type", KW_TYPE},
+};
 
 enum Char_type : uint8_t
 {
@@ -102,30 +109,31 @@ static uint8_t char_table[256];
 // string view implementation is so complex
 struct Lexer
 {
-    std::string_view src;
-    size_t           pos  = 0;
-    int              line = 1;
-    int              col  = 1;
+    const char* src        = nullptr;
+    uint32_t    src_length = 0;
+    uint32_t    pos        = 0;
+    int         line       = 1;
+    int         col        = 1;
 
     // Last token info
-    int              tok_line = 1;
-    int              tok_col  = 1;
-    std::string_view id;       // for TK_IDENT
-    std::string      str_val;  // for strings (owned copy)
-    int64_t          int_val   = 0;
-    double           float_val = 0.0;
+    int      tok_line   = 1;
+    int      tok_col    = 1;
+    uint32_t tok_start  = 0;
+    uint32_t tok_length = 0;
+    int64_t  int_val    = 0;
+    double   float_val  = 0.0;
 };
-void      lexer_init(Lexer* lex, std::string_view source);
+void      lexer_init(Lexer* lex, const char* source);
 TokenKind token_next(Lexer* lex);  // returns TokenKind
 
 // Helpers to read current token value
-inline std::string_view lexer_id(const Lexer* lex)
+inline uint32_t lexer_start(const Lexer* lex)
 {
-    return lex->id;
+    return lex->tok_start;
 }
-inline std::string_view lexer_str(const Lexer* lex)
+inline uint32_t lexer_length(const Lexer* lex)
 {
-    return lex->str_val;
+    return lex->tok_length;
 }
 inline int64_t lexer_int(const Lexer* lex)
 {
@@ -150,11 +158,11 @@ inline int lexer_col(const Lexer* lex)
 
 char peek(const Lexer* lex)
 {
-    return lex->pos < lex->src.size() ? lex->src[lex->pos] : 0;
+    return lex->pos < lex->src_length ? lex->src[lex->pos] : 0;
 }
 char peek_next(const Lexer* lex)
 {
-    return lex->pos + 1 < lex->src.size() ? lex->src[lex->pos + 1] : 0;
+    return lex->pos + 1 < lex->src_length ? lex->src[lex->pos + 1] : 0;
 }
 void advance(Lexer* lex)
 {
@@ -189,7 +197,7 @@ void skip_line_comment(Lexer* lex)
 void skip_block_comment(Lexer* lex)
 {
     int depth = 1;
-    while(depth > 0 && lex->pos < lex->src.size())
+    while(depth > 0 && lex->pos < lex->src_length)
     {
         if(peek(lex) == '/' && peek_next(lex) == '*')
         {
@@ -213,21 +221,28 @@ void skip_block_comment(Lexer* lex)
 
 TokenKind lex_identifier(Lexer* lex)
 {
-    size_t start = lex->pos;
+    uint32_t start = lex->pos;
     advance(lex);
     while(std::isalnum(static_cast<unsigned char>(peek(lex))) || peek(lex) == '_')
         advance(lex);
 
-    lex->id = lex->src.substr(start, lex->pos - start);
+    lex->tok_start  = start;
+    lex->tok_length = lex->pos - start;
 
-    auto it = keywords.find(lex->id);
-    return (it != keywords.end()) ? static_cast<TokenKind>(it->second) : TK_IDENT;
+    for(size_t i = 0; i < sizeof(KEYWORDS) / sizeof(KEYWORDS[0]); ++i)
+    {
+        size_t kw_len = std::strlen(KEYWORDS[i].text);
+        if(kw_len == lex->tok_length && std::memcmp(lex->src + start, KEYWORDS[i].text, kw_len) == 0)
+            return KEYWORDS[i].kind;
+    }
+
+    return TK_IDENT;
 }
 
 
 TokenKind lex_number(Lexer* lex)
 {
-    size_t start    = lex->pos;  // <-- remember start
+    uint32_t start    = lex->pos;  // <-- remember start
     bool   is_float = false;
 
     while(std::isdigit(peek(lex)))
@@ -251,17 +266,18 @@ TokenKind lex_number(Lexer* lex)
             advance(lex);
     }
 
-    // Extract the substring using the saved start offset
-    std::string num_str(lex->src.substr(start, lex->pos - start));
+    lex->tok_start  = start;
+    lex->tok_length = lex->pos - start;
+    const char* num_ptr = lex->src + start;
 
     if(is_float)
     {
-        lex->float_val = std::stod(num_str);
+        lex->float_val = std::strtod(num_ptr, nullptr);
         return TK_FLOAT_LIT;
     }
     else
     {
-        lex->int_val = std::stoll(num_str);
+        lex->int_val = std::strtoll(num_ptr, nullptr, 10);
         return TK_INT_LIT;
     }
 }
@@ -269,56 +285,72 @@ TokenKind lex_number(Lexer* lex)
 TokenKind lex_string(Lexer* lex, char quote)
 {
     advance(lex);  // opening quote
-    lex->str_val.clear();
+    uint32_t start = lex->pos;
     while(peek(lex) && peek(lex) != quote)
     {
         if(peek(lex) == '\\')
         {
             advance(lex);
-            char esc = peek(lex);
-            advance(lex);
-            switch(esc)
-            {
-                case 'n':
-                    lex->str_val += '\n';
-                    break;
-                case 't':
-                    lex->str_val += '\t';
-                    break;
-                case '\\':
-                    lex->str_val += '\\';
-                    break;
-                case '"':
-                    lex->str_val += '"';
-                    break;
-                case '\'':
-                    lex->str_val += '\'';
-                    break;
-                default:
-                    lex->str_val += esc;
-            }
+            if(peek(lex))
+                advance(lex);
         }
         else
         {
-            lex->str_val += peek(lex);
             advance(lex);
         }
     }
+
+    lex->tok_start  = start;
+    lex->tok_length = lex->pos - start;
+
+    char first_char = 0;
+    if(lex->tok_length > 0)
+    {
+        first_char = lex->src[start];
+        if(first_char == '\\' && lex->tok_length >= 2)
+        {
+            char esc = lex->src[start + 1];
+            switch(esc)
+            {
+                case 'n':
+                    first_char = '\n';
+                    break;
+                case 't':
+                    first_char = '\t';
+                    break;
+                case '\\':
+                    first_char = '\\';
+                    break;
+                case '\'':
+                    first_char = '\'';
+                    break;
+                case '"':
+                    first_char = '"';
+                    break;
+                default:
+                    first_char = esc;
+                    break;
+            }
+        }
+    }
+
     if(peek(lex) == quote)
         advance(lex);
+
     if(quote == '"')
     {
         return TK_STRING_LIT;
     }
     else
     {
-        lex->int_val = lex->str_val.empty() ? 0 : static_cast<unsigned char>(lex->str_val[0]);
+        lex->int_val = static_cast<unsigned char>(first_char);
         return TK_CHAR_LIT;
     }
 }
 
 TokenKind lex_operator(Lexer* lex, char first)
 {
+    uint32_t start = lex->pos;
     advance(lex);
     // Multi‑char operators
     if(first == '+' && peek(lex) == '=')
@@ -418,6 +450,9 @@ TokenKind lex_operator(Lexer* lex, char first)
     }
 
 
+    lex->tok_start  = start;
+    lex->tok_length = lex->pos - start;
+
     // Single char: ASCII value
     return static_cast<TokenKind>(first);
 }
@@ -445,11 +480,12 @@ void init_char_table()
     for(const char* p = ops; *p; ++p)
         char_table[(uint8_t)*p] = CC_OPERATOR;
 }
-void lexer_init(Lexer* lex, std::string_view source)
+void lexer_init(Lexer* lex, const char* source)
 {
     init_char_table();
-    *lex     = Lexer{};
+    *lex = Lexer{};
     lex->src = source;
+    lex->src_length = source ? static_cast<uint32_t>(std::strlen(source)) : 0;
 }
 
 
@@ -478,7 +514,7 @@ TokenKind token_next(Lexer* lex)
             return static_cast<TokenKind>('/');
         }
 
-        if(lex->pos >= lex->src.size())
+        if(lex->pos >= lex->src_length)
             return TK_EOF;
 
         lex->tok_line = lex->line;
@@ -505,37 +541,50 @@ TokenKind token_next(Lexer* lex)
                     case '}':
                     case '[':
                     case ']':
+                        lex->tok_start = lex->pos;
                         advance(lex);
+                        lex->tok_length = 1;
                         return static_cast<TokenKind>(c);
                     default:
                         // Unrecognised character
+                        lex->tok_start = lex->pos;
                         advance(lex);
+                        lex->tok_length = 1;
                         return TK_ERROR;
                 }
         }
     }
 }
 
-struct Token
-{
-    TokenKind        kind = TK_EOF;
-    int              line = 1;
-    int              col  = 1;
-    std::string_view id;
-    std::string      str_val;
-    int64_t          int_val   = 0;
-    double           float_val = 0.0;
+
+struct Token {
+    TokenKind kind;
+
+    uint32_t start;   // byte offset in source
+    uint32_t length;  // token length
+
+    uint32_t line;
+    uint32_t col;
+
+    union {
+        int64_t int_val;
+        double  float_val;
+    };
+
+    uint32_t flags; // hex, binary, float, overflow etc.
 };
+
 
 Token lexer_take_token(Lexer* lex)
 {
-    Token t;
-    t.kind      = token_next(lex);
-    t.line      = lexer_line(lex);
-    t.col       = lexer_col(lex);
-    t.id        = lexer_id(lex);
-    t.str_val   = std::string(lexer_str(lex));
-    t.int_val   = lexer_int(lex);
+    Token t{};
+    t.kind   = token_next(lex);
+    t.line   = static_cast<uint32_t>(lexer_line(lex));
+    t.col    = static_cast<uint32_t>(lexer_col(lex));
+    t.start  = lexer_start(lex);
+    t.length = lexer_length(lex);
+    t.flags  = 0;
+    t.int_val = lexer_int(lex);
     t.float_val = lexer_float(lex);
     return t;
 }
@@ -578,10 +627,11 @@ enum NodeKind
 
 struct AstNode
 {
-    NodeKind         kind = NODE_ERROR;
-    std::string      text;
-    int              line = 1;
-    int              col  = 1;
+    NodeKind         kind     = NODE_ERROR;
+    char             text[96] = {0};
+    uint32_t         text_len = 0;
+    int              line     = 1;
+    int              col      = 1;
     std::vector<int> children;
 };
 
@@ -591,7 +641,7 @@ struct Parser
     Token                current;
     Token                next;
     bool                 ok = true;
-    std::string          error;
+    char                 error[256] = {0};
     std::vector<AstNode> nodes;
 };
 
@@ -667,7 +717,7 @@ static const char* node_kind_name(NodeKind kind)
     return "UNKNOWN";
 }
 
-static std::string token_kind_name(TokenKind kind)
+static const char* token_kind_name(TokenKind kind, char ascii_fallback[2])
 {
     switch(kind)
     {
@@ -729,8 +779,9 @@ static std::string token_kind_name(TokenKind kind)
 
     if(kind < 256)
     {
-        char ch = static_cast<char>(kind);
-        return std::string(1, ch);
+        ascii_fallback[0] = static_cast<char>(kind);
+        ascii_fallback[1] = 0;
+        return ascii_fallback;
     }
 
     return "TOKEN";
@@ -754,15 +805,92 @@ static int prefix_binding_power()
     return 70;
 }
 
-static int parser_add_node(Parser* p, NodeKind kind, std::string text = std::string(), int line = 0, int col = 0)
+static void copy_text(char* dst, uint32_t* dst_len, const char* src)
+{
+    if(!src)
+    {
+        dst[0]   = 0;
+        *dst_len = 0;
+        return;
+    }
+
+    size_t n = std::strlen(src);
+    if(n > 95)
+        n = 95;
+    std::memcpy(dst, src, n);
+    dst[n]   = 0;
+    *dst_len = static_cast<uint32_t>(n);
+}
+
+static void copy_slice_text(char* dst, uint32_t* dst_len, const char* src, uint32_t start, uint32_t length)
+{
+    if(!src)
+    {
+        dst[0]   = 0;
+        *dst_len = 0;
+        return;
+    }
+
+    uint32_t n = length;
+    if(n > 95)
+        n = 95;
+    std::memcpy(dst, src + start, n);
+    dst[n]   = 0;
+    *dst_len = n;
+}
+
+static bool token_text_equals(const Parser* p, const Token* t, const char* text)
+{
+    size_t len = std::strlen(text);
+    if(t->length != len)
+        return false;
+    return std::memcmp(p->lex.src + t->start, text, len) == 0;
+}
+
+static int parser_add_node(Parser* p, NodeKind kind, const char* text = nullptr, int line = 0, int col = 0)
 {
     if(line == 0)
         line = p->current.line;
     if(col == 0)
         col = p->current.col;
 
-    p->nodes.push_back(AstNode{kind, std::move(text), line, col, {}});
+    AstNode n;
+    n.kind = kind;
+    n.line = line;
+    n.col  = col;
+    copy_text(n.text, &n.text_len, text);
+    p->nodes.push_back(n);
     return static_cast<int>(p->nodes.size() - 1);
+}
+
+static int parser_add_node_token_text(Parser* p, NodeKind kind, const Token& token, int line = 0, int col = 0)
+{
+    if(line == 0)
+        line = static_cast<int>(token.line);
+    if(col == 0)
+        col = static_cast<int>(token.col);
+
+    AstNode n;
+    n.kind = kind;
+    n.line = line;
+    n.col  = col;
+    copy_slice_text(n.text, &n.text_len, p->lex.src, token.start, token.length);
+    p->nodes.push_back(n);
+    return static_cast<int>(p->nodes.size() - 1);
+}
+
+static int parser_add_node_int(Parser* p, NodeKind kind, int64_t v, int line, int col)
+{
+    char buf[96];
+    std::snprintf(buf, sizeof(buf), "%lld", static_cast<long long>(v));
+    return parser_add_node(p, kind, buf, line, col);
+}
+
+static int parser_add_node_float(Parser* p, NodeKind kind, double v, int line, int col)
+{
+    char buf[96];
+    std::snprintf(buf, sizeof(buf), "%.6f", v);
+    return parser_add_node(p, kind, buf, line, col);
 }
 
 static void parser_add_child(Parser* p, int parent, int child)
@@ -777,22 +905,28 @@ static void parser_advance(Parser* p)
     p->next    = lexer_take_token(&p->lex);
 }
 
-static void parser_init(Parser* p, std::string_view source)
+static void parser_init(Parser* p, const char* source)
 {
     lexer_init(&p->lex, source);
     p->current = lexer_take_token(&p->lex);
     p->next    = lexer_take_token(&p->lex);
     p->ok      = true;
-    p->error.clear();
+    p->error[0] = 0;
     p->nodes.clear();
 }
 
-static void parser_fail(Parser* p, const std::string& message)
+static void parser_fail(Parser* p, const char* message)
 {
     if(p->ok)
     {
-        p->ok    = false;
-        p->error = message + " at " + std::to_string(p->current.line) + ":" + std::to_string(p->current.col);
+        p->ok = false;
+        std::snprintf(
+            p->error,
+            sizeof(p->error),
+            "%s at %u:%u",
+            message,
+            static_cast<unsigned>(p->current.line),
+            static_cast<unsigned>(p->current.col));
     }
 }
 
@@ -810,7 +944,11 @@ static bool parser_expect(Parser* p, int kind, const char* what)
 {
     if(parser_match(p, kind))
         return true;
-    parser_fail(p, std::string("expected ") + what + ", found " + token_kind_name(p->current.kind));
+    char ascii_name[2] = {0};
+    const char* found = token_kind_name(p->current.kind, ascii_name);
+    char msg[192];
+    std::snprintf(msg, sizeof(msg), "expected %s, found %s", what, found);
+    parser_fail(p, msg);
     return false;
 }
 
@@ -834,13 +972,14 @@ static int parse_name_list(Parser* p)
     if(p->current.kind != TK_IDENT)
     {
         parser_fail(p, "expected identifier");
-        parser_add_child(p, list, parser_add_node(p, NODE_ERROR, token_kind_name(p->current.kind)));
+        char ascii_name[2] = {0};
+        parser_add_child(p, list, parser_add_node(p, NODE_ERROR, token_kind_name(p->current.kind, ascii_name)));
         return list;
     }
 
     while(true)
     {
-        parser_add_child(p, list, parser_add_node(p, NODE_IDENT, std::string(p->current.id)));
+        parser_add_child(p, list, parser_add_node_token_text(p, NODE_IDENT, p->current));
         parser_advance(p);
         if(p->current.kind != ',')
             break;
@@ -859,18 +998,24 @@ static int parse_type_name(Parser* p)
 {
     if(token_is_identifier_like(p->current.kind) || p->current.kind == TK_IDENT)
     {
-        std::string text;
         if(p->current.kind == TK_IDENT)
-            text = std::string(p->current.id);
+        {
+            int node = parser_add_node_token_text(p, NODE_TYPE_NAME, p->current);
+            parser_advance(p);
+            return node;
+        }
         else
-            text = token_kind_name(p->current.kind);
-        int node = parser_add_node(p, NODE_TYPE_NAME, text);
-        parser_advance(p);
-        return node;
+        {
+            char ascii_name[2] = {0};
+            int node = parser_add_node(p, NODE_TYPE_NAME, token_kind_name(p->current.kind, ascii_name));
+            parser_advance(p);
+            return node;
+        }
     }
 
     parser_fail(p, "expected type name");
-    return parser_add_node(p, NODE_ERROR, token_kind_name(p->current.kind));
+    char ascii_name[2] = {0};
+    return parser_add_node(p, NODE_ERROR, token_kind_name(p->current.kind, ascii_name));
 }
 
 static int parse_param_list(Parser* p)
@@ -912,13 +1057,13 @@ static int parse_type(Parser* p)
         parser_advance(p);
 
         bool has_mut = false;
-        if(p->current.kind == TK_IDENT && p->current.id == "mut")
+        if(p->current.kind == TK_IDENT && token_text_equals(p, &p->current, "mut"))
         {
             has_mut = true;
             parser_advance(p);
         }
 
-        int node  = parser_add_node(p, NODE_TYPE_POINTER, has_mut ? "mut" : std::string(), line, col);
+        int node  = parser_add_node(p, NODE_TYPE_POINTER, has_mut ? "mut" : nullptr, line, col);
         int inner = parse_type(p);
         parser_add_child(p, node, inner);
         return node;
@@ -933,7 +1078,7 @@ static int parse_type(Parser* p)
         if(p->current.kind == ']')
         {
             parser_advance(p);
-            int node = parser_add_node(p, NODE_TYPE_SLICE, std::string(), line, col);
+            int node = parser_add_node(p, NODE_TYPE_SLICE, nullptr, line, col);
             parser_add_child(p, node, parse_type(p));
             return node;
         }
@@ -949,7 +1094,7 @@ static int parse_type(Parser* p)
 
         int size_expr = parse_expression(p, 0);
         parser_expect(p, ']', "']' after array size");
-        int node = parser_add_node(p, NODE_TYPE_ARRAY, std::string(), line, col);
+        int node = parser_add_node(p, NODE_TYPE_ARRAY, nullptr, line, col);
         parser_add_child(p, node, size_expr);
         parser_add_child(p, node, parse_type(p));
         return node;
@@ -963,7 +1108,7 @@ static int parse_type(Parser* p)
         int params = parse_param_list(p);
         parser_expect(p, ')', "')' after function type parameters");
 
-        int node = parser_add_node(p, NODE_TYPE_FUNC, std::string(), line, col);
+        int node = parser_add_node(p, NODE_TYPE_FUNC, nullptr, line, col);
         parser_add_child(p, node, params);
 
         if(p->current.kind == TK_ARROW)
@@ -1002,13 +1147,13 @@ static int parse_expression_list(Parser* p, TokenKind end_kind)
 static int parse_struct_literal(Parser* p, int dot_line, int dot_col)
 {
     parser_expect(p, '{', "'{' after '.' for struct literal");
-    int node = parser_add_node(p, NODE_STRUCT_LITERAL, std::string(), dot_line, dot_col);
+    int node = parser_add_node(p, NODE_STRUCT_LITERAL, nullptr, dot_line, dot_col);
 
     while(p->current.kind != TK_EOF && p->current.kind != '}')
     {
         if(p->current.kind == TK_IDENT && p->next.kind == '=')
         {
-            int field = parser_add_node(p, NODE_FIELD, std::string(p->current.id));
+            int field = parser_add_node_token_text(p, NODE_FIELD, p->current);
             parser_advance(p);
             parser_advance(p);
             parser_add_child(p, field, parse_expression(p, 0));
@@ -1034,15 +1179,15 @@ static int nud(Parser* p, const Token& token)
     switch(token.kind)
     {
         case TK_IDENT:
-            return parser_add_node(p, NODE_IDENT, std::string(token.id), token.line, token.col);
+            return parser_add_node_token_text(p, NODE_IDENT, token, token.line, token.col);
         case TK_INT_LIT:
-            return parser_add_node(p, NODE_INT, std::to_string(token.int_val), token.line, token.col);
+            return parser_add_node_int(p, NODE_INT, token.int_val, token.line, token.col);
         case TK_FLOAT_LIT:
-            return parser_add_node(p, NODE_FLOAT, std::to_string(token.float_val), token.line, token.col);
+            return parser_add_node_float(p, NODE_FLOAT, token.float_val, token.line, token.col);
         case TK_STRING_LIT:
-            return parser_add_node(p, NODE_STRING, token.str_val, token.line, token.col);
+            return parser_add_node_token_text(p, NODE_STRING, token, token.line, token.col);
         case TK_CHAR_LIT:
-            return parser_add_node(p, NODE_CHAR, std::to_string(token.int_val), token.line, token.col);
+            return parser_add_node_int(p, NODE_CHAR, token.int_val, token.line, token.col);
         case KW_TRUE:
             return parser_add_node(p, NODE_BOOL, "true", token.line, token.col);
         case KW_FALSE:
@@ -1050,7 +1195,7 @@ static int nud(Parser* p, const Token& token)
         case KW_NULL:
             return parser_add_node(p, NODE_NULL, "null", token.line, token.col);
         case '(': {
-            int group = parser_add_node(p, NODE_GROUP, std::string(), token.line, token.col);
+            int group = parser_add_node(p, NODE_GROUP, nullptr, token.line, token.col);
             if(p->current.kind != ')')
                 parser_add_child(p, group, parse_expression(p, 0));
             parser_expect(p, ')', "')' to close grouped expression");
@@ -1065,10 +1210,11 @@ static int nud(Parser* p, const Token& token)
         case '-':
         case '!':
         case '*': {
-            std::string op(1, static_cast<char>(token.kind));
-            if(token.kind == '*' && p->current.kind == TK_IDENT && p->current.id == "mut")
+            char op[8] = {0};
+            op[0] = static_cast<char>(token.kind);
+            if(token.kind == '*' && p->current.kind == TK_IDENT && token_text_equals(p, &p->current, "mut"))
             {
-                op = "*mut";
+                std::strcpy(op, "*mut");
                 parser_advance(p);
             }
             int node = parser_add_node(p, NODE_PREFIX, op, token.line, token.col);
@@ -1076,8 +1222,14 @@ static int nud(Parser* p, const Token& token)
             return node;
         }
         default:
-            parser_fail(p, std::string("unexpected token in expression: ") + token_kind_name(token.kind));
-            return parser_add_node(p, NODE_ERROR, token_kind_name(token.kind), token.line, token.col);
+        {
+            char ascii_name[2] = {0};
+            const char* tk_name = token_kind_name(token.kind, ascii_name);
+            char msg[192];
+            std::snprintf(msg, sizeof(msg), "unexpected token in expression: %s", tk_name);
+            parser_fail(p, msg);
+            return parser_add_node(p, NODE_ERROR, tk_name, token.line, token.col);
+        }
     }
 }
 
@@ -1086,7 +1238,7 @@ static int led(Parser* p, const Token& token, int left)
     switch(token.kind)
     {
         case '(': {
-            int call = parser_add_node(p, NODE_CALL, std::string(), token.line, token.col);
+            int call = parser_add_node(p, NODE_CALL, nullptr, token.line, token.col);
             parser_add_child(p, call, left);
             if(p->current.kind != ')')
             {
@@ -1102,7 +1254,7 @@ static int led(Parser* p, const Token& token, int left)
             return call;
         }
         case '[': {
-            int index = parser_add_node(p, NODE_INDEX, std::string(), token.line, token.col);
+            int index = parser_add_node(p, NODE_INDEX, nullptr, token.line, token.col);
             parser_add_child(p, index, left);
             if(p->current.kind != ']')
                 parser_add_child(p, index, parse_expression(p, 0));
@@ -1115,7 +1267,7 @@ static int led(Parser* p, const Token& token, int left)
                 parser_fail(p, "expected member name after '.'");
                 return parser_add_node(p, NODE_ERROR, ".", token.line, token.col);
             }
-            int member = parser_add_node(p, NODE_MEMBER, std::string(p->current.id), token.line, token.col);
+            int member = parser_add_node_token_text(p, NODE_MEMBER, p->current, token.line, token.col);
             parser_add_child(p, member, left);
             parser_advance(p);
             return member;
@@ -1126,7 +1278,8 @@ static int led(Parser* p, const Token& token, int left)
         case TK_MINUS_EQ:
         case TK_MUL_EQ:
         case TK_DIV_EQ: {
-            int assign = parser_add_node(p, NODE_BINARY, token_kind_name(token.kind), token.line, token.col);
+            char ascii_name[2] = {0};
+            int assign = parser_add_node(p, NODE_BINARY, token_kind_name(token.kind, ascii_name), token.line, token.col);
             parser_add_child(p, assign, left);
             parser_add_child(p, assign, parse_expression(p, binding_power(token.kind) - 1));
             return assign;
@@ -1143,14 +1296,21 @@ static int led(Parser* p, const Token& token, int left)
         case '-':
         case '*':
         case '/': {
-            int binary = parser_add_node(p, NODE_BINARY, token_kind_name(token.kind), token.line, token.col);
+            char ascii_name[2] = {0};
+            int binary = parser_add_node(p, NODE_BINARY, token_kind_name(token.kind, ascii_name), token.line, token.col);
             parser_add_child(p, binary, left);
             parser_add_child(p, binary, parse_expression(p, binding_power(token.kind)));
             return binary;
         }
         default:
-            parser_fail(p, std::string("unexpected infix token: ") + token_kind_name(token.kind));
-            return parser_add_node(p, NODE_ERROR, token_kind_name(token.kind), token.line, token.col);
+        {
+            char ascii_name[2] = {0};
+            const char* tk_name = token_kind_name(token.kind, ascii_name);
+            char msg[192];
+            std::snprintf(msg, sizeof(msg), "unexpected infix token: %s", tk_name);
+            parser_fail(p, msg);
+            return parser_add_node(p, NODE_ERROR, tk_name, token.line, token.col);
+        }
     }
 }
 
@@ -1211,7 +1371,7 @@ static int parse_return_stmt(Parser* p)
 {
     Token token = p->current;
     parser_advance(p);
-    int node = parser_add_node(p, NODE_RETURN, std::string(), token.line, token.col);
+    int node = parser_add_node(p, NODE_RETURN, nullptr, token.line, token.col);
     if(p->current.kind != ';' && p->current.kind != '}' && p->current.kind != TK_EOF)
         parser_add_child(p, node, parse_expression(p, 0));
     parser_match(p, ';');
@@ -1222,11 +1382,11 @@ static int parse_for_stmt(Parser* p)
 {
     Token token = p->current;
     parser_advance(p);
-    int node = parser_add_node(p, NODE_FOR, std::string(), token.line, token.col);
+    int node = parser_add_node(p, NODE_FOR, nullptr, token.line, token.col);
 
     if(p->current.kind == TK_IDENT)
     {
-        parser_add_child(p, node, parser_add_node(p, NODE_IDENT, std::string(p->current.id), p->current.line, p->current.col));
+        parser_add_child(p, node, parser_add_node_token_text(p, NODE_IDENT, p->current, p->current.line, p->current.col));
         parser_advance(p);
     }
     else
@@ -1277,7 +1437,7 @@ static int parse_decl(Parser* p)
         if(p->current.kind == KW_STRUCT)
         {
             parser_advance(p);
-            int node = parser_add_node(p, NODE_DECL_STRUCT, std::string(), line, col);
+            int node = parser_add_node(p, NODE_DECL_STRUCT, nullptr, line, col);
             parser_add_child(p, node, names);
             parser_expect(p, '{', "'{' after struct declaration");
             while(p->current.kind != TK_EOF && p->current.kind != '}')
@@ -1293,7 +1453,7 @@ static int parse_decl(Parser* p)
             int params = parse_param_list(p);
             parser_expect(p, ')', "')' after function parameters");
 
-            int node = parser_add_node(p, NODE_DECL_FUNC, std::string(), line, col);
+            int node = parser_add_node(p, NODE_DECL_FUNC, nullptr, line, col);
             parser_add_child(p, node, names);
             parser_add_child(p, node, params);
 
@@ -1363,7 +1523,7 @@ static int parse_statement(Parser* p)
        && (p->next.kind == TK_CONST_ASSIGN || p->next.kind == TK_ASSIGN || p->next.kind == ':' || p->next.kind == ','))
         return parse_decl(p);
 
-    int node = parser_add_node(p, NODE_EXPR_STMT, std::string(), p->current.line, p->current.col);
+    int node = parser_add_node(p, NODE_EXPR_STMT, nullptr, p->current.line, p->current.col);
     parser_add_child(p, node, parse_expression(p, 0));
     parser_match(p, ';');
     return node;
@@ -1374,7 +1534,7 @@ static int parse_block(Parser* p)
     int line = p->current.line;
     int col  = p->current.col;
     parser_expect(p, '{', "'{' to start block");
-    int node = parser_add_node(p, NODE_BLOCK, std::string(), line, col);
+    int node = parser_add_node(p, NODE_BLOCK, nullptr, line, col);
 
     while(p->current.kind != TK_EOF && p->current.kind != '}')
     {
@@ -1403,7 +1563,7 @@ static int parse_item(Parser* p)
 
 static int parse_program(Parser* p)
 {
-    int node = parser_add_node(p, NODE_PROGRAM, std::string(), 1, 1);
+    int node = parser_add_node(p, NODE_PROGRAM, nullptr, 1, 1);
     while(p->current.kind != TK_EOF)
     {
         parser_add_child(p, node, parse_item(p));
@@ -1419,8 +1579,11 @@ static void print_ast(const Parser* p, int node, int depth = 0)
     for(int i = 0; i < depth; ++i)
         std::cout << "  ";
     std::cout << node_kind_name(n.kind);
-    if(!n.text.empty())
-        std::cout << " " << n.text;
+    if(n.text_len > 0)
+    {
+        std::cout << " ";
+        std::cout.write(n.text, n.text_len);
+    }
     std::cout << " @" << n.line << ":" << n.col << '\n';
     for(int child : n.children)
         print_ast(p, child, depth + 1);
@@ -1428,11 +1591,10 @@ static void print_ast(const Parser* p, int node, int depth = 0)
 
 
 #include <fstream>
-#include <sstream>
 
 const char* load(const char* path)
 {
-    static std::string buffer;  // survives after function returns
+    static std::vector<char> buffer;
 
     std::ifstream file(path, std::ios::binary);
     if(!file)
@@ -1441,11 +1603,22 @@ const char* load(const char* path)
         return nullptr;
     }
 
-    std::ostringstream ss;
-    ss << file.rdbuf();
-    buffer = ss.str();
+    file.seekg(0, std::ios::end);
+    std::streamoff size = file.tellg();
+    file.seekg(0, std::ios::beg);
 
-    return buffer.c_str();
+    if(size < 0)
+    {
+        std::cerr << "Failed to read file size: " << path << "\n";
+        return nullptr;
+    }
+
+    buffer.resize(static_cast<size_t>(size) + 1);
+    if(size > 0)
+        file.read(buffer.data(), size);
+    buffer[static_cast<size_t>(size)] = 0;
+
+    return buffer.data();
 }
 
 // example_usage.cpp
@@ -1471,45 +1644,4 @@ int main()
     }
 
     print_ast(&parser, root);
-
-    for(int tk = token_next(&lex); tk != TK_EOF; tk = token_next(&lex))
-    {
-        std::cout << "line " << lexer_line(&lex) << ":" << lexer_col(&lex) << "  ";
-        if(tk < 256)
-        {
-            std::cout << '\'' << char(tk) << '\'';
-        }
-        else
-        {
-            switch(tk)
-            {
-                case TK_IDENT:
-                    std::cout << "IDENT(" << lexer_id(&lex) << ")";
-                    break;
-                case TK_INT_LIT:
-                    std::cout << "INT(" << lexer_int(&lex) << ")";
-                    break;
-                case TK_FLOAT_LIT:
-                    std::cout << "FLOAT(" << lexer_float(&lex) << ")";
-                    break;
-                case TK_STRING_LIT:
-                    std::cout << "STRING(\"" << lexer_str(&lex) << "\")";
-                    break;
-                case TK_CHAR_LIT:
-                    std::cout << "CHAR('" << char(lexer_int(&lex)) << "')";
-                    break;
-                case TK_ASSIGN:
-                    std::cout << "ASSIGN";
-                    break;
-                case TK_CONST_ASSIGN:
-                    std::cout << "CONST_ASSIGN";
-                    break;
-                // … other cases as needed
-                default:
-                    std::cout << "TOKEN(" << tk << ")";
-                    break;
-            }
-        }
-        std::cout << '\n';
-    }
 }

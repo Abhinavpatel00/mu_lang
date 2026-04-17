@@ -35,6 +35,8 @@ This project follows a strict prototype coding style.
 - polymorphic OO designs
 - hidden control flow
 - exception-based error handling
+- avoid data structure from stl except vector 
+- dont use std::string
 
 ## Design Change Policy
 

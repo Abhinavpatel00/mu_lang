@@ -148,6 +148,7 @@ ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  defin
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#   define ARCHITECTURE_ID /;"	d	file:
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define ARCHITECTURE_ID /;"	d	file:
 ARCHITECTURE_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define ARCHITECTURE_ID$/;"	d	file:
+Acceptance Criteria	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Acceptance Criteria$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 AstNode	main.cpp	/^struct AstNode$/;"	s	file:
 Avoid By Default	.github/copilot-instructions.md	/^## Avoid By Default$/;"	s	chapter:Copilot Instructions
 CC_DIGIT	main.cpp	/^    CC_DIGIT,$/;"	e	enum:Char_type	file:
@@ -416,9 +417,11 @@ C_VERSION	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define C_VER
 Char_type	main.cpp	/^enum Char_type : uint8_t$/;"	g	typeref:typename:uint8_t	file:
 Code Style Direction	.github/copilot-instructions.md	/^## Code Style Direction$/;"	s	chapter:Copilot Instructions
 Comments	LEXER_PORT_DIFFERENCES.md	/^## Comments$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
+Concrete Work Left In `main.cpp` (Implementation Checklist)	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Concrete Work Left In `main.cpp` (Implementation Checklist)$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 Copilot Instructions	.github/copilot-instructions.md	/^# Copilot Instructions$/;"	c
 Core Rules	.github/copilot-instructions.md	/^## Core Rules$/;"	s	chapter:Copilot Instructions
 Correctness and Regression Risks If Replaced As-Is	LEXER_PORT_DIFFERENCES.md	/^## Correctness and Regression Risks If Replaced As-Is$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
+Current State (Observed)	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Current State (Observed)$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 DEC	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define DEC(/;"	d	file:
 DEC	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define DEC(/;"	d	file:
 Design Change Policy	.github/copilot-instructions.md	/^## Design Change Policy$/;"	s	chapter:Copilot Instructions
@@ -427,6 +430,7 @@ Dot/Range Operators	LEXER_PORT_DIFFERENCES.md	/^## Dot\/Range Operators$/;"	s	ch
 EQUALS	build/Makefile	/^EQUALS = =$/;"	m
 Executive Summary	LEXER_PORT_DIFFERENCES.md	/^## Executive Summary$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
 Exit Criteria For Moving Beyond Prototype	APPROACH_IMPROVEMENTS.md	/^## Exit Criteria For Moving Beyond Prototype$/;"	s	chapter:Prototype-Phase Simplification Plan
+Feature Coverage For `ok.mu`	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Feature Coverage For `ok.mu`$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 Final Recommendation	APPROACH_IMPROVEMENTS.md	/^## Final Recommendation$/;"	s	chapter:Prototype-Phase Simplification Plan
 HEX	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define HEX(/;"	d	file:
 HEX	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define HEX(/;"	d	file:
@@ -434,6 +438,7 @@ Here-String Support	LEXER_PORT_DIFFERENCES.md	/^## Here-String Support$/;"	s	cha
 High-Impact Architectural Differences	LEXER_PORT_DIFFERENCES.md	/^## High-Impact Architectural Differences$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
 ID_VOID_MAIN	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define ID_VOID_MAIN$/;"	d	file:
 Identifier Rules	LEXER_PORT_DIFFERENCES.md	/^## Identifier Rules$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
+Important Notes	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Important Notes$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 InstallScripts	build/CMakeFiles/InstallScripts.json	/^	"InstallScripts" : $/;"	a
 KW_AS	main.cpp	/^    KW_AS,$/;"	e	enum:TokenKind	file:
 KW_COMP	main.cpp	/^    KW_COMP,$/;"	e	enum:TokenKind	file:
@@ -459,11 +464,13 @@ KW_UNION	main.cpp	/^    KW_UNION,$/;"	e	enum:TokenKind	file:
 KW_USING	main.cpp	/^    KW_USING,$/;"	e	enum:TokenKind	file:
 KW_VOID	main.cpp	/^    KW_VOID,$/;"	e	enum:TokenKind	file:
 Keyword Handling	LEXER_PORT_DIFFERENCES.md	/^## Keyword Handling$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
+LLVM Gap Analysis For `examples/ok.mu`	LLVM_OK_MU_GAP_ANALYSIS.md	/^# LLVM Gap Analysis For `examples\/ok.mu`$/;"	c
 LLVM_DIR	CMakeLists.txt	/^    set(LLVM_DIR "\/usr\/lib\/llvm21\/lib\/cmake\/llvm" CACHE PATH "LLVM 21 CMake config path")$/;"	v
 LLVM_INCLUDE_DIRS	CMakeLists.txt	/^    set(LLVM_INCLUDE_DIRS "\/usr\/lib\/llvm21\/include")$/;"	v
 LLVM_LIBRARY_DIRS	CMakeLists.txt	/^    set(LLVM_LIBRARY_DIRS "\/usr\/lib\/llvm21\/lib")$/;"	v
 Lexer	main.cpp	/^struct Lexer$/;"	s	file:
 Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation	LEXER_PORT_DIFFERENCES.md	/^# Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation$/;"	c
+Minimal "Get `ok.mu` Running" Plan (Recommended Order)	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Minimal "Get `ok.mu` Running" Plan (Recommended Order)$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 Minus Family	LEXER_PORT_DIFFERENCES.md	/^## Minus Family$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
 NODE_ARRAY_LITERAL	main.cpp	/^    NODE_ARRAY_LITERAL,$/;"	e	enum:NodeKind	file:
 NODE_BINARY	main.cpp	/^    NODE_BINARY,$/;"	e	enum:NodeKind	file:
@@ -511,6 +518,11 @@ PLATFORM_ID	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# defi
 Parallel	build/CMakeFiles/InstallScripts.json	/^	"Parallel" : false$/;"	b
 Parser	main.cpp	/^struct Parser$/;"	s	file:
 Performance and Memory Tradeoffs	LEXER_PORT_DIFFERENCES.md	/^## Performance and Memory Tradeoffs$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
+Phase 1: Add a semantic pass (must-do before LLVM)	LLVM_OK_MU_GAP_ANALYSIS.md	/^### Phase 1: Add a semantic pass (must-do before LLVM)$/;"	S	section:LLVM Gap Analysis For `examples/ok.mu`""Concrete Work Left In `main.cpp` (Implementation Checklist)
+Phase 2: LLVM context and module setup	LLVM_OK_MU_GAP_ANALYSIS.md	/^### Phase 2: LLVM context and module setup$/;"	S	section:LLVM Gap Analysis For `examples/ok.mu`""Concrete Work Left In `main.cpp` (Implementation Checklist)
+Phase 3: Emit LLVM IR for AST forms used by `ok.mu`	LLVM_OK_MU_GAP_ANALYSIS.md	/^### Phase 3: Emit LLVM IR for AST forms used by `ok.mu`$/;"	S	section:LLVM Gap Analysis For `examples/ok.mu`""Concrete Work Left In `main.cpp` (Implementation Checklist)
+Phase 4: Produce object + executable	LLVM_OK_MU_GAP_ANALYSIS.md	/^### Phase 4: Produce object + executable$/;"	S	section:LLVM Gap Analysis For `examples/ok.mu`""Concrete Work Left In `main.cpp` (Implementation Checklist)
+Phase 5: Driver and diagnostics	LLVM_OK_MU_GAP_ANALYSIS.md	/^### Phase 5: Driver and diagnostics$/;"	S	section:LLVM Gap Analysis For `examples/ok.mu`""Concrete Work Left In `main.cpp` (Implementation Checklist)
 Practical Simplifications (High Impact, Low Complexity)	APPROACH_IMPROVEMENTS.md	/^## Practical Simplifications (High Impact, Low Complexity)$/;"	s	chapter:Prototype-Phase Simplification Plan
 Preferred C++ Features	.github/copilot-instructions.md	/^## Preferred C++ Features$/;"	s	chapter:Copilot Instructions
 Prototype-Phase Simplification Plan	APPROACH_IMPROVEMENTS.md	/^# Prototype-Phase Simplification Plan$/;"	c
@@ -540,10 +552,13 @@ STRINGIFY	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define STRING
 STRINGIFY	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define STRINGIFY(X) STRINGIFY_/;"	d	file:
 STRINGIFY_HELPER	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#define STRINGIFY_HELPER(/;"	d	file:
 STRINGIFY_HELPER	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define STRINGIFY_HELPER(/;"	d	file:
+Scope	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Scope$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 Simple Rules To Follow	APPROACH_IMPROVEMENTS.md	/^## Simple Rules To Follow$/;"	s	chapter:Prototype-Phase Simplification Plan
 Source Baseline	LEXER_PORT_DIFFERENCES.md	/^## Source Baseline$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
+Spec-to-Implementation Delta Relevant To `ok.mu`	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Spec-to-Implementation Delta Relevant To `ok.mu`$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 String and Escape Semantics	LEXER_PORT_DIFFERENCES.md	/^## String and Escape Semantics$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
 Suggested Next Step in This Repo	LEXER_PORT_DIFFERENCES.md	/^## Suggested Next Step in This Repo$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
+Syntax that currently parses	LLVM_OK_MU_GAP_ANALYSIS.md	/^### Syntax that currently parses$/;"	S	section:LLVM Gap Analysis For `examples/ok.mu`""Feature Coverage For `ok.mu`
 TK_ARROW	main.cpp	/^    TK_ARROW,         \/\/ ->$/;"	e	enum:TokenKind	file:
 TK_ASSIGN	main.cpp	/^    TK_ASSIGN,        \/\/ :=$/;"	e	enum:TokenKind	file:
 TK_CHAR_LIT	main.cpp	/^    TK_CHAR_LIT,$/;"	e	enum:TokenKind	file:
@@ -556,7 +571,7 @@ TK_ERROR	main.cpp	/^    TK_ERROR,$/;"	e	enum:TokenKind	file:
 TK_FAT_ARROW	main.cpp	/^    TK_FAT_ARROW,     \/\/ =>$/;"	e	enum:TokenKind	file:
 TK_FLOAT_LIT	main.cpp	/^    TK_FLOAT_LIT,$/;"	e	enum:TokenKind	file:
 TK_GE	main.cpp	/^    TK_GE,            \/\/ >=$/;"	e	enum:TokenKind	file:
-TK_IDENT	main.cpp	/^	TK_IDENT = 256,$/;"	e	enum:TokenKind	file:
+TK_IDENT	main.cpp	/^    TK_IDENT = 256,$/;"	e	enum:TokenKind	file:
 TK_INT_LIT	main.cpp	/^    TK_INT_LIT,$/;"	e	enum:TokenKind	file:
 TK_LE	main.cpp	/^    TK_LE,            \/\/ <=$/;"	e	enum:TokenKind	file:
 TK_MINUS_EQ	main.cpp	/^    TK_MINUS_EQ,$/;"	e	enum:TokenKind	file:
@@ -570,12 +585,23 @@ TK_SHL	main.cpp	/^    TK_SHL,           \/\/ <<$/;"	e	enum:TokenKind	file:
 TK_SHR	main.cpp	/^    TK_SHR,           \/\/ >>$/;"	e	enum:TokenKind	file:
 TK_STRING_LIT	main.cpp	/^    TK_STRING_LIT,$/;"	e	enum:TokenKind	file:
 TK_TRIPLE_DOT	main.cpp	/^    TK_TRIPLE_DOT,    \/\/ ...$/;"	e	enum:TokenKind	file:
-Token	main.cpp	/^struct Token$/;"	s	file:
+Token	main.cpp	/^struct Token {$/;"	s	file:
 Token Location and Trivia Differences	LEXER_PORT_DIFFERENCES.md	/^## Token Location and Trivia Differences$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
 TokenKind	main.cpp	/^enum TokenKind : int16_t$/;"	g	typeref:typename:int16_t	file:
+VF_BINARY	main.cpp	/^    VF_BINARY     = 1 << 1,$/;"	e	enum:ValueFlags	file:
+VF_FORCE_F64	main.cpp	/^    VF_FORCE_F64  = 1 << 3,$/;"	e	enum:ValueFlags	file:
+VF_HEX	main.cpp	/^    VF_HEX        = 1 << 0,$/;"	e	enum:ValueFlags	file:
+VF_OVERFLOW	main.cpp	/^    VF_OVERFLOW   = 1 << 2,$/;"	e	enum:ValueFlags	file:
+VK_FLOAT	main.cpp	/^    VK_FLOAT,$/;"	e	enum:ValueKind	file:
+VK_INT	main.cpp	/^    VK_INT,$/;"	e	enum:ValueKind	file:
+VK_STRING	main.cpp	/^    VK_STRING,$/;"	e	enum:ValueKind	file:
+ValueFlags	main.cpp	/^enum ValueFlags : uint32_t {$/;"	g	typeref:typename:uint32_t	file:
+ValueKind	main.cpp	/^enum ValueKind : uint8_t {$/;"	g	typeref:typename:uint8_t	file:
 What Not To Do Yet	APPROACH_IMPROVEMENTS.md	/^## What Not To Do Yet$/;"	s	chapter:Prototype-Phase Simplification Plan
 What We Optimize For In Prototype	APPROACH_IMPROVEMENTS.md	/^## What We Optimize For In Prototype$/;"	s	chapter:Prototype-Phase Simplification Plan
+What is still missing for executable generation	LLVM_OK_MU_GAP_ANALYSIS.md	/^### What is still missing for executable generation$/;"	S	section:LLVM Gap Analysis For `examples/ok.mu`""Feature Coverage For `ok.mu`
 __anon3b5b11db0108	main.cpp	/^{$/;"	s	file:
+__anon3b5b11db020a	main.cpp	/^    union {$/;"	u	struct:Token	file:
 __has_include	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^#  define __has_include(/;"	d	file:
 __has_include	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define __has_include(/;"	d	file:
 acc_gen	build/Makefile	/^acc_gen: cmake_check_build_system$/;"	t
@@ -584,26 +610,25 @@ advance	main.cpp	/^void advance(Lexer* lex)$/;"	f	typeref:typename:void
 all	build/Makefile	/^all: cmake_check_build_system$/;"	t
 binding_power	main.cpp	/^static int binding_power(TokenKind kind)$/;"	f	typeref:typename:int	file:
 char_table	main.cpp	/^static uint8_t char_table[256];$/;"	v	typeref:typename:uint8_t[256]	file:
-children	main.cpp	/^    std::vector<int>    children;$/;"	m	struct:AstNode	typeref:typename:std::vector<int>	file:
+children	main.cpp	/^    std::vector<int> children;$/;"	m	struct:AstNode	typeref:typename:std::vector<int>	file:
 clean	build/Makefile	/^clean:$/;"	t
 clean/fast	build/Makefile	/^clean\/fast: clean$/;"	t
 cmake_check_build_system	build/Makefile	/^cmake_check_build_system:$/;"	t
 cmake_force	build/Makefile	/^cmake_force:$/;"	t
-col	main.cpp	/^    int                 col  = 1;$/;"	m	struct:AstNode	typeref:typename:int	file:
+col	main.cpp	/^    int              col  = 1;$/;"	m	struct:AstNode	typeref:typename:int	file:
 col	main.cpp	/^    int              col  = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
-col	main.cpp	/^    int          col  = 1;$/;"	m	struct:Token	typeref:typename:int	file:
+col	main.cpp	/^    uint32_t line, col;$/;"	m	struct:Token	typeref:typename:uint32_t	file:
 const	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define const$/;"	d	file:
-current	main.cpp	/^    Token               current;$/;"	m	struct:Parser	typeref:typename:Token	file:
+current	main.cpp	/^    Token                current;$/;"	m	struct:Parser	typeref:typename:Token	file:
 default_target	build/Makefile	/^default_target: all$/;"	t
 depend	build/Makefile	/^depend:$/;"	t
 edit_cache	build/Makefile	/^edit_cache:$/;"	t
 edit_cache/fast	build/Makefile	/^edit_cache\/fast: edit_cache$/;"	t
-error	main.cpp	/^    std::string         error;$/;"	m	struct:Parser	typeref:typename:std::string	file:
+error	main.cpp	/^    std::string          error;$/;"	m	struct:Parser	typeref:typename:std::string	file:
+float_val	main.cpp	/^        double  float_val;$/;"	m	union:Token::__anon3b5b11db020a	typeref:typename:double	file:
 float_val	main.cpp	/^    double           float_val = 0.0;$/;"	m	struct:Lexer	typeref:typename:double	file:
-float_val	main.cpp	/^    double           float_val = 0.0;$/;"	m	struct:Token	typeref:typename:double	file:
 help	build/Makefile	/^help:$/;"	t
 id	main.cpp	/^    std::string_view id;       \/\/ for TK_IDENT$/;"	m	struct:Lexer	typeref:typename:std::string_view	file:
-id	main.cpp	/^    std::string_view id;$/;"	m	struct:Token	typeref:typename:std::string_view	file:
 info_arch	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
 info_arch	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
 info_compiler	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";$/;"	v	typeref:typename:char const *
@@ -629,15 +654,15 @@ info_version_internal	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^ch
 info_version_internal	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const info_version_internal[] = {$/;"	v	typeref:typename:char const[]
 info_version_internal	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INT/;"	v	typeref:typename:char const *
 init_char_table	main.cpp	/^void init_char_table()$/;"	f	typeref:typename:void
+int_val	main.cpp	/^        int64_t int_val;$/;"	m	union:Token::__anon3b5b11db020a	typeref:typename:int64_t	file:
 int_val	main.cpp	/^    int64_t          int_val   = 0;$/;"	m	struct:Lexer	typeref:typename:int64_t	file:
-int_val	main.cpp	/^    int64_t          int_val   = 0;$/;"	m	struct:Token	typeref:typename:int64_t	file:
 intrinsics_gen	build/Makefile	/^intrinsics_gen: cmake_check_build_system$/;"	t
 intrinsics_gen/fast	build/Makefile	/^intrinsics_gen\/fast:$/;"	t
 keywords	main.cpp	/^static const std::unordered_map<std::string_view, int> keywords = {$/;"	v	typeref:typename:const std::unordered_map<std::string_view,int>	file:
-kind	main.cpp	/^    NodeKind            kind = NODE_ERROR;$/;"	m	struct:AstNode	typeref:typename:NodeKind	file:
-kind	main.cpp	/^    TokenKind    kind = TK_EOF;$/;"	m	struct:Token	typeref:typename:TokenKind	file:
+kind	main.cpp	/^    NodeKind         kind = NODE_ERROR;$/;"	m	struct:AstNode	typeref:typename:NodeKind	file:
+kind	main.cpp	/^    TokenKind kind;$/;"	m	struct:Token	typeref:typename:TokenKind	file:
 led	main.cpp	/^static int led(Parser* p, const Token& token, int left)$/;"	f	typeref:typename:int	file:
-lex	main.cpp	/^    Lexer               lex;$/;"	m	struct:Parser	typeref:typename:Lexer	file:
+lex	main.cpp	/^    Lexer                lex;$/;"	m	struct:Parser	typeref:typename:Lexer	file:
 lex_identifier	main.cpp	/^TokenKind lex_identifier(Lexer* lex)$/;"	f	typeref:typename:TokenKind
 lex_location	main.cpp	/^} lex_location;$/;"	t	typeref:struct:__anon3b5b11db0108	file:
 lex_number	main.cpp	/^TokenKind lex_number(Lexer* lex)$/;"	f	typeref:typename:TokenKind
@@ -651,9 +676,9 @@ lexer_int	main.cpp	/^inline int64_t lexer_int(const Lexer* lex)$/;"	f	typeref:ty
 lexer_line	main.cpp	/^inline int lexer_line(const Lexer* lex)$/;"	f	typeref:typename:int
 lexer_str	main.cpp	/^inline std::string_view lexer_str(const Lexer* lex)$/;"	f	typeref:typename:std::string_view
 lexer_take_token	main.cpp	/^Token lexer_take_token(Lexer* lex)$/;"	f	typeref:typename:Token
-line	main.cpp	/^    int                 line = 1;$/;"	m	struct:AstNode	typeref:typename:int	file:
+line	main.cpp	/^    int              line = 1;$/;"	m	struct:AstNode	typeref:typename:int	file:
 line	main.cpp	/^    int              line = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
-line	main.cpp	/^    int          line = 1;$/;"	m	struct:Token	typeref:typename:int	file:
+line	main.cpp	/^    uint32_t line, col;$/;"	m	struct:Token	typeref:typename:uint32_t	file:
 line_number	main.cpp	/^    int line_number;$/;"	m	struct:__anon3b5b11db0108	typeref:typename:int	file:
 line_offset	main.cpp	/^    int line_offset;$/;"	m	struct:__anon3b5b11db0108	typeref:typename:int	file:
 load	main.cpp	/^const char* load(const char* path)$/;"	f	typeref:typename:const char *
@@ -673,11 +698,11 @@ mucc	CMakeLists.txt	/^project(mucc C CXX)$/;"	p
 mucc	build/Makefile	/^mucc: cmake_check_build_system$/;"	t
 mucc/fast	build/Makefile	/^mucc\/fast:$/;"	t
 mycompiler	README.md	/^# mycompiler$/;"	c
-next	main.cpp	/^    Token               next;$/;"	m	struct:Parser	typeref:typename:Token	file:
+next	main.cpp	/^    Token                next;$/;"	m	struct:Parser	typeref:typename:Token	file:
 node_kind_name	main.cpp	/^static const char* node_kind_name(NodeKind kind)$/;"	f	typeref:typename:const char *	file:
 nodes	main.cpp	/^    std::vector<AstNode> nodes;$/;"	m	struct:Parser	typeref:typename:std::vector<AstNode>	file:
 nud	main.cpp	/^static int nud(Parser* p, const Token& token)$/;"	f	typeref:typename:int	file:
-ok	main.cpp	/^    bool                ok = true;$/;"	m	struct:Parser	typeref:typename:bool	file:
+ok	main.cpp	/^    bool                 ok = true;$/;"	m	struct:Parser	typeref:typename:bool	file:
 omp_gen	build/Makefile	/^omp_gen: cmake_check_build_system$/;"	t
 omp_gen/fast	build/Makefile	/^omp_gen\/fast:$/;"	t
 parse_block	main.cpp	/^static int parse_block(Parser* p)$/;"	f	typeref:typename:int	file:
@@ -718,17 +743,18 @@ skip_block_comment	main.cpp	/^void skip_block_comment(Lexer* lex)$/;"	f	typeref:
 skip_line_comment	main.cpp	/^void skip_line_comment(Lexer* lex)$/;"	f	typeref:typename:void
 skip_whitespace	main.cpp	/^void skip_whitespace(Lexer* lex)$/;"	f	typeref:typename:void
 src	main.cpp	/^    std::string_view src;$/;"	m	struct:Lexer	typeref:typename:std::string_view	file:
+str	main.cpp	/^    std::string_view str; \/\/ no allocation$/;"	m	struct:Token	typeref:typename:std::string_view	file:
 str_val	main.cpp	/^    std::string      str_val;  \/\/ for strings (owned copy)$/;"	m	struct:Lexer	typeref:typename:std::string	file:
-str_val	main.cpp	/^    std::string      str_val;$/;"	m	struct:Token	typeref:typename:std::string	file:
 target_parser_gen	build/Makefile	/^target_parser_gen: cmake_check_build_system$/;"	t
 target_parser_gen/fast	build/Makefile	/^target_parser_gen\/fast:$/;"	t
-text	main.cpp	/^    std::string         text;$/;"	m	struct:AstNode	typeref:typename:std::string	file:
+text	main.cpp	/^    std::string      text;$/;"	m	struct:AstNode	typeref:typename:std::string	file:
 tok_col	main.cpp	/^    int              tok_col  = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
 tok_line	main.cpp	/^    int              tok_line = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
 token_is_assignment	main.cpp	/^static bool token_is_assignment(TokenKind kind)$/;"	f	typeref:typename:bool	file:
 token_is_identifier_like	main.cpp	/^static bool token_is_identifier_like(TokenKind kind)$/;"	f	typeref:typename:bool	file:
 token_kind_name	main.cpp	/^static std::string token_kind_name(TokenKind kind)$/;"	f	typeref:typename:std::string	file:
 token_next	main.cpp	/^TokenKind token_next(Lexer* lex)$/;"	f	typeref:typename:TokenKind
+vkind	main.cpp	/^    ValueKind vkind;$/;"	m	struct:Token	typeref:typename:ValueKind	file:
 volatile	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define volatile$/;"	d	file:
 vt_gen	build/Makefile	/^vt_gen: cmake_check_build_system$/;"	t
 vt_gen/fast	build/Makefile	/^vt_gen\/fast:$/;"	t
