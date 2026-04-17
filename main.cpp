@@ -352,66 +352,29 @@ TokenKind lex_operator(Lexer* lex, char first)
 {
     uint32_t start = lex->pos;
     advance(lex);
-    // Multi‑char operators
-    if(first == '+' && peek(lex) == '=')
+    struct Op2
     {
-        advance(lex);
-        return TK_PLUS_EQ;
-    }
-    if(first == '-' && peek(lex) == '=')
+        char      a;
+        char      b;
+        TokenKind kind;
+    };
+
+    static const Op2 ops2[] = {
+        {'+', '=', TK_PLUS_EQ}, {'-', '=', TK_MINUS_EQ}, {'*', '=', TK_MUL_EQ}, {'/', '=', TK_DIV_EQ},
+        {':', '=', TK_ASSIGN},  {':', ':', TK_CONST_ASSIGN}, {'=', '=', TK_EQ},  {'!', '=', TK_NE},
+        {'<', '=', TK_LE},      {'>', '=', TK_GE},         {'<', '<', TK_SHL},  {'>', '>', TK_SHR},
+        {'-', '>', TK_ARROW},   {'=', '>', TK_FAT_ARROW},
+    };
+
+    for(const Op2& op : ops2)
     {
-        advance(lex);
-        return TK_MINUS_EQ;
-    }
-    if(first == '*' && peek(lex) == '=')
-    {
-        advance(lex);
-        return TK_MUL_EQ;
-    }
-    if(first == '/' && peek(lex) == '=')
-    {
-        advance(lex);
-        return TK_DIV_EQ;
-    }
-    if(first == ':' && peek(lex) == '=')
-    {
-        advance(lex);
-        return TK_ASSIGN;
-    }
-    if(first == ':' && peek(lex) == ':')
-    {
-        advance(lex);
-        return TK_CONST_ASSIGN;
-    }
-    if(first == '=' && peek(lex) == '=')
-    {
-        advance(lex);
-        return TK_EQ;
-    }
-    if(first == '!' && peek(lex) == '=')
-    {
-        advance(lex);
-        return TK_NE;
-    }
-    if(first == '<' && peek(lex) == '=')
-    {
-        advance(lex);
-        return TK_LE;
-    }
-    if(first == '>' && peek(lex) == '=')
-    {
-        advance(lex);
-        return TK_GE;
-    }
-    if(first == '<' && peek(lex) == '<')
-    {
-        advance(lex);
-        return TK_SHL;
-    }
-    if(first == '>' && peek(lex) == '>')
-    {
-        advance(lex);
-        return TK_SHR;
+        if(first == op.a && peek(lex) == op.b)
+        {
+            advance(lex);
+            lex->tok_start  = start;
+            lex->tok_length = lex->pos - start;
+            return op.kind;
+        }
     }
     if(first == '.' && peek(lex) == '.')
     {
@@ -419,33 +382,33 @@ TokenKind lex_operator(Lexer* lex, char first)
         if(peek(lex) == '=')
         {
             advance(lex);
+            lex->tok_start  = start;
+            lex->tok_length = lex->pos - start;
             return TK_RANGE_INCL;
         }
         if(peek(lex) == '.')
         {
             advance(lex);
+            lex->tok_start  = start;
+            lex->tok_length = lex->pos - start;
             return TK_TRIPLE_DOT;
         }
+        lex->tok_start  = start;
+        lex->tok_length = lex->pos - start;
         return TK_RANGE;
-    }
-    if(first == '-' && peek(lex) == '>')
-    {
-        advance(lex);
-        return TK_ARROW;
-    }
-    if(first == '=' && peek(lex) == '>')
-    {
-        advance(lex);
-        return TK_FAT_ARROW;
     }
     if(first == '.' && peek(lex) == '*')
     {
         advance(lex);
+        lex->tok_start  = start;
+        lex->tok_length = lex->pos - start;
         return TK_DEREF;
     }
     if(first == '.' && peek(lex) == '?')
     {
         advance(lex);
+        lex->tok_start  = start;
+        lex->tok_length = lex->pos - start;
         return TK_OPT_UNWRAP;
     }
 
@@ -793,50 +756,11 @@ static bool token_is_identifier_like(TokenKind kind)
            || kind == KW_TRUE || kind == KW_FALSE || kind == KW_NULL;
 }
 
-static bool token_is_assignment(TokenKind kind)
-{
-    return kind == '=' || kind == TK_ASSIGN || kind == TK_PLUS_EQ || kind == TK_MINUS_EQ || kind == TK_MUL_EQ || kind == TK_DIV_EQ;
-}
-
 static int binding_power(TokenKind kind);
 
 static int prefix_binding_power()
 {
     return 70;
-}
-
-static void copy_text(char* dst, uint32_t* dst_len, const char* src)
-{
-    if(!src)
-    {
-        dst[0]   = 0;
-        *dst_len = 0;
-        return;
-    }
-
-    size_t n = std::strlen(src);
-    if(n > 95)
-        n = 95;
-    std::memcpy(dst, src, n);
-    dst[n]   = 0;
-    *dst_len = static_cast<uint32_t>(n);
-}
-
-static void copy_slice_text(char* dst, uint32_t* dst_len, const char* src, uint32_t start, uint32_t length)
-{
-    if(!src)
-    {
-        dst[0]   = 0;
-        *dst_len = 0;
-        return;
-    }
-
-    uint32_t n = length;
-    if(n > 95)
-        n = 95;
-    std::memcpy(dst, src + start, n);
-    dst[n]   = 0;
-    *dst_len = n;
 }
 
 static bool token_text_equals(const Parser* p, const Token* t, const char* text)
@@ -847,50 +771,47 @@ static bool token_text_equals(const Parser* p, const Token* t, const char* text)
     return std::memcmp(p->lex.src + t->start, text, len) == 0;
 }
 
-static int parser_add_node(Parser* p, NodeKind kind, const char* text = nullptr, int line = 0, int col = 0)
+static int parser_add_node(Parser* p, NodeKind kind, const Token* token = nullptr, const char* text = nullptr, int line = 0, int col = 0)
 {
-    if(line == 0)
-        line = p->current.line;
-    if(col == 0)
-        col = p->current.col;
-
-    AstNode n;
+    AstNode n{};
     n.kind = kind;
-    n.line = line;
-    n.col  = col;
-    copy_text(n.text, &n.text_len, text);
+
+    if(token)
+    {
+        n.line = static_cast<int>(token->line);
+        n.col  = static_cast<int>(token->col);
+
+        if(p->lex.src && token->length > 0)
+        {
+            uint32_t nbytes = token->length;
+            if(nbytes > 95)
+                nbytes = 95;
+            std::memcpy(n.text, p->lex.src + token->start, nbytes);
+            n.text_len = nbytes;
+        }
+    }
+    else
+    {
+        if(line == 0)
+            line = p->current.line;
+        if(col == 0)
+            col = p->current.col;
+
+        n.line = line;
+        n.col  = col;
+
+        if(text)
+        {
+            size_t nbytes = std::strlen(text);
+            if(nbytes > 95)
+                nbytes = 95;
+            std::memcpy(n.text, text, nbytes);
+            n.text_len = static_cast<uint32_t>(nbytes);
+        }
+    }
+
     p->nodes.push_back(n);
     return static_cast<int>(p->nodes.size() - 1);
-}
-
-static int parser_add_node_token_text(Parser* p, NodeKind kind, const Token& token, int line = 0, int col = 0)
-{
-    if(line == 0)
-        line = static_cast<int>(token.line);
-    if(col == 0)
-        col = static_cast<int>(token.col);
-
-    AstNode n;
-    n.kind = kind;
-    n.line = line;
-    n.col  = col;
-    copy_slice_text(n.text, &n.text_len, p->lex.src, token.start, token.length);
-    p->nodes.push_back(n);
-    return static_cast<int>(p->nodes.size() - 1);
-}
-
-static int parser_add_node_int(Parser* p, NodeKind kind, int64_t v, int line, int col)
-{
-    char buf[96];
-    std::snprintf(buf, sizeof(buf), "%lld", static_cast<long long>(v));
-    return parser_add_node(p, kind, buf, line, col);
-}
-
-static int parser_add_node_float(Parser* p, NodeKind kind, double v, int line, int col)
-{
-    char buf[96];
-    std::snprintf(buf, sizeof(buf), "%.6f", v);
-    return parser_add_node(p, kind, buf, line, col);
 }
 
 static void parser_add_child(Parser* p, int parent, int child)
@@ -963,8 +884,6 @@ static void parser_synchronize(Parser* p)
 static int parse_expression(Parser* p, int rbp = 0);
 static int parse_type(Parser* p);
 static int parse_block(Parser* p);
-static int parse_item(Parser* p);
-
 static int parse_name_list(Parser* p)
 {
     int list = parser_add_node(p, NODE_NAME_LIST);
@@ -973,13 +892,13 @@ static int parse_name_list(Parser* p)
     {
         parser_fail(p, "expected identifier");
         char ascii_name[2] = {0};
-        parser_add_child(p, list, parser_add_node(p, NODE_ERROR, token_kind_name(p->current.kind, ascii_name)));
+        parser_add_child(p, list, parser_add_node(p, NODE_ERROR, nullptr, token_kind_name(p->current.kind, ascii_name)));
         return list;
     }
 
     while(true)
     {
-        parser_add_child(p, list, parser_add_node_token_text(p, NODE_IDENT, p->current));
+        parser_add_child(p, list, parser_add_node(p, NODE_IDENT, &p->current));
         parser_advance(p);
         if(p->current.kind != ',')
             break;
@@ -1000,22 +919,20 @@ static int parse_type_name(Parser* p)
     {
         if(p->current.kind == TK_IDENT)
         {
-            int node = parser_add_node_token_text(p, NODE_TYPE_NAME, p->current);
+            int node = parser_add_node(p, NODE_TYPE_NAME, &p->current);
             parser_advance(p);
             return node;
         }
-        else
-        {
-            char ascii_name[2] = {0};
-            int node = parser_add_node(p, NODE_TYPE_NAME, token_kind_name(p->current.kind, ascii_name));
-            parser_advance(p);
-            return node;
-        }
+
+        char ascii_name[2] = {0};
+        int node = parser_add_node(p, NODE_TYPE_NAME, nullptr, token_kind_name(p->current.kind, ascii_name));
+        parser_advance(p);
+        return node;
     }
 
     parser_fail(p, "expected type name");
     char ascii_name[2] = {0};
-    return parser_add_node(p, NODE_ERROR, token_kind_name(p->current.kind, ascii_name));
+    return parser_add_node(p, NODE_ERROR, nullptr, token_kind_name(p->current.kind, ascii_name));
 }
 
 static int parse_param_list(Parser* p)
@@ -1063,7 +980,7 @@ static int parse_type(Parser* p)
             parser_advance(p);
         }
 
-        int node  = parser_add_node(p, NODE_TYPE_POINTER, has_mut ? "mut" : nullptr, line, col);
+        int node  = parser_add_node(p, NODE_TYPE_POINTER, nullptr, has_mut ? "mut" : nullptr, line, col);
         int inner = parse_type(p);
         parser_add_child(p, node, inner);
         return node;
@@ -1078,7 +995,7 @@ static int parse_type(Parser* p)
         if(p->current.kind == ']')
         {
             parser_advance(p);
-            int node = parser_add_node(p, NODE_TYPE_SLICE, nullptr, line, col);
+            int node = parser_add_node(p, NODE_TYPE_SLICE, nullptr, nullptr, line, col);
             parser_add_child(p, node, parse_type(p));
             return node;
         }
@@ -1087,14 +1004,14 @@ static int parse_type(Parser* p)
         {
             parser_advance(p);
             parser_expect(p, ']', "']' after dynamic array type");
-            int node = parser_add_node(p, NODE_TYPE_ARRAY, "..", line, col);
+            int node = parser_add_node(p, NODE_TYPE_ARRAY, nullptr, "..", line, col);
             parser_add_child(p, node, parse_type(p));
             return node;
         }
 
         int size_expr = parse_expression(p, 0);
         parser_expect(p, ']', "']' after array size");
-        int node = parser_add_node(p, NODE_TYPE_ARRAY, nullptr, line, col);
+        int node = parser_add_node(p, NODE_TYPE_ARRAY, nullptr, nullptr, line, col);
         parser_add_child(p, node, size_expr);
         parser_add_child(p, node, parse_type(p));
         return node;
@@ -1108,7 +1025,7 @@ static int parse_type(Parser* p)
         int params = parse_param_list(p);
         parser_expect(p, ')', "')' after function type parameters");
 
-        int node = parser_add_node(p, NODE_TYPE_FUNC, nullptr, line, col);
+        int node = parser_add_node(p, NODE_TYPE_FUNC, nullptr, nullptr, line, col);
         parser_add_child(p, node, params);
 
         if(p->current.kind == TK_ARROW)
@@ -1118,7 +1035,7 @@ static int parse_type(Parser* p)
         }
         else
         {
-            parser_add_child(p, node, parser_add_node(p, NODE_TYPE_NAME, "void"));
+            parser_add_child(p, node, parser_add_node(p, NODE_TYPE_NAME, nullptr, "void"));
         }
         return node;
     }
@@ -1147,13 +1064,13 @@ static int parse_expression_list(Parser* p, TokenKind end_kind)
 static int parse_struct_literal(Parser* p, int dot_line, int dot_col)
 {
     parser_expect(p, '{', "'{' after '.' for struct literal");
-    int node = parser_add_node(p, NODE_STRUCT_LITERAL, nullptr, dot_line, dot_col);
+    int node = parser_add_node(p, NODE_STRUCT_LITERAL, nullptr, nullptr, dot_line, dot_col);
 
     while(p->current.kind != TK_EOF && p->current.kind != '}')
     {
         if(p->current.kind == TK_IDENT && p->next.kind == '=')
         {
-            int field = parser_add_node_token_text(p, NODE_FIELD, p->current);
+            int field = parser_add_node(p, NODE_FIELD, &p->current);
             parser_advance(p);
             parser_advance(p);
             parser_add_child(p, field, parse_expression(p, 0));
@@ -1179,23 +1096,23 @@ static int nud(Parser* p, const Token& token)
     switch(token.kind)
     {
         case TK_IDENT:
-            return parser_add_node_token_text(p, NODE_IDENT, token, token.line, token.col);
+            return parser_add_node(p, NODE_IDENT, &token);
         case TK_INT_LIT:
-            return parser_add_node_int(p, NODE_INT, token.int_val, token.line, token.col);
+            return parser_add_node(p, NODE_INT, &token);
         case TK_FLOAT_LIT:
-            return parser_add_node_float(p, NODE_FLOAT, token.float_val, token.line, token.col);
+            return parser_add_node(p, NODE_FLOAT, &token);
         case TK_STRING_LIT:
-            return parser_add_node_token_text(p, NODE_STRING, token, token.line, token.col);
+            return parser_add_node(p, NODE_STRING, &token);
         case TK_CHAR_LIT:
-            return parser_add_node_int(p, NODE_CHAR, token.int_val, token.line, token.col);
+            return parser_add_node(p, NODE_CHAR, &token);
         case KW_TRUE:
-            return parser_add_node(p, NODE_BOOL, "true", token.line, token.col);
+            return parser_add_node(p, NODE_BOOL, nullptr, "true", token.line, token.col);
         case KW_FALSE:
-            return parser_add_node(p, NODE_BOOL, "false", token.line, token.col);
+            return parser_add_node(p, NODE_BOOL, nullptr, "false", token.line, token.col);
         case KW_NULL:
-            return parser_add_node(p, NODE_NULL, "null", token.line, token.col);
+            return parser_add_node(p, NODE_NULL, nullptr, "null", token.line, token.col);
         case '(': {
-            int group = parser_add_node(p, NODE_GROUP, nullptr, token.line, token.col);
+            int group = parser_add_node(p, NODE_GROUP, nullptr, nullptr, token.line, token.col);
             if(p->current.kind != ')')
                 parser_add_child(p, group, parse_expression(p, 0));
             parser_expect(p, ')', "')' to close grouped expression");
@@ -1205,7 +1122,7 @@ static int nud(Parser* p, const Token& token)
             if(p->current.kind == '{')
                 return parse_struct_literal(p, token.line, token.col);
             parser_fail(p, "expected '{' after '.' in literal");
-            return parser_add_node(p, NODE_ERROR, ".", token.line, token.col);
+            return parser_add_node(p, NODE_ERROR, nullptr, ".", token.line, token.col);
         case '+':
         case '-':
         case '!':
@@ -1217,7 +1134,7 @@ static int nud(Parser* p, const Token& token)
                 std::strcpy(op, "*mut");
                 parser_advance(p);
             }
-            int node = parser_add_node(p, NODE_PREFIX, op, token.line, token.col);
+            int node = parser_add_node(p, NODE_PREFIX, nullptr, op, token.line, token.col);
             parser_add_child(p, node, parse_expression(p, prefix_binding_power()));
             return node;
         }
@@ -1228,7 +1145,7 @@ static int nud(Parser* p, const Token& token)
             char msg[192];
             std::snprintf(msg, sizeof(msg), "unexpected token in expression: %s", tk_name);
             parser_fail(p, msg);
-            return parser_add_node(p, NODE_ERROR, tk_name, token.line, token.col);
+            return parser_add_node(p, NODE_ERROR, nullptr, tk_name, token.line, token.col);
         }
     }
 }
@@ -1238,7 +1155,7 @@ static int led(Parser* p, const Token& token, int left)
     switch(token.kind)
     {
         case '(': {
-            int call = parser_add_node(p, NODE_CALL, nullptr, token.line, token.col);
+            int call = parser_add_node(p, NODE_CALL, nullptr, nullptr, token.line, token.col);
             parser_add_child(p, call, left);
             if(p->current.kind != ')')
             {
@@ -1254,7 +1171,7 @@ static int led(Parser* p, const Token& token, int left)
             return call;
         }
         case '[': {
-            int index = parser_add_node(p, NODE_INDEX, nullptr, token.line, token.col);
+            int index = parser_add_node(p, NODE_INDEX, nullptr, nullptr, token.line, token.col);
             parser_add_child(p, index, left);
             if(p->current.kind != ']')
                 parser_add_child(p, index, parse_expression(p, 0));
@@ -1265,9 +1182,9 @@ static int led(Parser* p, const Token& token, int left)
             if(p->current.kind != TK_IDENT)
             {
                 parser_fail(p, "expected member name after '.'");
-                return parser_add_node(p, NODE_ERROR, ".", token.line, token.col);
+                return parser_add_node(p, NODE_ERROR, nullptr, ".", token.line, token.col);
             }
-            int member = parser_add_node_token_text(p, NODE_MEMBER, p->current, token.line, token.col);
+            int member = parser_add_node(p, NODE_MEMBER, &p->current, nullptr, token.line, token.col);
             parser_add_child(p, member, left);
             parser_advance(p);
             return member;
@@ -1279,7 +1196,7 @@ static int led(Parser* p, const Token& token, int left)
         case TK_MUL_EQ:
         case TK_DIV_EQ: {
             char ascii_name[2] = {0};
-            int assign = parser_add_node(p, NODE_BINARY, token_kind_name(token.kind, ascii_name), token.line, token.col);
+            int assign = parser_add_node(p, NODE_BINARY, nullptr, token_kind_name(token.kind, ascii_name), token.line, token.col);
             parser_add_child(p, assign, left);
             parser_add_child(p, assign, parse_expression(p, binding_power(token.kind) - 1));
             return assign;
@@ -1297,7 +1214,7 @@ static int led(Parser* p, const Token& token, int left)
         case '*':
         case '/': {
             char ascii_name[2] = {0};
-            int binary = parser_add_node(p, NODE_BINARY, token_kind_name(token.kind, ascii_name), token.line, token.col);
+            int binary = parser_add_node(p, NODE_BINARY, nullptr, token_kind_name(token.kind, ascii_name), token.line, token.col);
             parser_add_child(p, binary, left);
             parser_add_child(p, binary, parse_expression(p, binding_power(token.kind)));
             return binary;
@@ -1309,7 +1226,7 @@ static int led(Parser* p, const Token& token, int left)
             char msg[192];
             std::snprintf(msg, sizeof(msg), "unexpected infix token: %s", tk_name);
             parser_fail(p, msg);
-            return parser_add_node(p, NODE_ERROR, tk_name, token.line, token.col);
+            return parser_add_node(p, NODE_ERROR, nullptr, tk_name, token.line, token.col);
         }
     }
 }
@@ -1371,7 +1288,7 @@ static int parse_return_stmt(Parser* p)
 {
     Token token = p->current;
     parser_advance(p);
-    int node = parser_add_node(p, NODE_RETURN, nullptr, token.line, token.col);
+    int node = parser_add_node(p, NODE_RETURN, nullptr, nullptr, token.line, token.col);
     if(p->current.kind != ';' && p->current.kind != '}' && p->current.kind != TK_EOF)
         parser_add_child(p, node, parse_expression(p, 0));
     parser_match(p, ';');
@@ -1382,11 +1299,11 @@ static int parse_for_stmt(Parser* p)
 {
     Token token = p->current;
     parser_advance(p);
-    int node = parser_add_node(p, NODE_FOR, nullptr, token.line, token.col);
+    int node = parser_add_node(p, NODE_FOR, nullptr, nullptr, token.line, token.col);
 
     if(p->current.kind == TK_IDENT)
     {
-        parser_add_child(p, node, parser_add_node_token_text(p, NODE_IDENT, p->current, p->current.line, p->current.col));
+        parser_add_child(p, node, parser_add_node(p, NODE_IDENT, &p->current));
         parser_advance(p);
     }
     else
@@ -1437,7 +1354,7 @@ static int parse_decl(Parser* p)
         if(p->current.kind == KW_STRUCT)
         {
             parser_advance(p);
-            int node = parser_add_node(p, NODE_DECL_STRUCT, nullptr, line, col);
+            int node = parser_add_node(p, NODE_DECL_STRUCT, nullptr, nullptr, line, col);
             parser_add_child(p, node, names);
             parser_expect(p, '{', "'{' after struct declaration");
             while(p->current.kind != TK_EOF && p->current.kind != '}')
@@ -1453,7 +1370,7 @@ static int parse_decl(Parser* p)
             int params = parse_param_list(p);
             parser_expect(p, ')', "')' after function parameters");
 
-            int node = parser_add_node(p, NODE_DECL_FUNC, nullptr, line, col);
+            int node = parser_add_node(p, NODE_DECL_FUNC, nullptr, nullptr, line, col);
             parser_add_child(p, node, names);
             parser_add_child(p, node, params);
 
@@ -1464,14 +1381,14 @@ static int parse_decl(Parser* p)
             }
             else
             {
-                parser_add_child(p, node, parser_add_node(p, NODE_TYPE_NAME, "void"));
+                parser_add_child(p, node, parser_add_node(p, NODE_TYPE_NAME, nullptr, "void"));
             }
 
             parser_add_child(p, node, parse_block(p));
             return node;
         }
 
-        int node = parser_add_node(p, NODE_DECL_VAR, "const", line, col);
+        int node = parser_add_node(p, NODE_DECL_VAR, nullptr, "const", line, col);
         parser_add_child(p, node, names);
         parser_add_child(p, node, parse_expression(p, 0));
         parser_match(p, ';');
@@ -1481,7 +1398,7 @@ static int parse_decl(Parser* p)
     if(p->current.kind == TK_ASSIGN)
     {
         parser_advance(p);
-        int node = parser_add_node(p, NODE_DECL_VAR, "mut", line, col);
+        int node = parser_add_node(p, NODE_DECL_VAR, nullptr, "mut", line, col);
         parser_add_child(p, node, names);
         parser_add_child(p, node, parse_expression(p, 0));
         parser_match(p, ';');
@@ -1491,7 +1408,7 @@ static int parse_decl(Parser* p)
     if(p->current.kind == ':')
     {
         parser_advance(p);
-        int node = parser_add_node(p, NODE_DECL_VAR, "typed", line, col);
+        int node = parser_add_node(p, NODE_DECL_VAR, nullptr, "typed", line, col);
         parser_add_child(p, node, names);
         parser_add_child(p, node, parse_type(p));
 
@@ -1507,7 +1424,7 @@ static int parse_decl(Parser* p)
 
     parser_fail(p, "expected declaration operator after name");
     parser_synchronize(p);
-    return parser_add_node(p, NODE_ERROR, "decl");
+    return parser_add_node(p, NODE_ERROR, nullptr, "decl");
 }
 
 static int parse_statement(Parser* p)
@@ -1523,7 +1440,7 @@ static int parse_statement(Parser* p)
        && (p->next.kind == TK_CONST_ASSIGN || p->next.kind == TK_ASSIGN || p->next.kind == ':' || p->next.kind == ','))
         return parse_decl(p);
 
-    int node = parser_add_node(p, NODE_EXPR_STMT, nullptr, p->current.line, p->current.col);
+    int node = parser_add_node(p, NODE_EXPR_STMT, nullptr, nullptr, p->current.line, p->current.col);
     parser_add_child(p, node, parse_expression(p, 0));
     parser_match(p, ';');
     return node;
@@ -1534,11 +1451,11 @@ static int parse_block(Parser* p)
     int line = p->current.line;
     int col  = p->current.col;
     parser_expect(p, '{', "'{' to start block");
-    int node = parser_add_node(p, NODE_BLOCK, nullptr, line, col);
+    int node = parser_add_node(p, NODE_BLOCK, nullptr, nullptr, line, col);
 
     while(p->current.kind != TK_EOF && p->current.kind != '}')
     {
-        int item = parse_item(p);
+        int item = parse_statement(p);
         parser_add_child(p, node, item);
         if(!p->ok)
             parser_synchronize(p);
@@ -1548,25 +1465,12 @@ static int parse_block(Parser* p)
     return node;
 }
 
-static int parse_item(Parser* p)
-{
-    if(p->current.kind == TK_IDENT && p->next.kind == TK_CONST_ASSIGN)
-        return parse_decl(p);
-    if(p->current.kind == TK_IDENT && p->next.kind == TK_ASSIGN)
-        return parse_decl(p);
-    if(p->current.kind == TK_IDENT && (p->next.kind == ':' || p->next.kind == ','))
-        return parse_decl(p);
-    if(p->current.kind == KW_RETURN || p->current.kind == KW_FOR || p->current.kind == '{')
-        return parse_statement(p);
-    return parse_statement(p);
-}
-
 static int parse_program(Parser* p)
 {
-    int node = parser_add_node(p, NODE_PROGRAM, nullptr, 1, 1);
+    int node = parser_add_node(p, NODE_PROGRAM, nullptr, nullptr, 1, 1);
     while(p->current.kind != TK_EOF)
     {
-        parser_add_child(p, node, parse_item(p));
+        parser_add_child(p, node, parse_statement(p));
         if(!p->ok)
             parser_synchronize(p);
     }

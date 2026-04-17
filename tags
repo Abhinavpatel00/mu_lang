@@ -440,6 +440,7 @@ ID_VOID_MAIN	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define ID
 Identifier Rules	LEXER_PORT_DIFFERENCES.md	/^## Identifier Rules$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
 Important Notes	LLVM_OK_MU_GAP_ANALYSIS.md	/^## Important Notes$/;"	s	chapter:LLVM Gap Analysis For `examples/ok.mu`
 InstallScripts	build/CMakeFiles/InstallScripts.json	/^	"InstallScripts" : $/;"	a
+KEYWORDS	main.cpp	/^static const KeywordEntry KEYWORDS[] = {$/;"	v	typeref:typename:const KeywordEntry[]	file:
 KW_AS	main.cpp	/^    KW_AS,$/;"	e	enum:TokenKind	file:
 KW_COMP	main.cpp	/^    KW_COMP,$/;"	e	enum:TokenKind	file:
 KW_DEFER	main.cpp	/^    KW_DEFER,$/;"	e	enum:TokenKind	file:
@@ -464,6 +465,7 @@ KW_UNION	main.cpp	/^    KW_UNION,$/;"	e	enum:TokenKind	file:
 KW_USING	main.cpp	/^    KW_USING,$/;"	e	enum:TokenKind	file:
 KW_VOID	main.cpp	/^    KW_VOID,$/;"	e	enum:TokenKind	file:
 Keyword Handling	LEXER_PORT_DIFFERENCES.md	/^## Keyword Handling$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
+KeywordEntry	main.cpp	/^struct KeywordEntry$/;"	s	file:
 LLVM Gap Analysis For `examples/ok.mu`	LLVM_OK_MU_GAP_ANALYSIS.md	/^# LLVM Gap Analysis For `examples\/ok.mu`$/;"	c
 LLVM_DIR	CMakeLists.txt	/^    set(LLVM_DIR "\/usr\/lib\/llvm21\/lib\/cmake\/llvm" CACHE PATH "LLVM 21 CMake config path")$/;"	v
 LLVM_INCLUDE_DIRS	CMakeLists.txt	/^    set(LLVM_INCLUDE_DIRS "\/usr\/lib\/llvm21\/include")$/;"	v
@@ -588,15 +590,6 @@ TK_TRIPLE_DOT	main.cpp	/^    TK_TRIPLE_DOT,    \/\/ ...$/;"	e	enum:TokenKind	fil
 Token	main.cpp	/^struct Token {$/;"	s	file:
 Token Location and Trivia Differences	LEXER_PORT_DIFFERENCES.md	/^## Token Location and Trivia Differences$/;"	s	chapter:Lexer Port Comparison: Proposed Ring-Buffer Lexer vs Current Implementation
 TokenKind	main.cpp	/^enum TokenKind : int16_t$/;"	g	typeref:typename:int16_t	file:
-VF_BINARY	main.cpp	/^    VF_BINARY     = 1 << 1,$/;"	e	enum:ValueFlags	file:
-VF_FORCE_F64	main.cpp	/^    VF_FORCE_F64  = 1 << 3,$/;"	e	enum:ValueFlags	file:
-VF_HEX	main.cpp	/^    VF_HEX        = 1 << 0,$/;"	e	enum:ValueFlags	file:
-VF_OVERFLOW	main.cpp	/^    VF_OVERFLOW   = 1 << 2,$/;"	e	enum:ValueFlags	file:
-VK_FLOAT	main.cpp	/^    VK_FLOAT,$/;"	e	enum:ValueKind	file:
-VK_INT	main.cpp	/^    VK_INT,$/;"	e	enum:ValueKind	file:
-VK_STRING	main.cpp	/^    VK_STRING,$/;"	e	enum:ValueKind	file:
-ValueFlags	main.cpp	/^enum ValueFlags : uint32_t {$/;"	g	typeref:typename:uint32_t	file:
-ValueKind	main.cpp	/^enum ValueKind : uint8_t {$/;"	g	typeref:typename:uint8_t	file:
 What Not To Do Yet	APPROACH_IMPROVEMENTS.md	/^## What Not To Do Yet$/;"	s	chapter:Prototype-Phase Simplification Plan
 What We Optimize For In Prototype	APPROACH_IMPROVEMENTS.md	/^## What We Optimize For In Prototype$/;"	s	chapter:Prototype-Phase Simplification Plan
 What is still missing for executable generation	LLVM_OK_MU_GAP_ANALYSIS.md	/^### What is still missing for executable generation$/;"	S	section:LLVM Gap Analysis For `examples/ok.mu`""Feature Coverage For `ok.mu`
@@ -615,20 +608,22 @@ clean	build/Makefile	/^clean:$/;"	t
 clean/fast	build/Makefile	/^clean\/fast: clean$/;"	t
 cmake_check_build_system	build/Makefile	/^cmake_check_build_system:$/;"	t
 cmake_force	build/Makefile	/^cmake_force:$/;"	t
-col	main.cpp	/^    int              col  = 1;$/;"	m	struct:AstNode	typeref:typename:int	file:
-col	main.cpp	/^    int              col  = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
-col	main.cpp	/^    uint32_t line, col;$/;"	m	struct:Token	typeref:typename:uint32_t	file:
+col	main.cpp	/^    int              col      = 1;$/;"	m	struct:AstNode	typeref:typename:int	file:
+col	main.cpp	/^    int         col        = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
+col	main.cpp	/^    uint32_t col;$/;"	m	struct:Token	typeref:typename:uint32_t	file:
 const	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define const$/;"	d	file:
+copy_slice_text	main.cpp	/^static void copy_slice_text(char* dst, uint32_t* dst_len, const char* src, uint32_t start, uint3/;"	f	typeref:typename:void	file:
+copy_text	main.cpp	/^static void copy_text(char* dst, uint32_t* dst_len, const char* src)$/;"	f	typeref:typename:void	file:
 current	main.cpp	/^    Token                current;$/;"	m	struct:Parser	typeref:typename:Token	file:
 default_target	build/Makefile	/^default_target: all$/;"	t
 depend	build/Makefile	/^depend:$/;"	t
 edit_cache	build/Makefile	/^edit_cache:$/;"	t
 edit_cache/fast	build/Makefile	/^edit_cache\/fast: edit_cache$/;"	t
-error	main.cpp	/^    std::string          error;$/;"	m	struct:Parser	typeref:typename:std::string	file:
+error	main.cpp	/^    char                 error[256] = {0};$/;"	m	struct:Parser	typeref:typename:char[256]	file:
+flags	main.cpp	/^    uint32_t flags; \/\/ hex, binary, float, overflow etc.$/;"	m	struct:Token	typeref:typename:uint32_t	file:
 float_val	main.cpp	/^        double  float_val;$/;"	m	union:Token::__anon3b5b11db020a	typeref:typename:double	file:
-float_val	main.cpp	/^    double           float_val = 0.0;$/;"	m	struct:Lexer	typeref:typename:double	file:
+float_val	main.cpp	/^    double   float_val  = 0.0;$/;"	m	struct:Lexer	typeref:typename:double	file:
 help	build/Makefile	/^help:$/;"	t
-id	main.cpp	/^    std::string_view id;       \/\/ for TK_IDENT$/;"	m	struct:Lexer	typeref:typename:std::string_view	file:
 info_arch	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
 info_arch	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
 info_compiler	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";$/;"	v	typeref:typename:char const *
@@ -655,13 +650,14 @@ info_version_internal	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cp
 info_version_internal	build/CMakeFiles/4.3.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INT/;"	v	typeref:typename:char const *
 init_char_table	main.cpp	/^void init_char_table()$/;"	f	typeref:typename:void
 int_val	main.cpp	/^        int64_t int_val;$/;"	m	union:Token::__anon3b5b11db020a	typeref:typename:int64_t	file:
-int_val	main.cpp	/^    int64_t          int_val   = 0;$/;"	m	struct:Lexer	typeref:typename:int64_t	file:
+int_val	main.cpp	/^    int64_t  int_val    = 0;$/;"	m	struct:Lexer	typeref:typename:int64_t	file:
 intrinsics_gen	build/Makefile	/^intrinsics_gen: cmake_check_build_system$/;"	t
 intrinsics_gen/fast	build/Makefile	/^intrinsics_gen\/fast:$/;"	t
-keywords	main.cpp	/^static const std::unordered_map<std::string_view, int> keywords = {$/;"	v	typeref:typename:const std::unordered_map<std::string_view,int>	file:
-kind	main.cpp	/^    NodeKind         kind = NODE_ERROR;$/;"	m	struct:AstNode	typeref:typename:NodeKind	file:
+kind	main.cpp	/^    NodeKind         kind     = NODE_ERROR;$/;"	m	struct:AstNode	typeref:typename:NodeKind	file:
+kind	main.cpp	/^    TokenKind   kind;$/;"	m	struct:KeywordEntry	typeref:typename:TokenKind	file:
 kind	main.cpp	/^    TokenKind kind;$/;"	m	struct:Token	typeref:typename:TokenKind	file:
 led	main.cpp	/^static int led(Parser* p, const Token& token, int left)$/;"	f	typeref:typename:int	file:
+length	main.cpp	/^    uint32_t length;  \/\/ token length$/;"	m	struct:Token	typeref:typename:uint32_t	file:
 lex	main.cpp	/^    Lexer                lex;$/;"	m	struct:Parser	typeref:typename:Lexer	file:
 lex_identifier	main.cpp	/^TokenKind lex_identifier(Lexer* lex)$/;"	f	typeref:typename:TokenKind
 lex_location	main.cpp	/^} lex_location;$/;"	t	typeref:struct:__anon3b5b11db0108	file:
@@ -670,15 +666,15 @@ lex_operator	main.cpp	/^TokenKind lex_operator(Lexer* lex, char first)$/;"	f	typ
 lex_string	main.cpp	/^TokenKind lex_string(Lexer* lex, char quote)$/;"	f	typeref:typename:TokenKind
 lexer_col	main.cpp	/^inline int lexer_col(const Lexer* lex)$/;"	f	typeref:typename:int
 lexer_float	main.cpp	/^inline double lexer_float(const Lexer* lex)$/;"	f	typeref:typename:double
-lexer_id	main.cpp	/^inline std::string_view lexer_id(const Lexer* lex)$/;"	f	typeref:typename:std::string_view
-lexer_init	main.cpp	/^void lexer_init(Lexer* lex, std::string_view source)$/;"	f	typeref:typename:void
+lexer_init	main.cpp	/^void lexer_init(Lexer* lex, const char* source)$/;"	f	typeref:typename:void
 lexer_int	main.cpp	/^inline int64_t lexer_int(const Lexer* lex)$/;"	f	typeref:typename:int64_t
+lexer_length	main.cpp	/^inline uint32_t lexer_length(const Lexer* lex)$/;"	f	typeref:typename:uint32_t
 lexer_line	main.cpp	/^inline int lexer_line(const Lexer* lex)$/;"	f	typeref:typename:int
-lexer_str	main.cpp	/^inline std::string_view lexer_str(const Lexer* lex)$/;"	f	typeref:typename:std::string_view
+lexer_start	main.cpp	/^inline uint32_t lexer_start(const Lexer* lex)$/;"	f	typeref:typename:uint32_t
 lexer_take_token	main.cpp	/^Token lexer_take_token(Lexer* lex)$/;"	f	typeref:typename:Token
-line	main.cpp	/^    int              line = 1;$/;"	m	struct:AstNode	typeref:typename:int	file:
-line	main.cpp	/^    int              line = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
-line	main.cpp	/^    uint32_t line, col;$/;"	m	struct:Token	typeref:typename:uint32_t	file:
+line	main.cpp	/^    int              line     = 1;$/;"	m	struct:AstNode	typeref:typename:int	file:
+line	main.cpp	/^    int         line       = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
+line	main.cpp	/^    uint32_t line;$/;"	m	struct:Token	typeref:typename:uint32_t	file:
 line_number	main.cpp	/^    int line_number;$/;"	m	struct:__anon3b5b11db0108	typeref:typename:int	file:
 line_offset	main.cpp	/^    int line_offset;$/;"	m	struct:__anon3b5b11db0108	typeref:typename:int	file:
 load	main.cpp	/^const char* load(const char* path)$/;"	f	typeref:typename:const char *
@@ -721,16 +717,19 @@ parse_struct_literal	main.cpp	/^static int parse_struct_literal(Parser* p, int d
 parse_type	main.cpp	/^static int parse_type(Parser* p)$/;"	f	typeref:typename:int	file:
 parse_type_name	main.cpp	/^static int parse_type_name(Parser* p)$/;"	f	typeref:typename:int	file:
 parser_add_child	main.cpp	/^static void parser_add_child(Parser* p, int parent, int child)$/;"	f	typeref:typename:void	file:
-parser_add_node	main.cpp	/^static int parser_add_node(Parser* p, NodeKind kind, std::string text = std::string(), int line /;"	f	typeref:typename:int	file:
+parser_add_node	main.cpp	/^static int parser_add_node(Parser* p, NodeKind kind, const char* text = nullptr, int line = 0, i/;"	f	typeref:typename:int	file:
+parser_add_node_float	main.cpp	/^static int parser_add_node_float(Parser* p, NodeKind kind, double v, int line, int col)$/;"	f	typeref:typename:int	file:
+parser_add_node_int	main.cpp	/^static int parser_add_node_int(Parser* p, NodeKind kind, int64_t v, int line, int col)$/;"	f	typeref:typename:int	file:
+parser_add_node_token_text	main.cpp	/^static int parser_add_node_token_text(Parser* p, NodeKind kind, const Token& token, int line = 0/;"	f	typeref:typename:int	file:
 parser_advance	main.cpp	/^static void parser_advance(Parser* p)$/;"	f	typeref:typename:void	file:
 parser_expect	main.cpp	/^static bool parser_expect(Parser* p, int kind, const char* what)$/;"	f	typeref:typename:bool	file:
-parser_fail	main.cpp	/^static void parser_fail(Parser* p, const std::string& message)$/;"	f	typeref:typename:void	file:
-parser_init	main.cpp	/^static void parser_init(Parser* p, std::string_view source)$/;"	f	typeref:typename:void	file:
+parser_fail	main.cpp	/^static void parser_fail(Parser* p, const char* message)$/;"	f	typeref:typename:void	file:
+parser_init	main.cpp	/^static void parser_init(Parser* p, const char* source)$/;"	f	typeref:typename:void	file:
 parser_match	main.cpp	/^static bool parser_match(Parser* p, int kind)$/;"	f	typeref:typename:bool	file:
 parser_synchronize	main.cpp	/^static void parser_synchronize(Parser* p)$/;"	f	typeref:typename:void	file:
 peek	main.cpp	/^char peek(const Lexer* lex)$/;"	f	typeref:typename:char
 peek_next	main.cpp	/^char peek_next(const Lexer* lex)$/;"	f	typeref:typename:char
-pos	main.cpp	/^    size_t           pos  = 0;$/;"	m	struct:Lexer	typeref:typename:size_t	file:
+pos	main.cpp	/^    uint32_t    pos        = 0;$/;"	m	struct:Lexer	typeref:typename:uint32_t	file:
 prefix_binding_power	main.cpp	/^static int prefix_binding_power()$/;"	f	typeref:typename:int	file:
 preinstall	build/Makefile	/^preinstall: all$/;"	t
 preinstall/fast	build/Makefile	/^preinstall\/fast:$/;"	t
@@ -742,19 +741,23 @@ rebuild_cache/fast	build/Makefile	/^rebuild_cache\/fast: rebuild_cache$/;"	t
 skip_block_comment	main.cpp	/^void skip_block_comment(Lexer* lex)$/;"	f	typeref:typename:void
 skip_line_comment	main.cpp	/^void skip_line_comment(Lexer* lex)$/;"	f	typeref:typename:void
 skip_whitespace	main.cpp	/^void skip_whitespace(Lexer* lex)$/;"	f	typeref:typename:void
-src	main.cpp	/^    std::string_view src;$/;"	m	struct:Lexer	typeref:typename:std::string_view	file:
-str	main.cpp	/^    std::string_view str; \/\/ no allocation$/;"	m	struct:Token	typeref:typename:std::string_view	file:
-str_val	main.cpp	/^    std::string      str_val;  \/\/ for strings (owned copy)$/;"	m	struct:Lexer	typeref:typename:std::string	file:
+src	main.cpp	/^    const char* src        = nullptr;$/;"	m	struct:Lexer	typeref:typename:const char *	file:
+src_length	main.cpp	/^    uint32_t    src_length = 0;$/;"	m	struct:Lexer	typeref:typename:uint32_t	file:
+start	main.cpp	/^    uint32_t start;   \/\/ byte offset in source$/;"	m	struct:Token	typeref:typename:uint32_t	file:
 target_parser_gen	build/Makefile	/^target_parser_gen: cmake_check_build_system$/;"	t
 target_parser_gen/fast	build/Makefile	/^target_parser_gen\/fast:$/;"	t
-text	main.cpp	/^    std::string      text;$/;"	m	struct:AstNode	typeref:typename:std::string	file:
-tok_col	main.cpp	/^    int              tok_col  = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
-tok_line	main.cpp	/^    int              tok_line = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
+text	main.cpp	/^    char             text[96] = {0};$/;"	m	struct:AstNode	typeref:typename:char[96]	file:
+text	main.cpp	/^    const char* text;$/;"	m	struct:KeywordEntry	typeref:typename:const char *	file:
+text_len	main.cpp	/^    uint32_t         text_len = 0;$/;"	m	struct:AstNode	typeref:typename:uint32_t	file:
+tok_col	main.cpp	/^    int      tok_col    = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
+tok_length	main.cpp	/^    uint32_t tok_length = 0;$/;"	m	struct:Lexer	typeref:typename:uint32_t	file:
+tok_line	main.cpp	/^    int      tok_line   = 1;$/;"	m	struct:Lexer	typeref:typename:int	file:
+tok_start	main.cpp	/^    uint32_t tok_start  = 0;$/;"	m	struct:Lexer	typeref:typename:uint32_t	file:
 token_is_assignment	main.cpp	/^static bool token_is_assignment(TokenKind kind)$/;"	f	typeref:typename:bool	file:
 token_is_identifier_like	main.cpp	/^static bool token_is_identifier_like(TokenKind kind)$/;"	f	typeref:typename:bool	file:
-token_kind_name	main.cpp	/^static std::string token_kind_name(TokenKind kind)$/;"	f	typeref:typename:std::string	file:
+token_kind_name	main.cpp	/^static const char* token_kind_name(TokenKind kind, char ascii_fallback[2])$/;"	f	typeref:typename:const char *	file:
 token_next	main.cpp	/^TokenKind token_next(Lexer* lex)$/;"	f	typeref:typename:TokenKind
-vkind	main.cpp	/^    ValueKind vkind;$/;"	m	struct:Token	typeref:typename:ValueKind	file:
+token_text_equals	main.cpp	/^static bool token_text_equals(const Parser* p, const Token* t, const char* text)$/;"	f	typeref:typename:bool	file:
 volatile	build/CMakeFiles/4.3.0/CompilerIdC/CMakeCCompilerId.c	/^# define volatile$/;"	d	file:
 vt_gen	build/Makefile	/^vt_gen: cmake_check_build_system$/;"	t
 vt_gen/fast	build/Makefile	/^vt_gen\/fast:$/;"	t
